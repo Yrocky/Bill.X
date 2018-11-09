@@ -8,12 +8,24 @@
 
 /* Begin PBXBuildFile section */
 		F72BBA94219166560067EB09 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72BBA93219166560067EB09 /* AppDelegate.swift */; };
-		F72BBA96219166560067EB09 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72BBA95219166560067EB09 /* ViewController.swift */; };
 		F72BBA99219166560067EB09 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F72BBA97219166560067EB09 /* Main.storyboard */; };
 		F72BBA9B219166580067EB09 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F72BBA9A219166580067EB09 /* Assets.xcassets */; };
 		F72BBA9E219166580067EB09 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F72BBA9C219166580067EB09 /* LaunchScreen.storyboard */; };
 		F72BBAA9219166590067EB09 /* Bill_XTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72BBAA8219166590067EB09 /* Bill_XTests.swift */; };
 		F72BBAB4219166590067EB09 /* Bill_XUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72BBAB3219166590067EB09 /* Bill_XUITests.swift */; };
+		F72BBAC3219166A10067EB09 /* MonthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72BBAC2219166A10067EB09 /* MonthViewController.swift */; };
+		F72BBAC5219166E60067EB09 /* MonthContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72BBAC4219166E60067EB09 /* MonthContentView.swift */; };
+		F72BBAC8219167100067EB09 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72BBAC7219167100067EB09 /* HomeViewController.swift */; };
+		F72FD5872195864C001B5F5F /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F72FD5862195864C001B5F5F /* CloudKit.framework */; };
+		F72FD58921958747001B5F5F /* DayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72FD58821958747001B5F5F /* DayViewController.swift */; };
+		F72FD58C219587A7001B5F5F /* CostItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72FD58B219587A7001B5F5F /* CostItemView.swift */; };
+		F72FD58E219587CB001B5F5F /* EditBillView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72FD58D219587CB001B5F5F /* EditBillView.swift */; };
+		F72FD591219587F9001B5F5F /* EditBillTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72FD590219587F9001B5F5F /* EditBillTextField.swift */; };
+		F72FD59321958904001B5F5F /* MonthCCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72FD59221958904001B5F5F /* MonthCCell.swift */; };
+		F72FD595219589A4001B5F5F /* RoundShadowEncodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72FD594219589A4001B5F5F /* RoundShadowEncodable.swift */; };
+		F72FD5972195972D001B5F5F /* EditBillInputAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72FD5962195972D001B5F5F /* EditBillInputAccessoryView.swift */; };
+		F788D2952191B065003694DF /* DayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F788D2942191B065003694DF /* DayView.swift */; };
+		F788D2972191B118003694DF /* WeekView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F788D2962191B118003694DF /* WeekView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,7 +48,6 @@
 /* Begin PBXFileReference section */
 		F72BBA90219166560067EB09 /* Bill.X.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bill.X.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F72BBA93219166560067EB09 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		F72BBA95219166560067EB09 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		F72BBA98219166560067EB09 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		F72BBA9A219166580067EB09 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F72BBA9D219166580067EB09 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -47,6 +58,20 @@
 		F72BBAAF219166590067EB09 /* Bill.XUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Bill.XUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F72BBAB3219166590067EB09 /* Bill_XUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bill_XUITests.swift; sourceTree = "<group>"; };
 		F72BBAB5219166590067EB09 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F72BBAC2219166A10067EB09 /* MonthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthViewController.swift; sourceTree = "<group>"; };
+		F72BBAC4219166E60067EB09 /* MonthContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthContentView.swift; sourceTree = "<group>"; };
+		F72BBAC7219167100067EB09 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		F72FD58221958606001B5F5F /* Bill.X.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Bill.X.entitlements; sourceTree = "<group>"; };
+		F72FD5862195864C001B5F5F /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
+		F72FD58821958747001B5F5F /* DayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayViewController.swift; sourceTree = "<group>"; };
+		F72FD58B219587A7001B5F5F /* CostItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CostItemView.swift; sourceTree = "<group>"; };
+		F72FD58D219587CB001B5F5F /* EditBillView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditBillView.swift; sourceTree = "<group>"; };
+		F72FD590219587F9001B5F5F /* EditBillTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditBillTextField.swift; sourceTree = "<group>"; };
+		F72FD59221958904001B5F5F /* MonthCCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthCCell.swift; sourceTree = "<group>"; };
+		F72FD594219589A4001B5F5F /* RoundShadowEncodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundShadowEncodable.swift; sourceTree = "<group>"; };
+		F72FD5962195972D001B5F5F /* EditBillInputAccessoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditBillInputAccessoryView.swift; sourceTree = "<group>"; };
+		F788D2942191B065003694DF /* DayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayView.swift; sourceTree = "<group>"; };
+		F788D2962191B118003694DF /* WeekView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +79,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F72FD5872195864C001B5F5F /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -81,6 +107,7 @@
 				F72BBAA7219166590067EB09 /* Bill.XTests */,
 				F72BBAB2219166590067EB09 /* Bill.XUITests */,
 				F72BBA91219166560067EB09 /* Products */,
+				F72FD58321958609001B5F5F /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -97,8 +124,13 @@
 		F72BBA92219166560067EB09 /* Bill.X */ = {
 			isa = PBXGroup;
 			children = (
+				F72FD58221958606001B5F5F /* Bill.X.entitlements */,
 				F72BBA93219166560067EB09 /* AppDelegate.swift */,
-				F72BBA95219166560067EB09 /* ViewController.swift */,
+				F72FD594219589A4001B5F5F /* RoundShadowEncodable.swift */,
+				F72BBAC9219167380067EB09 /* Home */,
+				F72BBAC6219166EB0067EB09 /* Month */,
+				F72FD58A2195874D001B5F5F /* Day */,
+				F72FD58F219587CF001B5F5F /* Edit */,
 				F72BBA97219166560067EB09 /* Main.storyboard */,
 				F72BBA9A219166580067EB09 /* Assets.xcassets */,
 				F72BBA9C219166580067EB09 /* LaunchScreen.storyboard */,
@@ -123,6 +155,53 @@
 				F72BBAB5219166590067EB09 /* Info.plist */,
 			);
 			path = Bill.XUITests;
+			sourceTree = "<group>";
+		};
+		F72BBAC6219166EB0067EB09 /* Month */ = {
+			isa = PBXGroup;
+			children = (
+				F72BBAC4219166E60067EB09 /* MonthContentView.swift */,
+				F72BBAC2219166A10067EB09 /* MonthViewController.swift */,
+				F788D2962191B118003694DF /* WeekView.swift */,
+				F788D2942191B065003694DF /* DayView.swift */,
+			);
+			path = Month;
+			sourceTree = "<group>";
+		};
+		F72BBAC9219167380067EB09 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				F72BBAC7219167100067EB09 /* HomeViewController.swift */,
+				F72FD59221958904001B5F5F /* MonthCCell.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		F72FD58321958609001B5F5F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F72FD5862195864C001B5F5F /* CloudKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		F72FD58A2195874D001B5F5F /* Day */ = {
+			isa = PBXGroup;
+			children = (
+				F72FD58821958747001B5F5F /* DayViewController.swift */,
+				F72FD58B219587A7001B5F5F /* CostItemView.swift */,
+			);
+			path = Day;
+			sourceTree = "<group>";
+		};
+		F72FD58F219587CF001B5F5F /* Edit */ = {
+			isa = PBXGroup;
+			children = (
+				F72FD58D219587CB001B5F5F /* EditBillView.swift */,
+				F72FD590219587F9001B5F5F /* EditBillTextField.swift */,
+				F72FD5962195972D001B5F5F /* EditBillInputAccessoryView.swift */,
+			);
+			path = Edit;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -193,6 +272,14 @@
 				TargetAttributes = {
 					F72BBA8F219166560067EB09 = {
 						CreatedOnToolsVersion = 10.0;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 1;
+							};
+							com.apple.iCloud = {
+								enabled = 1;
+							};
+						};
 					};
 					F72BBAA3219166590067EB09 = {
 						CreatedOnToolsVersion = 10.0;
@@ -256,8 +343,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F72BBA96219166560067EB09 /* ViewController.swift in Sources */,
+				F72FD58E219587CB001B5F5F /* EditBillView.swift in Sources */,
+				F72FD59321958904001B5F5F /* MonthCCell.swift in Sources */,
+				F72FD58C219587A7001B5F5F /* CostItemView.swift in Sources */,
+				F788D2972191B118003694DF /* WeekView.swift in Sources */,
+				F72BBAC8219167100067EB09 /* HomeViewController.swift in Sources */,
+				F72FD591219587F9001B5F5F /* EditBillTextField.swift in Sources */,
+				F788D2952191B065003694DF /* DayView.swift in Sources */,
+				F72FD5972195972D001B5F5F /* EditBillInputAccessoryView.swift in Sources */,
+				F72BBAC5219166E60067EB09 /* MonthContentView.swift in Sources */,
+				F72FD595219589A4001B5F5F /* RoundShadowEncodable.swift in Sources */,
 				F72BBA94219166560067EB09 /* AppDelegate.swift in Sources */,
+				F72FD58921958747001B5F5F /* DayViewController.swift in Sources */,
+				F72BBAC3219166A10067EB09 /* MonthViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -432,13 +530,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Bill.X/Bill.X.entitlements;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = UQ773UQCTC;
 				INFOPLIST_FILE = Bill.X/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.ropcky.Bill-X";
+				PRODUCT_BUNDLE_IDENTIFIER = com.shxingai.mmlive;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -449,13 +550,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Bill.X/Bill.X.entitlements;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = UQ773UQCTC;
 				INFOPLIST_FILE = Bill.X/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.ropcky.Bill-X";
+				PRODUCT_BUNDLE_IDENTIFIER = com.shxingai.mmlive;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
