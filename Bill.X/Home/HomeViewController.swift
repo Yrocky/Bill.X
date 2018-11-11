@@ -11,6 +11,16 @@ import UIKit
 class HomeViewController: UIViewController, UICollectionViewDataSource,UICollectionViewDelegate {
     
     
+    let animatioinButton : UIButton = {
+       
+        let button = UIButton.init(type: .system)
+        button.setTitle("Animation", for: .normal)
+        button.addTarget(self,
+                         action: #selector(HomeViewController.animActioin),//Selector(("animActioin")),
+                         for: .touchUpInside)
+        return button
+    }()
+    
     lazy var monthView : UICollectionView = {
         
         let minimumLineSpacing : CGFloat = 20.0
@@ -34,14 +44,48 @@ class HomeViewController: UIViewController, UICollectionViewDataSource,UICollect
         return v
     }()
     
+    let titleLabel = UILabel()
+    
+    @objc func animActioin() {
+        
+        let animator = UIViewPropertyAnimator.init(duration: 2.5, curve: .easeInOut) {
+            self.titleLabel.textColor = .red
+        }
+        animator.startAnimation()
+        
+//        let month = MonthViewController()
+        let month = DayViewController()
+        navigationController?.pushViewController(month, animated: true)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
+        titleLabel.text = "seq"
+//        titleLabel.attributedText = NSAttributedString.init(string: "Seq",
+//                                                            attributes: [.foregroundColor:UIColor.clear,
+//                                                                         .font:UIFont.systemFont(ofSize: 50),
+//                                                                         .strokeColor:UIColor.blue,
+//                                                                         .strokeWidth:1])
+        self.titleLabel.textColor = .orange
+        view.addSubview(titleLabel)
         view.addSubview(self.monthView)
+        
+        view.addSubview(self.animatioinButton)
+        
         self.monthView.snp.makeConstraints { (make) in
             make.left.right.equalToSuperview()
             make.top.equalToSuperview()
             make.height.equalTo(500)
+        }
+        titleLabel.snp.makeConstraints { (make) in
+            make.left.right.equalToSuperview()
+            make.top.equalTo(monthView.snp.bottom)
+        }
+        animatioinButton.snp.makeConstraints { (make) in
+            make.left.equalTo(titleLabel)
+            make.top.equalTo(titleLabel.snp.bottom)
+            make.size.equalTo(CGSize.init(width: 150, height: 100))
         }
         // Do any additional setup after loading the view.
     }

@@ -17,7 +17,7 @@ class EditBillTextField: UITextField, BillRoundShadowViewEnable {
         self.clearButtonMode = .whileEditing
         self.backgroundColor = .red
         
-        self.addRoundShadowFor(self)
+        self.addRoundShadow()
     }
     
     required init?(coder aDecoder: NSCoder) {

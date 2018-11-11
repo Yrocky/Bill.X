@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		452733BCDDBA60BAF7DF6A51 /* Pods_Bill_XUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C660DD0FD3A6BE55AC0F867 /* Pods_Bill_XUITests.framework */; };
 		506610C92B5BEE4EB9B23BBE /* Pods_Bill_X.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10BAFC5A798CBD9375DA6D9B /* Pods_Bill_X.framework */; };
+		D7C32E942196D0C90047A858 /* MonthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C32E932196D0C90047A858 /* MonthView.swift */; };
+		D7C32E962196E28E0047A858 /* DirectionGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C32E952196E28E0047A858 /* DirectionGestureRecognizer.swift */; };
+		D7C32E982196FC490047A858 /* EdgeInsetsLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C32E972196FC490047A858 /* EdgeInsetsLabel.swift */; };
+		D7C32E9A219701EA0047A858 /* AlignmentLeftLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C32E99219701EA0047A858 /* AlignmentLeftLayout.swift */; };
 		F72BBA94219166560067EB09 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72BBA93219166560067EB09 /* AppDelegate.swift */; };
 		F72BBA99219166560067EB09 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F72BBA97219166560067EB09 /* Main.storyboard */; };
 		F72BBA9B219166580067EB09 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F72BBA9A219166580067EB09 /* Assets.xcassets */; };
@@ -20,7 +24,7 @@
 		F72BBAC8219167100067EB09 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72BBAC7219167100067EB09 /* HomeViewController.swift */; };
 		F72FD5872195864C001B5F5F /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F72FD5862195864C001B5F5F /* CloudKit.framework */; };
 		F72FD58921958747001B5F5F /* DayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72FD58821958747001B5F5F /* DayViewController.swift */; };
-		F72FD58C219587A7001B5F5F /* CostItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72FD58B219587A7001B5F5F /* CostItemView.swift */; };
+		F72FD58C219587A7001B5F5F /* CostItemCCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72FD58B219587A7001B5F5F /* CostItemCCell.swift */; };
 		F72FD58E219587CB001B5F5F /* EditBillView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72FD58D219587CB001B5F5F /* EditBillView.swift */; };
 		F72FD591219587F9001B5F5F /* EditBillTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72FD590219587F9001B5F5F /* EditBillTextField.swift */; };
 		F72FD59321958904001B5F5F /* MonthCCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72FD59221958904001B5F5F /* MonthCCell.swift */; };
@@ -56,6 +60,10 @@
 		7AA354E348160147EED103E4 /* Pods_Bill_XTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Bill_XTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C660DD0FD3A6BE55AC0F867 /* Pods_Bill_XUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Bill_XUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC5DB4EB732E7FC211822953 /* Pods-Bill.X.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bill.X.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Bill.X/Pods-Bill.X.debug.xcconfig"; sourceTree = "<group>"; };
+		D7C32E932196D0C90047A858 /* MonthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthView.swift; sourceTree = "<group>"; };
+		D7C32E952196E28E0047A858 /* DirectionGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectionGestureRecognizer.swift; sourceTree = "<group>"; };
+		D7C32E972196FC490047A858 /* EdgeInsetsLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EdgeInsetsLabel.swift; sourceTree = "<group>"; };
+		D7C32E99219701EA0047A858 /* AlignmentLeftLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlignmentLeftLayout.swift; sourceTree = "<group>"; };
 		F72BBA90219166560067EB09 /* Bill.X.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bill.X.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F72BBA93219166560067EB09 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F72BBA98219166560067EB09 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -74,7 +82,7 @@
 		F72FD58221958606001B5F5F /* Bill.X.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Bill.X.entitlements; sourceTree = "<group>"; };
 		F72FD5862195864C001B5F5F /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		F72FD58821958747001B5F5F /* DayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayViewController.swift; sourceTree = "<group>"; };
-		F72FD58B219587A7001B5F5F /* CostItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CostItemView.swift; sourceTree = "<group>"; };
+		F72FD58B219587A7001B5F5F /* CostItemCCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CostItemCCell.swift; sourceTree = "<group>"; };
 		F72FD58D219587CB001B5F5F /* EditBillView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditBillView.swift; sourceTree = "<group>"; };
 		F72FD590219587F9001B5F5F /* EditBillTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditBillTextField.swift; sourceTree = "<group>"; };
 		F72FD59221958904001B5F5F /* MonthCCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthCCell.swift; sourceTree = "<group>"; };
@@ -156,6 +164,8 @@
 				F72FD58221958606001B5F5F /* Bill.X.entitlements */,
 				F72BBA93219166560067EB09 /* AppDelegate.swift */,
 				F72FD594219589A4001B5F5F /* RoundShadowEncodable.swift */,
+				D7C32E952196E28E0047A858 /* DirectionGestureRecognizer.swift */,
+				D7C32E972196FC490047A858 /* EdgeInsetsLabel.swift */,
 				F72BBAC9219167380067EB09 /* Home */,
 				F72BBAC6219166EB0067EB09 /* Month */,
 				F72FD58A2195874D001B5F5F /* Day */,
@@ -189,9 +199,10 @@
 		F72BBAC6219166EB0067EB09 /* Month */ = {
 			isa = PBXGroup;
 			children = (
-				F72BBAC4219166E60067EB09 /* MonthContentView.swift */,
 				F72BBAC2219166A10067EB09 /* MonthViewController.swift */,
+				D7C32E932196D0C90047A858 /* MonthView.swift */,
 				F788D2962191B118003694DF /* WeekView.swift */,
+				F72BBAC4219166E60067EB09 /* MonthContentView.swift */,
 				F788D2942191B065003694DF /* DayView.swift */,
 			);
 			path = Month;
@@ -221,7 +232,8 @@
 			isa = PBXGroup;
 			children = (
 				F72FD58821958747001B5F5F /* DayViewController.swift */,
-				F72FD58B219587A7001B5F5F /* CostItemView.swift */,
+				F72FD58B219587A7001B5F5F /* CostItemCCell.swift */,
+				D7C32E99219701EA0047A858 /* AlignmentLeftLayout.swift */,
 			);
 			path = Day;
 			sourceTree = "<group>";
@@ -456,17 +468,21 @@
 			files = (
 				F72FD58E219587CB001B5F5F /* EditBillView.swift in Sources */,
 				F72FD59321958904001B5F5F /* MonthCCell.swift in Sources */,
-				F72FD58C219587A7001B5F5F /* CostItemView.swift in Sources */,
+				F72FD58C219587A7001B5F5F /* CostItemCCell.swift in Sources */,
 				F788D2972191B118003694DF /* WeekView.swift in Sources */,
 				F72BBAC8219167100067EB09 /* HomeViewController.swift in Sources */,
 				F72FD591219587F9001B5F5F /* EditBillTextField.swift in Sources */,
+				D7C32E962196E28E0047A858 /* DirectionGestureRecognizer.swift in Sources */,
 				F788D2952191B065003694DF /* DayView.swift in Sources */,
 				F72FD5972195972D001B5F5F /* EditBillInputAccessoryView.swift in Sources */,
+				D7C32E9A219701EA0047A858 /* AlignmentLeftLayout.swift in Sources */,
 				F72BBAC5219166E60067EB09 /* MonthContentView.swift in Sources */,
 				F72FD595219589A4001B5F5F /* RoundShadowEncodable.swift in Sources */,
+				D7C32E982196FC490047A858 /* EdgeInsetsLabel.swift in Sources */,
 				F72BBA94219166560067EB09 /* AppDelegate.swift in Sources */,
 				F72FD58921958747001B5F5F /* DayViewController.swift in Sources */,
 				F72BBAC3219166A10067EB09 /* MonthViewController.swift in Sources */,
+				D7C32E942196D0C90047A858 /* MonthView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

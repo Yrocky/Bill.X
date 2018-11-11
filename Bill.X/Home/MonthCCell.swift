@@ -51,18 +51,10 @@ class MonthCCell: UICollectionViewCell,BillRoundShadowViewEnable {
             centerLabel.text = String(total)
             
             cornerLabel.isHidden = false
-            cornerLabel.attributedText = NSAttributedString.init(string: month,
-                                                                 attributes: [.backgroundColor:UIColor.clear,
-                                                                              .font:UIFont.systemFont(ofSize: 50),
-                                                                              .strokeColor:UIColor.gray,
-                                                                              .strokeWidth:1])
+            cornerLabel.attributedText = NSAttributedString.strokeStyle(string: month, .gray, 50)
         } else {
             // 不显示total，month居中
-            centerLabel.attributedText = NSAttributedString.init(string: month,
-                                                                 attributes: [.backgroundColor:UIColor.clear,
-                                                                              .font:UIFont.systemFont(ofSize: 50),
-                                                                              .strokeColor:UIColor.blue,
-                                                                              .strokeWidth:1])
+            centerLabel.attributedText = NSAttributedString.strokeStyle(string: month, .blue, 50)
             
             cornerLabel.text = nil
             cornerLabel.isHidden = true

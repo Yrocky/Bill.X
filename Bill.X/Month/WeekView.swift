@@ -10,15 +10,16 @@ import UIKit
 
 class WeekView: UIStackView {
 
-    class WeekItemView: UILabel {
+    private class _WeekItemView: UILabel {
         
         init(_ week : String ,_ isSun : Bool = false) {
             super.init(frame: .zero)
             
             self.text = week
-            self.font = UIFont.systemFont(ofSize: 12)
+            self.font = UIFont.billDINBold(17)
             self.textAlignment = .center
-            self.textColor = isSun ? .red : .orange
+            self.backgroundColor = .clear
+            self.textColor = !isSun ? .billBlack : .billOrange
         }
         
         required init?(coder aDecoder: NSCoder) {
@@ -28,15 +29,16 @@ class WeekView: UIStackView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.alignment = .center
+        self.alignment = .fill
         self.axis = .horizontal
-        self.spacing = 10.0
+        self.distribution = .fillEqually
+        self.spacing = 7.0
         
         let weeks = ["S","M","T","W","T","F","S"]
         
         for (index,week) in weeks.enumerated(){
             
-            let itemView = WeekItemView.init(week, index == 0)
+            let itemView = _WeekItemView.init(week, index == 0)
             self.addArrangedSubview(itemView)
         }
     }
