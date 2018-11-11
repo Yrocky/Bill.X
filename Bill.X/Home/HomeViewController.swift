@@ -34,7 +34,10 @@ class HomeViewController: UIViewController, UICollectionViewDataSource,UICollect
         layout.minimumLineSpacing = minimumLineSpacing
         layout.minimumInteritemSpacing = minimumInteritemSpacing
         layout.itemSize = CGSize.init(width: itemWidth , height: itemHeight)
-        layout.sectionInset = UIEdgeInsetsMake(minimumLineSpacing, 16, minimumLineSpacing, 16)
+        layout.sectionInset = UIEdgeInsets(top: minimumLineSpacing,
+                                           left: 16,
+                                           bottom: minimumLineSpacing,
+                                           right: 16)
         let v = UICollectionView.init(frame: .zero, collectionViewLayout: layout)
         v.backgroundColor = .orange
         v.dataSource = self

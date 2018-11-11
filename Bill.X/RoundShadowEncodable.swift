@@ -115,7 +115,7 @@ extension NSAttributedString{
     
     public class func strokeStyle(string : String, _ color : UIColor, _ fontSize : CGFloat) -> NSAttributedString{
         
-        let style : [NSAttributedStringKey : Any] =
+        let style : [NSAttributedString.Key : Any] =
             [.backgroundColor:UIColor.clear,
              .font:UIFont.billDINBold(fontSize),
              .strokeColor:UIColor.gray,
@@ -127,7 +127,7 @@ extension NSAttributedString{
     
     public class func fillStyle(string : String, _ color : UIColor, _ fontSize : CGFloat) -> NSAttributedString{
         
-        let style : [NSAttributedStringKey : Any] =
+        let style : [NSAttributedString.Key : Any] =
             [.foregroundColor:color,
              .font:UIFont.billDINBold(fontSize)]
         return NSAttributedString.init(string: string,

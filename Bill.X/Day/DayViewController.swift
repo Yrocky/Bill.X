@@ -25,14 +25,13 @@ extension UIImage {
 }
 
 extension UIButton : BillRoundShadowViewEnable{
-    public func setBackgroundImageWith(_ color : UIColor, for state : UIControlState){
+    public func setBackgroundImageWith(_ color : UIColor, for state : UIControl.State){
         self.setBackgroundImage(UIImage.imageWith(color), for: state)
     }
 }
 
 class DayViewController: UIViewController ,
-UICollectionViewDataSource,
-UICollectionViewDelegateLeftAlignedLayout{
+UICollectionViewDataSource,UICollectionViewDelegateFlowLayout{
 
     let timeLabel = UILabel()
     let moneyLabel = UILabel()
@@ -50,12 +49,12 @@ UICollectionViewDelegateLeftAlignedLayout{
     }()
     lazy var billCollectionView : UICollectionView = {
         
-        let layout = AlignmentLeftLayout()
-        layout.sectionInset = UIEdgeInsetsMake(20, 10, 20, 10)
+        let layout = UICollectionViewLeftAlignedLayout()
+        layout.sectionInset = UIEdgeInsets(top: 20, left: 10, bottom: 20, right: 10)
         layout.estimatedItemSize = CGSize.init(width: 50, height: 42)
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 10.0
-        layout.minimumInteritemSpacing = 1.0
+        layout.minimumInteritemSpacing = 10.0
         
         let c = UICollectionView.init(frame: .zero, collectionViewLayout: layout)
         c.delegate = self

@@ -22,7 +22,7 @@ class CostItemCCell: UICollectionViewCell, BillRoundShadowViewEnable {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        self.contentView.backgroundColor = .clear
+        self.contentView.backgroundColor = .orange
         
         _contentView.backgroundColor = .white
         addRoundShadowFor(_contentView, cornerRadius: 16.0)
@@ -30,9 +30,9 @@ class CostItemCCell: UICollectionViewCell, BillRoundShadowViewEnable {
         self.contentView.addSubview(_contentView)
         
         self.costLabel.textColor = .white
-        self.costLabel.edgeInsets = UIEdgeInsetsMake(0, 8, 0, 8)
+        self.costLabel.edgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
         self.costLabel.layer.cornerRadius = 12.0
-        self.costLabel.text = "1356"
+        self.costLabel.text = "5"
         self.costLabel.font = UIFont.billDINBold(14)
         self.costLabel.backgroundColor = .billBlue
         self.costLabel.layer.masksToBounds = true

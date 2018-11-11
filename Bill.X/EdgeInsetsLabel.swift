@@ -18,7 +18,8 @@ class EdgeInsetsLabel: UILabel {
     
     override func textRect(forBounds bounds: CGRect, limitedToNumberOfLines numberOfLines: Int) -> CGRect {
         let insets = self.edgeInsets
-        var rect = super.textRect(forBounds: UIEdgeInsetsInsetRect(bounds, insets), limitedToNumberOfLines: numberOfLines)
+        var rect = super.textRect(forBounds: CGRect.inset(bounds)(by: insets),
+                                  limitedToNumberOfLines: numberOfLines)
         rect.origin.x -= insets.left
         rect.origin.y -= insets.top
         rect.size.width += (insets.left + insets.right)
@@ -27,7 +28,7 @@ class EdgeInsetsLabel: UILabel {
     }
     
     override func drawText(in rect: CGRect) {
-        super.drawText(in: UIEdgeInsetsInsetRect(rect, edgeInsets))
+        super.drawText(in: CGRect.inset(rect)(by: edgeInsets))
     }
 
 }
