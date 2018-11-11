@@ -14,6 +14,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        
+//        print(Calendar.current.startAndLastDay(of: 2018))
+//        print(Calendar.current.startAndLastDay(of: 2018 ,and : 11))
+//        print(Calendar.current.startOfWeek(for: Date()))
+        
         return true
     }
 

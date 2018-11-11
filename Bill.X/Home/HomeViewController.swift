@@ -7,9 +7,11 @@
 //
 
 import UIKit
+import EventKit
 
 class HomeViewController: UIViewController, UICollectionViewDataSource,UICollectionViewDelegate {
     
+    let eventKitSupport = BillEventKitSupport.init()
     
     let animatioinButton : UIButton = {
        
@@ -57,8 +59,45 @@ class HomeViewController: UIViewController, UICollectionViewDataSource,UICollect
         animator.startAnimation()
         
 //        let month = MonthViewController()
-        let month = DayViewController()
-        navigationController?.pushViewController(month, animated: true)
+//        let month = DayViewController()
+//        navigationController?.pushViewController(month, animated: true)
+        
+        self.eventKitSupport.fetchBillEvent(month: 10) { (eventWraps) in
+            print("++++===")
+            eventWraps.forEach({ (eventWrap) in
+                print(eventWrap.event.title)
+            })
+        }
+        self.eventKitSupport.fetchAllBillEvent { (eventWraps) in
+            print("++++++++============")
+            eventWraps.forEach({ (eventWrap) in
+                print(eventWrap.event.title)
+            })
+        }
+        self.eventKitSupport.fetchBillEvent(month: 11) { (eventWraps) in
+            print("++&&&&&==")
+            eventWraps.forEach({ (eventWrap) in
+                print(eventWrap.event.title)
+            })
+        }
+        self.eventKitSupport.fetchBillEvent(year: 2017, { (eventWraps) in
+            print("++++++++============--------")
+            eventWraps.forEach({ (eventWrap) in
+                print(eventWrap.event.title)
+            })
+        })
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        if !eventKitSupport.accessGrand {
+            eventKitSupport.checkEventStoreAccessForCanendar { (accessGrand) in
+                if !accessGrand{
+                    print("没有授权读取日历")
+                }
+            }
+        }
+        
+        
     }
     
     override func viewDidLoad() {
@@ -102,14 +141,14 @@ class HomeViewController: UIViewController, UICollectionViewDataSource,UICollect
         return cell
     }
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        let eventWrap = BillEventWrap.eventWrap(with: self.eventKitSupport.eventStore,
+                                                money: 42,
+                                                usage: "看电影")
+        self.eventKitSupport.saveBillEvent(eventWrap) { (success) in
+            
+        }
     }
-    */
 
 }
