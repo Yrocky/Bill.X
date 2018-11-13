@@ -23,11 +23,11 @@ class BillEventWrap: NSObject {
                                  money : Int ,
                                  usage : String) -> BillEventWrap{
         
-        var comps = DateComponents()
+        var comps = DateComponents()///<for debug
         comps.year = 2017
         comps.month = 10
         comps.day = 23
-        let date = Calendar.current.date(from: comps)
+        let date = Date()//Calendar.current.date(from: comps)
         
         let event = EKEvent.init(eventStore: eventStore)
         event.title = "\(usage):\(money)"
@@ -58,3 +58,68 @@ class BillEventWrap: NSObject {
         event.calendar = calendar
     }
 }
+
+struct BillDayEventWrap {
+    
+    var year : Int = 0
+    var month : Int = 0
+    var day : Int = 0
+    
+    var eventWraps : [BillEventWrap] = []
+    
+    var totalBill : Int {
+        get{
+            var sum = 0
+            for eventWrap in eventWraps {
+                sum += eventWrap.money
+            }
+            return sum
+        }
+    }
+    
+    public init(with eventWraps : [BillEventWrap]) {
+        self.eventWraps = eventWraps
+        if eventWraps.count != 0 {
+            let eventWrap = eventWraps.first
+            self.year = eventWrap?.date.year ?? 0
+            self.month = eventWrap?.date.month ?? 0
+            self.day = eventWrap?.date.day ?? 0
+        }
+    }
+}
+
+struct BillMonthEventWrap {
+    
+    var year : Int = 0
+    var month : Int = 0
+    
+    var dayEventWraps : [BillDayEventWrap] = []
+    
+    var totalBill : Int {
+        get{
+            var sum = 0
+            for dayEventWrap in dayEventWraps {
+                sum += dayEventWrap.totalBill
+            }
+            return sum
+        }
+    }
+}
+
+struct BillYearEventWrap {
+    
+    var year : Int = 0
+    
+    var monthEventWraps : [BillMonthEventWrap] = []
+    
+    var totalBill : Int {
+        get{
+            var sum = 0
+            for monthEventWrap in monthEventWraps {
+                sum += monthEventWrap.totalBill
+            }
+            return sum
+        }
+    }
+}
+

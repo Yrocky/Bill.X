@@ -15,7 +15,7 @@ enum DayViewStatus {
     case hasValue
 }
 
-class DayView: UIView ,BillRoundShadowViewEnable{
+class DayView: UICollectionViewCell ,BillRoundShadowViewEnable{
 
     var index : (Int,Int) = (0,0)
     
@@ -28,20 +28,20 @@ class DayView: UIView ,BillRoundShadowViewEnable{
             switch status {
             case .empty:
                 self.moneyLabel.isHidden = true
-                self.backgroundColor = .billWhite
-                self.dayLabel.attributedText = NSAttributedString.fillStyle(string: self.day, .billGray, 16)
+                self.contentView.backgroundColor = .white
+                self.dayLabel.attributedText = NSAttributedString.fillStyle(string: self.day, .billGray, 14)
             case .invalid:
                 self.moneyLabel.attributedText = NSAttributedString.strokeStyle(string: self.money, .billGray, 16)
-                self.backgroundColor = .billWhite
-                self.dayLabel.attributedText = NSAttributedString.strokeStyle(string: self.day, .billGray, 16)
+                self.contentView.backgroundColor = .white
+                self.dayLabel.attributedText = NSAttributedString.strokeStyle(string: self.day, .billGray, 14)
             case .hasValue:
-                self.moneyLabel.attributedText = NSAttributedString.fillStyle(string: self.money, .billWhite, 16)
-                self.backgroundColor = .billBlue
-                self.dayLabel.attributedText = NSAttributedString.fillStyle(string: self.day, .billWhite, 16)
+                self.moneyLabel.attributedText = NSAttributedString.fillStyle(string: self.money, .white, 16)
+                self.contentView.backgroundColor = .billBlue
+                self.dayLabel.attributedText = NSAttributedString.fillStyle(string: self.day, .white, 14)
             case .today:
-                self.moneyLabel.attributedText = NSAttributedString.fillStyle(string: self.money, .billWhite, 16)
-                self.backgroundColor = .billOrange
-                self.dayLabel.attributedText = NSAttributedString.fillStyle(string: self.day, .billWhite, 16)
+                self.moneyLabel.attributedText = NSAttributedString.fillStyle(string: self.money, .white, 16)
+                self.contentView.backgroundColor = .billOrange
+                self.dayLabel.attributedText = NSAttributedString.fillStyle(string: self.day, .white, 14)
             }
         }
     }
@@ -53,20 +53,22 @@ class DayView: UIView ,BillRoundShadowViewEnable{
         
         super.init(frame: frame)
         
-        self.backgroundColor = UIColor.billBlue
-        addRoundShadow()
+        self.backgroundColor = .clear
+        self.backgroundView = nil
+        self.contentView.backgroundColor = UIColor.white
+        addRoundShadowFor(self.contentView)
         
         moneyLabel.textAlignment = .center
         moneyLabel.textColor = .white
         moneyLabel.font = UIFont.billDINBold(16)
         moneyLabel.text = "25"
-        addSubview(moneyLabel)
+        contentView.addSubview(moneyLabel)
         
         dayLabel.textAlignment = .right
         dayLabel.textColor = .white
-        dayLabel.font = UIFont.billDINBold(16)
+        dayLabel.font = UIFont.billDINBold(14)
         dayLabel.text = "18"
-        addSubview(dayLabel)
+        contentView.addSubview(dayLabel)
         
         moneyLabel.snp.makeConstraints { (make) in
             make.top.equalToSuperview().offset(20)
@@ -84,46 +86,46 @@ class DayView: UIView ,BillRoundShadowViewEnable{
         fatalError("init(coder:) has not been implemented")
     }
     
-    func updateWithMoney(_ money : String , day : String, status : DayViewStatus){
-        self.money = money
-        self.day = day
-        self.status = status
-    }
+    public func update(with dayEventWrap : BillDayEventWrap) {
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesBegan(touches, with: event)
-        switch self.status {
-        case .empty:
-            self.backgroundColor = .billWhiteHighlight
-        case .hasValue:
-            self.backgroundColor = .billBlueHighlight
-        case .today:
-            self.backgroundColor = .billOrangeHighlight
-        case .invalid: break
+        self.day = "\(dayEventWrap.day)"
+        self.money = "\(dayEventWrap.totalBill)"
+        
+        if dayEventWrap.totalBill == 0 {
+            self.status = .empty
+        }else{
+            self.status = .hasValue
         }
     }
-    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesBegan(touches, with: event)
-        self.resetBackground()
+    
+    override var isHighlighted: Bool{
+        didSet{
+            if isHighlighted{
+                self.setHighlightBackground()
+            }else{
+                self.resetBackground()
+            }
+        }
     }
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesEnded(touches, with: event)
-        self.resetBackground()
-    }
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesMoved(touches, with: event)
-        if !self.bounds.contains((touches.first?.location(in: self))!) {
-            self.resetBackground()
+    private func setHighlightBackground() {
+        switch self.status {
+        case .empty:
+            contentView.backgroundColor = .billWhiteHighlight
+        case .hasValue:
+            contentView.backgroundColor = .billBlueHighlight
+        case .today:
+            contentView.backgroundColor = .billOrangeHighlight
+        case .invalid: break
         }
     }
     private func resetBackground() {
         switch self.status {
         case .empty:
-            self.backgroundColor = .billWhite
+            contentView.backgroundColor = .white
         case .hasValue:
-            self.backgroundColor = .billBlue
+            contentView.backgroundColor = .billBlue
         case .today:
-            self.backgroundColor = .billOrange
+            contentView.backgroundColor = .billOrange
         case .invalid: break
         }
     }

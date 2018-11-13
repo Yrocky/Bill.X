@@ -35,18 +35,7 @@ UICollectionViewDataSource,UICollectionViewDelegateFlowLayout{
 
     let timeLabel = UILabel()
     let moneyLabel = UILabel()
-    lazy var addButton : UIButton = {
-        let b = UIButton.init(type: .custom)
-        b.addTarget(self, action: #selector(DayViewController.onAddItemAction), for: .touchUpInside)
-        b.setBackgroundImageWith(.billOrange, for: .normal)
-        b.setBackgroundImageWith(.billOrangeHighlight, for: .highlighted)
-        b.setTitle("Add Now", for: .normal)
-        b.layer.masksToBounds = true
-        b.titleLabel?.font = UIFont.billPingFangMedium(25)
-        b.setTitleColor(.white, for: .normal)
-        b.addRoundShadowFor(b, cornerRadius: 10)
-        return b
-    }()
+    var addButton = AddBillEventButton()
     lazy var billCollectionView : UICollectionView = {
         
         let layout = UICollectionViewLeftAlignedLayout()
@@ -69,11 +58,15 @@ UICollectionViewDataSource,UICollectionViewDelegateFlowLayout{
     override func viewDidLoad() {
         super.viewDidLoad()
 
+
         view.backgroundColor = .white
         view.addSubview(self.timeLabel)
         view.addSubview(self.moneyLabel)
         view.addSubview(self.billCollectionView)
         view.addSubview(self.addButton)
+        self.addButton.addTarget(self,
+                                 action: #selector(DayViewController.onAddItemAction),
+                                 for: .touchUpInside)
         
         timeLabel.snp.makeConstraints { (make) in
             make.left.equalTo(16)

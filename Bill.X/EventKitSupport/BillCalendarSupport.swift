@@ -32,6 +32,15 @@ extension Date {
 }
 extension Calendar{
     
+    ///<创建一个Date对象
+    public func dateWith(year : Int , month : Int , day : Int) -> Date{
+        var comps = DateComponents()
+        comps.year = year
+        comps.month = month
+        comps.day = day
+        return self.date(from: comps) ?? Date()
+    }
+    
     ///本周的第一天
     public func startOfWeek(for date : Date) -> Date {
 
@@ -60,11 +69,16 @@ extension Calendar{
     
     ///当前日期月份有多少天
     public func totalDaysOfMonth(for date : Date) -> Int {
-//        self.
-        return 31
+        return self.range(of: .day, in: .month, for: date)?.count ?? 0
     }
     
-    ///传入年份的第一天和最后一天
+    ///当前year-month下的月份有多少天
+    public func totalDaysOfMonth(for year : Int , month : Int) -> Int {
+        let date = self.dateWith(year: year, month: month, day: 1)
+        return self.range(of: .day, in: .month, for: date)?.count ?? 0
+    }
+    
+    ///传入date的今年第一天和最后一天
     public func startAndLastDay(of date : Date , component : Component) -> (start : Date, last : Date) {
         var comps = DateComponents()
         comps.year = date.year

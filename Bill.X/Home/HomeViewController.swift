@@ -9,10 +9,31 @@
 import UIKit
 import EventKit
 
+class AddBillEventButton : UIButton {
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        self.setBackgroundImageWith(.billOrange, for: .normal)
+        self.setBackgroundImageWith(.billOrangeHighlight, for: .highlighted)
+        self.setTitle("Add Now", for: .normal)
+        self.layer.masksToBounds = true
+        self.titleLabel?.font = UIFont.billPingFangMedium(25)
+        self.setTitleColor(.white, for: .normal)
+        self.addRoundShadowFor(self, cornerRadius: 10)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 class HomeViewController: UIViewController, UICollectionViewDataSource,UICollectionViewDelegate {
     
-    let eventKitSupport = BillEventKitSupport.init()
+    let eventKitSupport = BillEventKitSupport.support
     
+    var addButton = AddBillEventButton()
+
     let animatioinButton : UIButton = {
        
         let button = UIButton.init(type: .system)
@@ -52,36 +73,46 @@ class HomeViewController: UIViewController, UICollectionViewDataSource,UICollect
     let titleLabel = UILabel()
     
     @objc func animActioin() {
-        
-        let animator = UIViewPropertyAnimator.init(duration: 2.5, curve: .easeInOut) {
-            self.titleLabel.textColor = .red
-        }
-        animator.startAnimation()
-        
+
 //        let month = MonthViewController()
 //        let month = DayViewController()
 //        navigationController?.pushViewController(month, animated: true)
         
-        self.eventKitSupport.fetchBillEvent(month: 10) { (eventWraps) in
-            print("++++===")
-            eventWraps.forEach({ (eventWrap) in
-                print(eventWrap.event.title)
-            })
-        }
-        self.eventKitSupport.fetchAllBillEvent { (eventWraps) in
-            print("++++++++============")
-            eventWraps.forEach({ (eventWrap) in
-                print(eventWrap.event.title)
-            })
-        }
-        self.eventKitSupport.fetchBillEvent(month: 11) { (eventWraps) in
-            print("++&&&&&==")
+        
+        self.eventKitSupport.fetchBillEventAll { (eventWraps) in
+            print("++++all++++============")
             eventWraps.forEach({ (eventWrap) in
                 print(eventWrap.event.title)
             })
         }
         self.eventKitSupport.fetchBillEvent(year: 2017, { (eventWraps) in
-            print("++++++++============--------")
+            print("+++++2017+++============--------")
+            eventWraps.forEach({ (eventWrap) in
+                print(eventWrap.event.title)
+            })
+            self.eventKitSupport.arrangeBillEventForYear(eventWraps).forEach({ (monthEventWraps) in
+                print(monthEventWraps)
+            })
+        })
+        self.eventKitSupport.fetchBillEvent(year: 2018, month: 11) { (eventWraps) in
+            print("++&&2018-11&&&==")
+            eventWraps.forEach({ (eventWrap) in
+                print(eventWrap.event.title)
+            })
+//            self.eventKitSupport.arrangeBillEventForMonth(eventWraps, year: 2018 , month : 11)
+//                .forEach({ (dayEventWraps) in
+//                    print(dayEventWraps)
+//                })
+        }
+        self.eventKitSupport.fetchBillEvent(year: 2018, month: 10) { (eventWraps) in
+            print("++++2018-10==")
+            eventWraps.forEach({ (eventWrap) in
+                print(eventWrap.event.title)
+            })
+        }
+        self.eventKitSupport.fetchBillEvent(year: 2018, month: 11, day: 12, { (eventWraps) in
+            
+            print("+++++2018-11-12+++=====--")
             eventWraps.forEach({ (eventWrap) in
                 print(eventWrap.event.title)
             })
@@ -104,6 +135,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource,UICollect
         super.viewDidLoad()
 
         titleLabel.text = "seq"
+        
 //        titleLabel.attributedText = NSAttributedString.init(string: "Seq",
 //                                                            attributes: [.foregroundColor:UIColor.clear,
 //                                                                         .font:UIFont.systemFont(ofSize: 50),
@@ -112,13 +144,18 @@ class HomeViewController: UIViewController, UICollectionViewDataSource,UICollect
         self.titleLabel.textColor = .orange
         view.addSubview(titleLabel)
         view.addSubview(self.monthView)
-        
+        view.addSubview(self.addButton)
         view.addSubview(self.animatioinButton)
         
+        addButton.addTarget(self,
+                            action: #selector(HomeViewController.onAddItemAction),
+                            for: .touchUpInside)
+
+
         self.monthView.snp.makeConstraints { (make) in
             make.left.right.equalToSuperview()
-            make.top.equalToSuperview()
-            make.height.equalTo(500)
+            make.top.equalTo(topLayoutGuide.snp.bottom).offset(20)
+            make.bottom.equalTo(addButton.snp.top).offset(-30)
         }
         titleLabel.snp.makeConstraints { (make) in
             make.left.right.equalToSuperview()
@@ -129,8 +166,23 @@ class HomeViewController: UIViewController, UICollectionViewDataSource,UICollect
             make.top.equalTo(titleLabel.snp.bottom)
             make.size.equalTo(CGSize.init(width: 150, height: 100))
         }
-        // Do any additional setup after loading the view.
+        addButton.snp.makeConstraints { (make) in
+            make.left.equalTo(20)
+            make.centerX.equalToSuperview()
+            make.height.equalTo(50)
+            make.bottom.equalTo(bottomLayoutGuide.snp.top).offset(-40)
+        }
     }
+    
+    @objc func onAddItemAction() {
+        
+        let month = MonthViewController()
+//        let month = DayViewController()
+        navigationController?.pushViewController(month, animated: true)
+
+        ///TODO:弹出来添加event视图
+    }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 12
     }
@@ -146,7 +198,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource,UICollect
         let eventWrap = BillEventWrap.eventWrap(with: self.eventKitSupport.eventStore,
                                                 money: 42,
                                                 usage: "看电影")
-        self.eventKitSupport.saveBillEvent(eventWrap) { (success) in
+        self.eventKitSupport.addBillEvent(eventWrap) { (success) in
             
         }
     }
