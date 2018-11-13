@@ -53,14 +53,17 @@ class MonthViewController: UIViewController{
     
     private func onLoadCurrentMonthEventWraps() {
         
-        self._loadEventWraps(at: month)
+        self._loadEventWraps(at : self.month)
     }
     
     private func onLoadPreMonthEventWraps() {
         
         month -= 1
         if month != 0 {
-            self._loadEventWraps(at: month)
+            print("加载前一个月，加载指示器显示 上一个月")
+            self._loadEventWraps(at : month)
+        }else{
+            print("今年的已经查询完毕，加载指示器隐藏")
         }
     }
     
@@ -68,21 +71,24 @@ class MonthViewController: UIViewController{
         
         month += 1
         if month <= 12 {
-            self._loadEventWraps(at: month)
+            print("加载下一个月，加载指示器显示 下一个月")
+            self._loadEventWraps(at : month)
+        }else{
+            print("今年的已经查询完毕，加载指示器隐藏")
         }
     }
     
     private func _loadEventWraps(at month : Int) {
         
-        eventKitSupport.fetchBillEvent(year: year, month: month) { (eventWraps) in
-            eventWraps.forEach({ (eventWrap) in
-                print(eventWrap.event.title)
-            })
-            let monthEventWrap = self.eventKitSupport.arrangeBillEventForMonth(eventWraps, year: self.year, month: month)
-            self.monthView.totalLabel.text = "￥\(monthEventWrap.totalBill)"
-            self.contentView.updateData(with: monthEventWrap.dayEventWraps)
+        eventKitSupport.complementedBillEventForMonth(year: self.year, month: month) { (merge) in
+            
+            let current = merge.currentMonthEventWrap
+            
+            self.monthView.totalLabel.text = "￥\(current.totalBill)"
+            self.contentView.updateData(with: merge.merge)
         }
     }
+    
     @objc func onDirectionGestureAction(_ gesture : DirectionGestureRecognizer) {
         
         if (gesture.state == .changed) {

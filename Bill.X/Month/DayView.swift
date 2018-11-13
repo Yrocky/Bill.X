@@ -24,10 +24,9 @@ class DayView: UICollectionViewCell ,BillRoundShadowViewEnable{
     
     var status : DayViewStatus{
         didSet{
-            self.moneyLabel.isHidden = false
+            self.moneyLabel.isHidden = Int(self.money) == 0
             switch status {
             case .empty:
-                self.moneyLabel.isHidden = true
                 self.contentView.backgroundColor = .white
                 self.dayLabel.attributedText = NSAttributedString.fillStyle(string: self.day, .billGray, 14)
             case .invalid:
@@ -91,10 +90,25 @@ class DayView: UICollectionViewCell ,BillRoundShadowViewEnable{
         self.day = "\(dayEventWrap.day)"
         self.money = "\(dayEventWrap.totalBill)"
         
-        if dayEventWrap.totalBill == 0 {
-            self.status = .empty
-        }else{
-            self.status = .hasValue
+        let isToday = Calendar.current.isToday(compareWith: dayEventWrap.year,
+                                               month: dayEventWrap.month,
+                                               day: dayEventWrap.day)
+        let isCurrentMonth = Calendar.current.isCurrentMonth(compareWith: dayEventWrap.year,
+                                                             month: dayEventWrap.month,
+                                                             day: dayEventWrap.day)
+        if isToday {
+            self.status = .today
+        }
+        else if isCurrentMonth {
+            
+            if dayEventWrap.totalBill == 0 {
+                self.status = .empty
+            }else{
+                self.status = .hasValue
+            }
+        }
+        else{
+            self.status = .invalid
         }
     }
     

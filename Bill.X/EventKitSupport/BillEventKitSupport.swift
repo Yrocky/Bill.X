@@ -14,6 +14,9 @@ class BillEventKitSupport: NSObject {
     typealias EventKitSupportCompletionBlock = (_ scuess: Bool) -> Void
     typealias EventKitSupportFetchResultBlock = (_ events: [BillEventWrap]) -> Void
     
+    ///<用户获取月份下的event回调
+    typealias EventKitSupportFetchMergeResultBlock = (_ merge: BillMergeMonthEventWrap) -> Void
+    
     ///<单例模式
     static let support = BillEventKitSupport()
     
@@ -190,6 +193,18 @@ extension BillEventKitSupport {
         }
     }
     
+    ///<查询 指定日期之间 的event
+    public func fetchBillEvent(from start : Date , to last : Date , _ result : @escaping EventKitSupportFetchResultBlock) {
+        
+        guard accessGrand else {
+            return
+        }
+        
+        self.asyncFetchBillEventAt(range: (start,last)) { (eventWraps) in
+            result(eventWraps)
+        }
+    }
+    
     ///<删除一个event
     public func removeBillEvent(_ eventWrap : BillEventWrap , _ completion : EventKitSupportCompletionBlock) {
         
@@ -269,32 +284,6 @@ extension BillEventKitSupport {
         return monthEventWraps
     }
     
-//    ///<将某一年的event按照月份进行分类
-//    func arrangeBillEventForYear(_ eventWraps : [BillEventWrap]) -> BillYearEventWrap {
-//
-//        guard eventWraps.count != 0 else {
-//            return BillYearEventWrap()
-//        }
-//        var yearEventWrap = BillYearEventWrap()
-//
-//        for index in 1...12 {
-//
-//            var monthEventWrap = BillMonthEventWrap()
-//
-//            eventWraps.forEach { (eventWrap) in
-//                if eventWrap.date.month == index {
-//                    var dayEventWrap = BillDayEventWrap()
-//
-//                    monthEventWrap.dayEventWraps.append(dayEventWrap)
-//                }
-//            }
-//            yearEventWrap.monthEventWraps.append(monthEventWrap)
-////            monthEventWraps.append(oneMonthEventWraps)
-//        }
-//        return yearEventWrap
-//    }
-
-    
     ///<将某一月的event按照天进行分类
     func arrangeBillEventForMonth(_ eventWraps : [BillEventWrap] , year : Int , month : Int) -> BillMonthEventWrap {
         
@@ -315,9 +304,93 @@ extension BillEventKitSupport {
             dayEventWrap.year = year
             dayEventWrap.month = month
             dayEventWrap.day = index
+            
             monthEventWrap.dayEventWraps.append(dayEventWrap)
         }
         
         return monthEventWrap
+    }
+}
+
+extension BillEventKitSupport {
+    
+    func complementedBillEventForMonth(year : Int , month : Int , _ result : @escaping EventKitSupportFetchMergeResultBlock) {
+        
+        let calendar = Calendar.current
+        
+        let (firstDate,_) = calendar.startAndLastDay(of: year, and: month)
+        let firstDayWeek = calendar.weekDay(for: firstDate)///<当前月份第一天是周几
+        
+        let currentMonthDayCount = calendar.totalDaysOfMonth(for: firstDate)///<当前月有多少天
+
+        let preYear = month == 1 ? year - 1 : year
+        let preMonth = month == 1 ? 12 : month - 1
+        let preMonthDayCount = calendar.totalDaysOfMonth(for: calendar.dateWith(year: preYear, month: preMonth, day: 1))///<前一月有多少天
+        let needPreMonthEventWrapCount = firstDayWeek == 0 ? 7 : firstDayWeek// 4
+        
+        let nextYear = month == 12 ? year + 1 : year
+        let nextMonth = month == 12 ? 1 : month + 1
+        let needNextMonthEventWrapCount = 42 - needPreMonthEventWrapCount - currentMonthDayCount
+        
+        let startDate = calendar.dateWith(year: preYear, month: preMonth, day: preMonthDayCount - needPreMonthEventWrapCount + 1)
+        let endDate = calendar.dateWith(year: nextYear, month: nextMonth, day: needNextMonthEventWrapCount + 1)
+        
+        self.fetchBillEvent(from: startDate, to: endDate) { (eventWraps) in
+            
+            var dayEventWraps = [BillDayEventWrap]()
+            
+            // 前一个月
+            for index in (preMonthDayCount - needPreMonthEventWrapCount + 1) ... preMonthDayCount {
+                
+                var dayEventWrap = BillDayEventWrap(with: eventWraps.filter { (eventWrap) -> Bool in
+                    return eventWrap.date.day == index &&
+                        eventWrap.date.month == preMonth &&
+                    eventWrap.date.year == preYear
+                })
+                dayEventWrap.year = preYear
+                dayEventWrap.month = preMonth
+                dayEventWrap.day = index
+                
+                dayEventWraps.append(dayEventWrap)
+            }
+            
+            // 当前月
+            var currentMonthEventWrap = BillMonthEventWrap()
+            currentMonthEventWrap.year = year
+            currentMonthEventWrap.month = month
+            
+            for index in 1...currentMonthDayCount {
+                
+                var dayEventWrap = BillDayEventWrap(with: eventWraps.filter { (eventWrap) -> Bool in
+                    return eventWrap.date.day == index && eventWrap.date.month == month
+                })
+                dayEventWrap.year = year
+                dayEventWrap.month = month
+                dayEventWrap.day = index
+                
+                currentMonthEventWrap.dayEventWraps.append(dayEventWrap)
+                
+                dayEventWraps.append(dayEventWrap)
+            }
+            
+            // 下一个月
+            for index in 1 ... needNextMonthEventWrapCount {
+                
+                var dayEventWrap = BillDayEventWrap(with: eventWraps.filter { (eventWrap) -> Bool in
+                    return eventWrap.date.day == index &&
+                        eventWrap.date.month == nextMonth &&
+                        eventWrap.date.year == nextYear
+                })
+                dayEventWrap.year = nextYear
+                dayEventWrap.month = nextMonth
+                dayEventWrap.day = index
+                
+                dayEventWraps.append(dayEventWrap)
+            }
+            
+            result(BillMergeMonthEventWrap.init(with: currentMonthEventWrap,
+                                                merge: dayEventWraps))
+        }
+
     }
 }

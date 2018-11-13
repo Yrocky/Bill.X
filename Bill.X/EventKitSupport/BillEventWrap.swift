@@ -57,6 +57,18 @@ class BillEventWrap: NSObject {
     public func calendar(_ calendar : EKCalendar) {
         event.calendar = calendar
     }
+    
+    override var debugDescription: String{
+        get{
+            return self.description
+        }
+    }
+    
+    override var description: String{
+        get{
+            return "\(date) \(money) :" + event.title
+        }
+    }
 }
 
 struct BillDayEventWrap {
@@ -92,7 +104,6 @@ struct BillMonthEventWrap {
     
     var year : Int = 0
     var month : Int = 0
-    
     var dayEventWraps : [BillDayEventWrap] = []
     
     var totalBill : Int {
@@ -103,6 +114,18 @@ struct BillMonthEventWrap {
             }
             return sum
         }
+    }
+}
+
+struct BillMergeMonthEventWrap {
+    
+    var currentMonthEventWrap : BillMonthEventWrap
+    
+    var merge : [BillDayEventWrap]
+    
+    init(with currentMonthEventWrap : BillMonthEventWrap , merge : [BillDayEventWrap]) {
+        self.currentMonthEventWrap = currentMonthEventWrap
+        self.merge = merge
     }
 }
 
