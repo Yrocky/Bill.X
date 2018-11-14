@@ -10,17 +10,32 @@ import UIKit
 
 class MonthViewController: UIViewController{
 
-    private let monthView = MonthView()
-    private let weekView = WeekView()
-    private let contentView = MonthContentView()
+    private let monthView = MonthHeaderView()
+    private let weekView = WeekHeaderView()
+    private var contentView = MonthContentView()
     private let eventKitSupport = BillEventKitSupport.support
     
     var year : Int = 2018
     var month : Int = 11
+    var dayEventWraps : [BillDayEventWrap]
+    
+    public init(with year : Int , month : Int) {
+        
+        self.year = year
+        self.month = month
+        self.dayEventWraps = [BillDayEventWrap]()
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        contentView.delegate = self
+        
         view.backgroundColor = .white
         view.addSubview(monthView)
         view.addSubview(weekView)
@@ -84,8 +99,12 @@ class MonthViewController: UIViewController{
             
             let current = merge.currentMonthEventWrap
             
+            self.dayEventWraps = merge.merge
+            
             self.monthView.totalLabel.text = "￥\(current.totalBill)"
-            self.contentView.updateData(with: merge.merge)
+            self.contentView.updateData(with: self.dayEventWraps,
+                                        at: self.year,
+                                        month: month)
         }
     }
     
@@ -132,9 +151,9 @@ extension MonthViewController : UIGestureRecognizerDelegate {
             return true
         }
         
-        let dayViews : [DayView] = contentView.contentView.visibleCells as! [DayView]
+        let dayCells : [DayCCell] = contentView.contentView.visibleCells as! [DayCCell]
         
-        let canNotGestureRects = dayViews.filter { (cell) -> Bool in
+        let canNotGestureRects = dayCells.filter { (cell) -> Bool in
             return cell.status != .invalid
             }.map { (cell) -> CGRect in
                 return CGRect.init(x: cell.frame.minX,
@@ -154,5 +173,14 @@ extension MonthViewController : UIGestureRecognizerDelegate {
         }
         
         return true
+    }
+}
+
+extension MonthViewController : MonthContentViewDelegate{
+    
+    func monentContentViewDidSelected(at index: Int) {
+        
+        let day = DayViewController.init(with: self.dayEventWraps[index])
+        navigationController?.pushViewController(day, animated: true)
     }
 }

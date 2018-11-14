@@ -32,7 +32,7 @@ extension BillRoundShadowViewEnable{
         
         view.layer.cornerRadius = CGFloat(cornerRadius)
         view.layer.shadowColor = UIColor.init(red: 111.0/255.0, green: 115.0/255.0, blue: 118.0/255.0, alpha: 1).cgColor
-        view.layer.shadowOffset = CGSize.init(width: 2, height: 2)
+        view.layer.shadowOffset = CGSize.init(width: 2, height: 0)
         view.layer.shadowRadius = 3
         view.layer.shadowOpacity = 0.2
     }

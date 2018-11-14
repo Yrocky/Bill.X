@@ -8,7 +8,7 @@
 
 import UIKit
 
-class WeekView: UIStackView {
+class WeekHeaderView: UIStackView {
 
     private class _WeekItemView: UILabel {
         

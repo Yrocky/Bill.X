@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MonthView: UIView {
+class MonthHeaderView: UIView {
 
     let monthLabel = UILabel()
     lazy var totalLabel : UILabel = {

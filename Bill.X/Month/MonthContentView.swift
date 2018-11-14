@@ -8,11 +8,21 @@
 
 import UIKit
 
+@objc
+public protocol MonthContentViewDelegate : class{///<现在的协议需要声明是class-only的
+    
+    @objc optional func monentContentViewDidSelected(at index : Int) -> Void
+}
+
 class MonthContentView : UIView, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
 
     private(set) var contentView : UICollectionView
+    private var year = 0
+    private var month = 0
     
-    private var dayEventWraps : [BillDayEventWrap] = []
+    public var dayEventWraps : [BillDayEventWrap] = []
+    
+    public weak var delegate : MonthContentViewDelegate?
     
     override init(frame: CGRect) {
         
@@ -27,7 +37,7 @@ class MonthContentView : UIView, UICollectionViewDataSource, UICollectionViewDel
         backgroundColor = .clear
         contentView.delegate = self
         contentView.dataSource = self
-        contentView.register(DayView.self, forCellWithReuseIdentifier: "DayView")
+        contentView.register(DayCCell.self, forCellWithReuseIdentifier: "DayCCell")
         contentView.backgroundColor = .white
         addSubview(contentView)
         contentView.snp.makeConstraints { (make) in
@@ -38,8 +48,11 @@ class MonthContentView : UIView, UICollectionViewDataSource, UICollectionViewDel
     required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-  
-    public func updateData(with dayEventWraps : [BillDayEventWrap]) {
+
+    public func updateData(with dayEventWraps : [BillDayEventWrap] , at year : Int , month : Int) {
+        
+        self.year = year
+        self.month = month
         
         self.dayEventWraps.removeAll()
         self.dayEventWraps.append(contentsOf: dayEventWraps)
@@ -52,9 +65,11 @@ class MonthContentView : UIView, UICollectionViewDataSource, UICollectionViewDel
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DayView", for: indexPath) as! DayView
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DayCCell", for: indexPath) as! DayCCell
         
-        cell.update(with: dayEventWraps[indexPath.row])
+        cell.update(with: dayEventWraps[indexPath.row],
+                    at: self.year,
+                    month: self.month)
         
         return cell
     }
@@ -64,5 +79,11 @@ class MonthContentView : UIView, UICollectionViewDataSource, UICollectionViewDel
         let width = (collectionView.frame.width - 8 * 7.0) / 7.0
         let height = (collectionView.frame.height - 6 * 7.0 - 20) / 6.0
         return CGSize.init(width: width, height: height)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if let delegate = delegate {
+            delegate.monentContentViewDidSelected!(at: indexPath.item)
+        }
     }
 }

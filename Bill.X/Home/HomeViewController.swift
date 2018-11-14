@@ -176,10 +176,9 @@ class HomeViewController: UIViewController, UICollectionViewDataSource,UICollect
     
     @objc func onAddItemAction() {
         
-        let month = MonthViewController()
-//        let month = DayViewController()
+        let month = MonthViewController.init(with: 2018, month: 11)
         navigationController?.pushViewController(month, animated: true)
-
+        
         ///TODO:弹出来添加event视图
     }
     

@@ -13,17 +13,18 @@ class CostItemCCell: UICollectionViewCell, BillRoundShadowViewEnable {
     private let _contentView = UIView()
     private let costLabel = EdgeInsetsLabel()
     private let usedLabel = UILabel()
-    lazy private var deleteButton : UIButton = {
-        let button = UIButton.init(type: .custom)
-        button.setBackgroundImageWith(.red, for: .normal)
-        return button
-    }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        self.contentView.backgroundColor = .orange
-        
+        self.contentView.backgroundColor = .clear
+//        
+//        let longPressGesture = UILongPressGestureRecognizer.init(target: self,
+//                                                             action: #selector(CostItemCCell.onLongPressAction))
+//        longPressGesture.delegate = self as? UIGestureRecognizerDelegate
+//        longPressGesture.minimumPressDuration = 0.75
+//        self.contentView.addGestureRecognizer(longPressGesture)
+//        
         _contentView.backgroundColor = .white
         addRoundShadowFor(_contentView, cornerRadius: 16.0)
         
@@ -32,7 +33,7 @@ class CostItemCCell: UICollectionViewCell, BillRoundShadowViewEnable {
         self.costLabel.textColor = .white
         self.costLabel.edgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
         self.costLabel.layer.cornerRadius = 12.0
-        self.costLabel.text = "5"
+        self.costLabel.text = "0"
         self.costLabel.font = UIFont.billDINBold(14)
         self.costLabel.backgroundColor = .billBlue
         self.costLabel.layer.masksToBounds = true
@@ -40,16 +41,14 @@ class CostItemCCell: UICollectionViewCell, BillRoundShadowViewEnable {
         _contentView.addSubview(self.costLabel)
         
         self.usedLabel.textColor = .billBlack
-        self.usedLabel.text = "早餐"
+        self.usedLabel.text = ""
         self.usedLabel.font = UIFont.billPingFang(14, weight: .light)
         self.usedLabel.textAlignment = .right
         _contentView.addSubview(self.usedLabel)
         
-        self.contentView.addSubview(self.deleteButton)
-        
         _contentView.snp.makeConstraints { (make) in
-            make.left.equalTo(10)
-            make.top.equalTo(10)
+            make.left.equalTo(0)
+            make.top.equalTo(0)
             make.right.equalToSuperview()
             make.bottom.equalToSuperview()
         }
@@ -60,8 +59,7 @@ class CostItemCCell: UICollectionViewCell, BillRoundShadowViewEnable {
             make.bottom.equalTo(-4)
             make.top.equalTo(4)
             make.height.greaterThanOrEqualTo(24.0)
-            make.width.greaterThanOrEqualTo(24.0)
-            make.left.equalTo(self.usedLabel.snp.right).offset(10)
+            make.width.greaterThanOrEqualTo(24.0).priority(.high)
         }
         
         self.usedLabel.snp.makeConstraints { (make) in
@@ -69,16 +67,16 @@ class CostItemCCell: UICollectionViewCell, BillRoundShadowViewEnable {
             make.left.equalTo(10)
             make.right.equalTo(self.costLabel.snp.left).offset(-10)
         }
-        
-        self.deleteButton.snp.makeConstraints { (make) in
-            make.size.equalTo(CGSize.init(width: 20, height: 20))
-            make.centerY.equalTo(_contentView.snp.top).offset(4)
-            make.centerX.equalTo(_contentView.snp.leading).offset(4)
-        }
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    public func update(with eventWrap : BillEventWrap) {
+        
+        costLabel.text = "\(eventWrap.money)"
+        usedLabel.text = eventWrap.usage
     }
     
     override var isHighlighted: Bool{
@@ -87,4 +85,17 @@ class CostItemCCell: UICollectionViewCell, BillRoundShadowViewEnable {
         }
     }
     
+    
+    @objc func onLongPressAction() {
+        print("开始移动")
+    }
+}
+
+
+extension DayCCell : UIGestureRecognizerDelegate {
+    
+    override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        
+        return true
+    }
 }

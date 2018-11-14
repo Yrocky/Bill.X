@@ -15,7 +15,7 @@ enum DayViewStatus {
     case hasValue
 }
 
-class DayView: UICollectionViewCell ,BillRoundShadowViewEnable{
+class DayCCell: UICollectionViewCell ,BillRoundShadowViewEnable{
 
     var index : (Int,Int) = (0,0)
     
@@ -85,17 +85,17 @@ class DayView: UICollectionViewCell ,BillRoundShadowViewEnable{
         fatalError("init(coder:) has not been implemented")
     }
     
-    public func update(with dayEventWrap : BillDayEventWrap) {
-    
+    public func update(with dayEventWrap : BillDayEventWrap ,at year: Int , month : Int) {
+        
         self.day = "\(dayEventWrap.day)"
         self.money = "\(dayEventWrap.totalBill)"
         
         let isToday = Calendar.current.isToday(compareWith: dayEventWrap.year,
                                                month: dayEventWrap.month,
                                                day: dayEventWrap.day)
-        let isCurrentMonth = Calendar.current.isCurrentMonth(compareWith: dayEventWrap.year,
-                                                             month: dayEventWrap.month,
-                                                             day: dayEventWrap.day)
+        
+        let isCurrentMonth = dayEventWrap.year == year && dayEventWrap.month == month
+        
         if isToday {
             self.status = .today
         }

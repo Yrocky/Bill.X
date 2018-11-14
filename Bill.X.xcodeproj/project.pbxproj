@@ -13,7 +13,8 @@
 		D7963ED32198418200B44397 /* BillEventWrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7963ED22198418200B44397 /* BillEventWrap.swift */; };
 		D7963ED5219846CD00B44397 /* BillEventKitSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7963ED4219846CD00B44397 /* BillEventKitSupport.swift */; };
 		D7963ED821987E6400B44397 /* BillCalendarSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7963ED721987E6400B44397 /* BillCalendarSupport.swift */; };
-		D7C32E942196D0C90047A858 /* MonthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C32E932196D0C90047A858 /* MonthView.swift */; };
+		D7963EDC219C660900B44397 /* DayWasteContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7963EDB219C660900B44397 /* DayWasteContainerView.swift */; };
+		D7C32E942196D0C90047A858 /* MonthHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C32E932196D0C90047A858 /* MonthHeaderView.swift */; };
 		D7C32E962196E28E0047A858 /* DirectionGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C32E952196E28E0047A858 /* DirectionGestureRecognizer.swift */; };
 		D7C32E982196FC490047A858 /* EdgeInsetsLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C32E972196FC490047A858 /* EdgeInsetsLabel.swift */; };
 		D7C32E9A219701EA0047A858 /* AlignmentLeftLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C32E99219701EA0047A858 /* AlignmentLeftLayout.swift */; };
@@ -34,8 +35,8 @@
 		F72FD59321958904001B5F5F /* MonthCCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72FD59221958904001B5F5F /* MonthCCell.swift */; };
 		F72FD595219589A4001B5F5F /* RoundShadowEncodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72FD594219589A4001B5F5F /* RoundShadowEncodable.swift */; };
 		F72FD5972195972D001B5F5F /* EditBillInputAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72FD5962195972D001B5F5F /* EditBillInputAccessoryView.swift */; };
-		F788D2952191B065003694DF /* DayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F788D2942191B065003694DF /* DayView.swift */; };
-		F788D2972191B118003694DF /* WeekView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F788D2962191B118003694DF /* WeekView.swift */; };
+		F788D2952191B065003694DF /* DayCCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F788D2942191B065003694DF /* DayCCell.swift */; };
+		F788D2972191B118003694DF /* WeekHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F788D2962191B118003694DF /* WeekHeaderView.swift */; };
 		FCB760C4BF8E151121B4B787 /* Pods_Bill_XTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7AA354E348160147EED103E4 /* Pods_Bill_XTests.framework */; };
 /* End PBXBuildFile section */
 
@@ -68,7 +69,8 @@
 		D7963ED22198418200B44397 /* BillEventWrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillEventWrap.swift; sourceTree = "<group>"; };
 		D7963ED4219846CD00B44397 /* BillEventKitSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillEventKitSupport.swift; sourceTree = "<group>"; };
 		D7963ED721987E6400B44397 /* BillCalendarSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillCalendarSupport.swift; sourceTree = "<group>"; };
-		D7C32E932196D0C90047A858 /* MonthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthView.swift; sourceTree = "<group>"; };
+		D7963EDB219C660900B44397 /* DayWasteContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayWasteContainerView.swift; sourceTree = "<group>"; };
+		D7C32E932196D0C90047A858 /* MonthHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthHeaderView.swift; sourceTree = "<group>"; };
 		D7C32E952196E28E0047A858 /* DirectionGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectionGestureRecognizer.swift; sourceTree = "<group>"; };
 		D7C32E972196FC490047A858 /* EdgeInsetsLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EdgeInsetsLabel.swift; sourceTree = "<group>"; };
 		D7C32E99219701EA0047A858 /* AlignmentLeftLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlignmentLeftLayout.swift; sourceTree = "<group>"; };
@@ -96,8 +98,8 @@
 		F72FD59221958904001B5F5F /* MonthCCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthCCell.swift; sourceTree = "<group>"; };
 		F72FD594219589A4001B5F5F /* RoundShadowEncodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundShadowEncodable.swift; sourceTree = "<group>"; };
 		F72FD5962195972D001B5F5F /* EditBillInputAccessoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditBillInputAccessoryView.swift; sourceTree = "<group>"; };
-		F788D2942191B065003694DF /* DayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayView.swift; sourceTree = "<group>"; };
-		F788D2962191B118003694DF /* WeekView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekView.swift; sourceTree = "<group>"; };
+		F788D2942191B065003694DF /* DayCCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayCCell.swift; sourceTree = "<group>"; };
+		F788D2962191B118003694DF /* WeekHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekHeaderView.swift; sourceTree = "<group>"; };
 		F83B5C0C29DBFC63E386E0EA /* Pods-Bill.XUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bill.XUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Bill.XUITests/Pods-Bill.XUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		FDB7DFFB1D66687B697162CA /* Pods-Bill.X.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bill.X.release.xcconfig"; path = "Pods/Target Support Files/Pods-Bill.X/Pods-Bill.X.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -220,10 +222,10 @@
 			isa = PBXGroup;
 			children = (
 				F72BBAC2219166A10067EB09 /* MonthViewController.swift */,
-				D7C32E932196D0C90047A858 /* MonthView.swift */,
-				F788D2962191B118003694DF /* WeekView.swift */,
+				D7C32E932196D0C90047A858 /* MonthHeaderView.swift */,
+				F788D2962191B118003694DF /* WeekHeaderView.swift */,
 				F72BBAC4219166E60067EB09 /* MonthContentView.swift */,
-				F788D2942191B065003694DF /* DayView.swift */,
+				F788D2942191B065003694DF /* DayCCell.swift */,
 			);
 			path = Month;
 			sourceTree = "<group>";
@@ -255,6 +257,7 @@
 				F72FD58821958747001B5F5F /* DayViewController.swift */,
 				F72FD58B219587A7001B5F5F /* CostItemCCell.swift */,
 				D7C32E99219701EA0047A858 /* AlignmentLeftLayout.swift */,
+				D7963EDB219C660900B44397 /* DayWasteContainerView.swift */,
 			);
 			path = Day;
 			sourceTree = "<group>";
@@ -491,11 +494,11 @@
 				F72FD59321958904001B5F5F /* MonthCCell.swift in Sources */,
 				F72FD58C219587A7001B5F5F /* CostItemCCell.swift in Sources */,
 				D7963ED32198418200B44397 /* BillEventWrap.swift in Sources */,
-				F788D2972191B118003694DF /* WeekView.swift in Sources */,
+				F788D2972191B118003694DF /* WeekHeaderView.swift in Sources */,
 				F72BBAC8219167100067EB09 /* HomeViewController.swift in Sources */,
 				F72FD591219587F9001B5F5F /* EditBillTextField.swift in Sources */,
 				D7C32E962196E28E0047A858 /* DirectionGestureRecognizer.swift in Sources */,
-				F788D2952191B065003694DF /* DayView.swift in Sources */,
+				F788D2952191B065003694DF /* DayCCell.swift in Sources */,
 				F72FD5972195972D001B5F5F /* EditBillInputAccessoryView.swift in Sources */,
 				D7C32E9A219701EA0047A858 /* AlignmentLeftLayout.swift in Sources */,
 				F72BBAC5219166E60067EB09 /* MonthContentView.swift in Sources */,
@@ -503,10 +506,11 @@
 				D7C32E982196FC490047A858 /* EdgeInsetsLabel.swift in Sources */,
 				D7963ED5219846CD00B44397 /* BillEventKitSupport.swift in Sources */,
 				F72BBA94219166560067EB09 /* AppDelegate.swift in Sources */,
+				D7963EDC219C660900B44397 /* DayWasteContainerView.swift in Sources */,
 				F72FD58921958747001B5F5F /* DayViewController.swift in Sources */,
 				F72BBAC3219166A10067EB09 /* MonthViewController.swift in Sources */,
 				D7963ED821987E6400B44397 /* BillCalendarSupport.swift in Sources */,
-				D7C32E942196D0C90047A858 /* MonthView.swift in Sources */,
+				D7C32E942196D0C90047A858 /* MonthHeaderView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
