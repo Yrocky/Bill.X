@@ -18,13 +18,6 @@ class CostItemCCell: UICollectionViewCell, BillRoundShadowViewEnable {
         super.init(frame: frame)
         
         self.contentView.backgroundColor = .clear
-//        
-//        let longPressGesture = UILongPressGestureRecognizer.init(target: self,
-//                                                             action: #selector(CostItemCCell.onLongPressAction))
-//        longPressGesture.delegate = self as? UIGestureRecognizerDelegate
-//        longPressGesture.minimumPressDuration = 0.75
-//        self.contentView.addGestureRecognizer(longPressGesture)
-//        
         _contentView.backgroundColor = .white
         addRoundShadowFor(_contentView, cornerRadius: 16.0)
         

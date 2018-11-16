@@ -135,4 +135,24 @@ extension NSAttributedString{
     }
 }
 
+extension UIImage {
+    public class func imageWith(_ color : UIColor) -> UIImage {
+        return self.imageWith(color, with: CGRect.init(origin: .zero, size: CGSize.init(width: 1, height: 1)))
+    }
+    
+    public class func imageWith(_ color : UIColor , with frame : CGRect) -> UIImage {
+        UIGraphicsBeginImageContext(frame.size)
+        let cxt = UIGraphicsGetCurrentContext()
+        cxt?.setFillColor(color.cgColor)
+        cxt?.fill(frame)
+        let img = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return img!
+    }
+}
 
+extension UIButton : BillRoundShadowViewEnable{
+    public func setBackgroundImageWith(_ color : UIColor, for state : UIControl.State){
+        self.setBackgroundImage(UIImage.imageWith(color), for: state)
+    }
+}

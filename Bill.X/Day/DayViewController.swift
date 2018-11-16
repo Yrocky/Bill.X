@@ -11,8 +11,49 @@ import CoreGraphics
 
 class DayViewController: UIViewController{
 
+    enum HandleCellStatus {
+        case none
+        case struggle
+        case leave
+        case remove
+    }
+    
+    struct DayHandleCellWrap {
+    
+        var cell : CostItemCCell?
+        var eventWrap : BillEventWrap?
+        var cellStatus = HandleCellStatus.none
+        var frame = CGRect.zero
+        var center = CGPoint.zero
+        var indexPath = IndexPath.init()
+        
+        var struggleOffset : CGFloat {
+            get {
+                return self.frame.height * 1
+            }
+        }
+        
+        mutating func update(frame : CGRect , center : CGPoint) {
+            self.frame = frame
+            self.center = center
+        }
+        
+        mutating func reset() {
+            self.frame = .zero
+            self.center = .zero
+            self.cell = nil
+            self.cellStatus = .none
+            self.indexPath = IndexPath.init()
+            self.eventWrap = nil
+            
+        }
+    }
+    
+    var handleWrap : DayHandleCellWrap?
+
     let timeLabel = UILabel()
     let moneyLabel = UILabel()
+    var snapshot : UIView?
     let wasteView = DayWasteContainerView()
     var addButton = AddBillEventButton()
     lazy var billCollectionView : UICollectionView = {
@@ -34,17 +75,15 @@ class DayViewController: UIViewController{
         return c
     }()
 
-    var longPressGesture : UILongPressGestureRecognizer?
+    var longPressGesture : UIPanGestureRecognizer?
     
     var dayEventWrap : BillDayEventWrap?
     
     public init(with dayEventWrap : BillDayEventWrap ) {
         self.dayEventWrap = dayEventWrap
         super.init(nibName: nil, bundle: nil)
-        longPressGesture = UILongPressGestureRecognizer.init(target: self,
-                                                             action: #selector(DayViewController.onLongPressAction))
-        longPressGesture!.delegate = self as UIGestureRecognizerDelegate
-        self.longPressGesture!.minimumPressDuration = 0.75
+        longPressGesture = UIPanGestureRecognizer.init(target: self,
+                                                       action: #selector(DayViewController.onLongPressAction(_:)))
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -54,13 +93,13 @@ class DayViewController: UIViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.addGestureRecognizer(self.longPressGesture!)
         view.backgroundColor = .white
         view.addSubview(self.timeLabel)
         view.addSubview(self.moneyLabel)
         view.addSubview(self.wasteView)
         view.addSubview(self.billCollectionView)
         view.addSubview(self.addButton)
+        view.addGestureRecognizer(self.longPressGesture!)
         
         timeLabel.textColor = .billBlue
         timeLabel.textAlignment = .left
@@ -111,20 +150,113 @@ class DayViewController: UIViewController{
         
     }
     
-    @objc func onLongPressAction() {
-        print("开始移动")
+    @objc func onLongPressAction(_ gesture: UIPanGestureRecognizer) {
+        
+        if gesture.state == .began {
+            
+            if let indexPath = billCollectionView.indexPathForItem(at: gesture.location(in: self.billCollectionView)) {
+            
+                if let cell = billCollectionView.cellForItem(at: indexPath) {
+                    cell.isHighlighted = false
+                    let handleCellFrame = cell.convert(cell.bounds, to: self.view)
+                    let handleCellCenter = CGPoint.init(x: handleCellFrame.minX + handleCellFrame.width * 0.5,
+                                                        y: handleCellFrame.minY + handleCellFrame.height * 0.5)
+                    self.snapshot = cell.snapshotView(afterScreenUpdates: true)
+                    
+                    self.handleWrap = DayHandleCellWrap()
+                    self.handleWrap?.cell = cell as? CostItemCCell
+                    self.handleWrap?.eventWrap = self.dayEventWrap?.eventWraps[indexPath.item]
+                    self.handleWrap?.update(frame: handleCellFrame, center: handleCellCenter)
+                    self.handleWrap?.indexPath = indexPath
+                    
+                    self.snapshot?.center = handleCellCenter
+                    self.snapshot?.bounds = cell.bounds
+                    self.snapshot?.layer.cornerRadius = handleCellFrame.height * 0.5
+                    self.snapshot?.layer.shadowColor = UIColor.billBlue.cgColor
+                    self.snapshot?.layer.shadowOffset = CGSize.init(width: 2, height: 0)
+                    self.snapshot?.layer.shadowRadius = 6
+                    self.snapshot?.layer.shadowOpacity = 0.4
+                    view.addSubview(self.snapshot!)
+                }
+            }
+        }
+        else if gesture.state == .changed {
+            
+            if let snapshotView = self.snapshot ,let handleCell = handleWrap?.cell{
+                
+                let translation = gesture.translation(in: handleCell)
+                var centerX = self.handleWrap!.center.x + translation.x
+                var centerY = self.handleWrap!.center.y + translation.y
+                
+                if abs(translation.x) < self.handleWrap!.struggleOffset
+                    && abs(translation.y) < self.handleWrap!.struggleOffset
+                    && handleWrap?.cellStatus != .leave {///
+                    
+                    let offsetX = translation.x > 0 ? pow(translation.x, 0.6) : -pow(-translation.x, 0.6)
+                    let offsetY = translation.y > 0 ? pow(translation.y, 0.6) : -pow(-translation.y, 0.6)
+                    centerX = self.handleWrap!.center.x + offsetX
+                    centerY = self.handleWrap!.center.y + offsetY
+                    
+                    handleWrap?.cellStatus = .struggle
+                } else {
+                    if handleWrap?.cellStatus == .struggle {
+                        
+                        billCollectionView.performBatchUpdates({
+                            
+                            let indexPath = self.billCollectionView.indexPath(for: handleCell)
+                            self.dayEventWrap?.eventWraps.remove(at: indexPath!.item)
+                            self.billCollectionView.deleteItems(at: [indexPath!])
+                        }) { (_) in
+                        }
+                    }
+                    handleWrap?.cellStatus = .leave
+                    
+                    let minCenterX = 16 + self.handleWrap!.frame.width * 0.5
+                    let maxCenterX = self.view.frame.width - 16 - self.handleWrap!.frame.width * 0.5
+                    let minCenterY = self.billCollectionView.frame.minY + self.handleWrap!.frame.height * 0.5
+                    let maxCenterY = self.addButton.frame.maxY - self.handleWrap!.frame.height * 0.5
+                    
+                    centerX = min(max(minCenterX, centerX), maxCenterX)
+                    centerY = min(max(minCenterY, centerY), maxCenterY)
+                }
+                
+                snapshotView.center = CGPoint.init(x: centerX,
+                                                   y: centerY)
+            }
+        }
+        else {
+            
+            if self.handleWrap?.cellStatus == .leave {
+                //加回去CollectionView
+                if let eventWrap = self.handleWrap?.eventWrap ,let indexPath = self.handleWrap?.indexPath{
+                    
+                    let animator = UIViewPropertyAnimator.init(duration: 0.28, dampingRatio: 0.55) {
+                        self.snapshot?.center = self.handleWrap!.center
+                        self.snapshot?.layer.shadowColor = UIColor.clear.cgColor
+                    }
+                    animator.startAnimation()
+                    animator.addCompletion { (position) in
+                        if position == .end {
+                            self.snapshot?.removeFromSuperview()
+                            self.snapshot = nil
+                        }
+                    }
+                    billCollectionView.performBatchUpdates({
+                        
+                        self.dayEventWrap?.eventWraps.insert(eventWrap,
+                                                             at: indexPath.item)
+                        self.billCollectionView.insertItems(at: [indexPath])
+                    }, completion: nil)
+                }
+            }
+            else if self.handleWrap?.cellStatus == .remove {
+                ///移除snapshot视图
+                
+            }
+            
+            self.handleWrap?.reset()
+        }
     }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
 
 extension DayViewController : UICollectionViewDataSource,UICollectionViewDelegateFlowLayout {
@@ -148,33 +280,12 @@ extension DayViewController : UICollectionViewDataSource,UICollectionViewDelegat
         }
         return UICollectionViewCell()
     }
-}
-
-extension DayViewController : UIGestureRecognizerDelegate {
-
-    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        
-        return true
-    }
-}
-extension UIImage {
-    public class func imageWith(_ color : UIColor) -> UIImage {
-        return self.imageWith(color, with: CGRect.init(origin: .zero, size: CGSize.init(width: 1, height: 1)))
-    }
     
-    public class func imageWith(_ color : UIColor , with frame : CGRect) -> UIImage {
-        UIGraphicsBeginImageContext(frame.size)
-        let cxt = UIGraphicsGetCurrentContext()
-        cxt?.setFillColor(color.cgColor)
-        cxt?.fill(frame)
-        let img = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        return img!
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if let dayEventWrap = dayEventWrap {
+            let eventWrap = dayEventWrap.eventWraps[indexPath.item]
+            print("edit eventWrap:\(eventWrap)")
+        }
     }
 }
 
-extension UIButton : BillRoundShadowViewEnable{
-    public func setBackgroundImageWith(_ color : UIColor, for state : UIControl.State){
-        self.setBackgroundImage(UIImage.imageWith(color), for: state)
-    }
-}
