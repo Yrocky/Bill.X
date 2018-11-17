@@ -158,10 +158,10 @@ class DayViewController: UIViewController{
             
                 if let cell = billCollectionView.cellForItem(at: indexPath) {
                     cell.isHighlighted = false
+                    
                     let handleCellFrame = cell.convert(cell.bounds, to: self.view)
                     let handleCellCenter = CGPoint.init(x: handleCellFrame.minX + handleCellFrame.width * 0.5,
                                                         y: handleCellFrame.minY + handleCellFrame.height * 0.5)
-                    self.snapshot = cell.snapshotView(afterScreenUpdates: true)
                     
                     self.handleWrap = DayHandleCellWrap()
                     self.handleWrap?.cell = cell as? CostItemCCell
@@ -169,6 +169,7 @@ class DayViewController: UIViewController{
                     self.handleWrap?.update(frame: handleCellFrame, center: handleCellCenter)
                     self.handleWrap?.indexPath = indexPath
                     
+                    self.snapshot = cell.snapshotView(afterScreenUpdates: true)
                     self.snapshot?.center = handleCellCenter
                     self.snapshot?.bounds = cell.bounds
                     self.snapshot?.layer.cornerRadius = handleCellFrame.height * 0.5
@@ -177,6 +178,8 @@ class DayViewController: UIViewController{
                     self.snapshot?.layer.shadowRadius = 6
                     self.snapshot?.layer.shadowOpacity = 0.4
                     view.addSubview(self.snapshot!)
+                    
+                    cell.isHidden = true
                 }
             }
         }
@@ -226,11 +229,30 @@ class DayViewController: UIViewController{
         }
         else {
             
-            if self.handleWrap?.cellStatus == .leave {
+            if self.handleWrap?.cellStatus == .struggle {
+                self.handleWrap?.cell?.isHidden = false
+                if let snapshot = self.snapshot {
+                    
+                    let animator = UIViewPropertyAnimator.init(duration: 0.28, dampingRatio: 0.55) {
+                        snapshot.center = self.handleWrap!.center
+                        snapshot.layer.shadowColor = UIColor.clear.cgColor
+                        self.handleWrap?.cell?.isHidden = false
+                    }
+                    animator.startAnimation()
+                    animator.addCompletion { (position) in
+                        if position == .end {
+                            snapshot.removeFromSuperview()
+                            self.snapshot = nil
+                        }
+                    }
+                }
+            }
+            else if self.handleWrap?.cellStatus == .leave {
                 //加回去CollectionView
                 if let eventWrap = self.handleWrap?.eventWrap ,let indexPath = self.handleWrap?.indexPath{
                     
                     let animator = UIViewPropertyAnimator.init(duration: 0.28, dampingRatio: 0.55) {
+                        self.handleWrap?.cell?.isHidden = false
                         self.snapshot?.center = self.handleWrap!.center
                         self.snapshot?.layer.shadowColor = UIColor.clear.cgColor
                     }
