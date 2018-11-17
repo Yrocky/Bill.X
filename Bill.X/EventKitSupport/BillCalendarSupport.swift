@@ -29,6 +29,12 @@ extension Date {
             return Calendar.current.dateComponents([.year,.month,.day], from: self).year ?? 0
         }
     }
+    
+    public var ymd : String {
+        get {
+            return "\(self.year)-\(self.month)-\(self.day)"
+        }
+    }
 }
 
 extension Calendar{

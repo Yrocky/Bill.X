@@ -13,9 +13,9 @@ class BillEventWrap: NSObject {
 
     private(set) var event : EKEvent
     
-    var notes : String = ""
     var money : Int = 0
     var usage : String = ""
+    var notes : String = ""
     var date : Date = Date()
     
     ///创建一个新的event，使用wrap来表示

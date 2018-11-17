@@ -1,0 +1,197 @@
+//
+//  EditBillView.swift
+//  Bill.X
+//
+//  Created by meme-rocky on 2018/11/9.
+//  Copyright © 2018 meme-rocky. All rights reserved.
+//
+
+import UIKit
+
+class EditBillViewController: UIViewController {
+
+    private(set) var eventWrap : BillEventWrap?
+    private(set) var contentView : UIView?
+    private(set) var editMoney : EditBillTextField?
+    private(set) var editUsage : EditBillTextField?
+    private(set) var editNotes : BillTextViewWrapView?
+    private(set) var editDate : BillHandleButton?
+    private(set) var billInputAccessoryView : EditBillInputAccessoryView?
+    
+    public var canEditDate : Bool = false
+    
+    var keyboardHeight : CGFloat = (UIDevice.current.isIphoneXShaped() ? (216+34) : 216)
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    public init(with eventWrap : BillEventWrap?) {
+        self.eventWrap = eventWrap
+        self.canEditDate = eventWrap == nil
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .white
+        
+        self.contentView = UIView()
+        self.contentView?.backgroundColor = .white
+        self.contentView?.layer.cornerRadius = 10
+        if #available(iOS 11.0, *) {
+            self.contentView?.layer.maskedCorners = [.layerMinXMinYCorner , .layerMaxXMinYCorner]
+        }
+        view.addSubview(self.contentView!)
+        
+        self.editMoney = EditBillTextField.init(frame: .zero)
+        self.editMoney?.placeholder = "Cost amount"
+        self.editMoney?.keyboardType = .numbersAndPunctuation
+        self.editMoney?.font = UIFont.billDINBold(18)
+        self.editMoney?.delegate = self
+        self.contentView!.addSubview(self.editMoney!)
+        
+        self.editUsage = EditBillTextField.init(frame: .zero)
+        self.editUsage?.placeholder = "Cost usage"
+        self.editUsage?.font = UIFont.billPingFang(16, weight: .light)
+        self.editUsage?.delegate = self
+        self.contentView!.addSubview(self.editUsage!)
+        
+        self.editDate = BillHandleButton.init(with: Date().ymd)
+        self.editDate?.addTarget(self,
+                                 action: #selector(EditBillViewController.onEditDateAction), for: .touchUpInside)
+        self.editDate?.titleLabel?.font = UIFont.billDINBold(17)
+        self.editDate?.isEnabled = self.canEditDate
+        self.contentView!.addSubview(self.editDate!)
+        
+        self.editNotes = BillTextViewWrapView.init(frame: .zero)
+        self.editNotes?.textView?.placeholder = "Cost notes"
+        self.editNotes?.textView?.placeholderColor = self.editMoney?.value(forKeyPath: "_placeholderLabel.textColor") as! UIColor
+        self.editNotes?.textView?.delegate = self
+        self.editNotes?.textView?.font = UIFont.billPingFang(16, weight: .light)
+        self.contentView!.addSubview(self.editNotes!)
+
+        self.billInputAccessoryView = EditBillInputAccessoryView.init(frame: .zero)
+        self.billInputAccessoryView?.isHidden = true
+        self.contentView!.addSubview(self.billInputAccessoryView!)
+        
+        if let eventWrap = self.eventWrap {
+            self.editMoney?.text = "\(eventWrap.money)"
+            self.editUsage?.text = eventWrap.usage
+            self.editNotes?.textView?.text = eventWrap.notes
+            self.editDate?.setTitle(eventWrap.date.ymd, for: .normal)
+        }
+        
+        self.contentView!.snp.makeConstraints { (make) in
+            make.left.right.bottom.equalToSuperview()
+        }
+        self.editMoney?.snp.makeConstraints({ (make) in
+            make.left.equalToSuperview().offset(16)
+            make.height.equalTo(44)
+            make.trailing.equalTo(self.contentView!.snp.centerX).offset(-5)
+            make.top.equalToSuperview().offset(20)
+            make.bottom.equalTo(self.editDate!.snp.top).offset(-10)
+        })
+        
+        self.editUsage?.snp.makeConstraints({ (make) in
+            make.right.equalToSuperview().offset(-16)
+            make.height.top.equalTo(self.editMoney!)
+            make.leading.equalTo(self.contentView!.snp.centerX).offset(5)
+        })
+        
+        self.editDate?.snp.makeConstraints({ (make) in
+            make.right.equalToSuperview().offset(-16)
+            make.left.equalTo(self.editMoney!)
+            make.right.equalTo(self.editUsage!)
+            make.height.equalTo(self.editMoney!)
+            make.top.equalTo(self.editMoney!.snp.bottom).offset(10)
+        })
+        self.editNotes?.snp.makeConstraints({ (make) in
+            make.left.equalTo(self.editMoney!)
+            make.right.equalTo(self.editDate!)
+            make.top.equalTo(self.editDate!.snp.bottom).offset(10)
+            make.height.equalTo(60)
+            make.bottom.equalToSuperview().offset(-keyboardHeight)
+        })
+        self.billInputAccessoryView?.snp.makeConstraints({ (make) in
+            make.left.right.equalToSuperview()
+            make.height.equalTo(54)
+            make.top.equalTo(self.editNotes!.snp.bottom).offset(10)
+        })
+
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(EditBillViewController.onKeyboardShow(_:)),
+                                               name:UIResponder.keyboardWillShowNotification,
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(EditBillViewController.onKeyboardShow(_:)),
+                                               name:UIResponder.keyboardWillChangeFrameNotification,
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(EditBillViewController.onKeyboardHidden(_:)),
+                                               name:UIResponder.keyboardWillHideNotification,
+                                               object: nil)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if let editView = self.editMoney {
+            editView.becomeFirstResponder()
+        }
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    @objc func onEditDateAction() {
+        self.view.endEditing(true)
+    }
+}
+
+extension EditBillViewController {
+    
+    @objc func onKeyboardShow(_ noti : Notification) {
+        
+        if let userInfo = noti.userInfo {
+            self.keyboardHeight = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as! CGRect).height + 20 + 44
+            let duraction = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as! TimeInterval
+            UIView.animate(withDuration: duraction) {
+                self.billInputAccessoryView?.isHidden = false
+                self.editNotes?.snp.updateConstraints({ (make) in
+                    make.bottom.equalToSuperview().offset(-self.keyboardHeight)
+                })
+            }
+        }
+    }
+    
+    @objc func onKeyboardHidden(_ noti : Notification) {
+        self.billInputAccessoryView?.isHidden = true
+    }
+}
+
+extension EditBillViewController : UITextViewDelegate,UITextFieldDelegate{
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        
+        if textField == self.editMoney {
+            self.billInputAccessoryView?.updateHandleButtonStatus(for: false,
+                                                                  nextButtonValid: true)
+            self.billInputAccessoryView!.preView = nil
+            self.billInputAccessoryView?.nextView = self.editUsage
+        }
+        if textField == self.editUsage {
+            self.billInputAccessoryView?.updateHandleButtonStatus(for: true,
+                                                                  nextButtonValid: true)
+            self.billInputAccessoryView?.preView = self.editMoney
+            self.billInputAccessoryView?.nextView = self.editNotes?.textView
+        }
+    }
+    
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        self.billInputAccessoryView?.updateHandleButtonStatus(for: true,
+                                                              nextButtonValid: false)
+        self.billInputAccessoryView?.preView = self.editUsage
+        self.billInputAccessoryView!.nextView = nil
+    }
+}

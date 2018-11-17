@@ -9,16 +9,21 @@
 import UIKit
 import EventKit
 
-class AddBillEventButton : UIButton {
+class BillHandleButton : UIButton {
+    
+    public convenience init(with title : String) {
+        self.init(frame: .zero)
+        self.setTitle(title, for: .normal)
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
         self.setBackgroundImageWith(.billOrange, for: .normal)
         self.setBackgroundImageWith(.billOrangeHighlight, for: .highlighted)
-        self.setTitle("Add Now", for: .normal)
+        self.setBackgroundImageWith(.billOrangeHighlight, for: .disabled)
         self.layer.masksToBounds = true
-        self.titleLabel?.font = UIFont.billPingFangMedium(25)
+        self.titleLabel?.font = UIFont.billPingFangMedium(19)
         self.setTitleColor(.white, for: .normal)
         self.addRoundShadowFor(self, cornerRadius: 10)
     }
@@ -32,7 +37,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource,UICollect
     
     let eventKitSupport = BillEventKitSupport.support
     
-    var addButton = AddBillEventButton()
+    var addButton = BillHandleButton.init(with: "Add now")
 
     let animatioinButton : UIButton = {
        

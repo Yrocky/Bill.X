@@ -156,3 +156,47 @@ extension UIButton : BillRoundShadowViewEnable{
         self.setBackgroundImage(UIImage.imageWith(color), for: state)
     }
 }
+
+extension UIScreen {
+    
+    public var width : CGFloat{
+        get{
+            return self.bounds.width
+        }
+    }
+    
+    public var height : CGFloat{
+        get{
+            return self.bounds.height
+        }
+    }
+}
+
+extension UIDevice {
+    
+    public func isIphoneX() -> Bool {
+        return UIScreen.instancesRespond(to: #selector(getter: UIScreen.currentMode)) ?
+        CGSize.init(width: 1125, height: 2436).equalTo(UIScreen.main.currentMode!.size)
+        : false
+    }
+    
+    public func isIphoneXr() -> Bool {
+        return UIScreen.instancesRespond(to: #selector(getter: UIScreen.currentMode)) ?
+            CGSize.init(width: 828, height: 1792).equalTo(UIScreen.main.currentMode!.size)
+            : false
+    }
+    public func isIphoneXs() -> Bool {
+        return UIScreen.instancesRespond(to: #selector(getter: UIScreen.currentMode)) ?
+            CGSize.init(width: 1125, height: 2436).equalTo(UIScreen.main.currentMode!.size)
+            : false
+    }
+    public func isIphoneXsMax() -> Bool {
+        return UIScreen.instancesRespond(to: #selector(getter: UIScreen.currentMode)) ?
+            CGSize.init(width: 1242, height: 2688).equalTo(UIScreen.main.currentMode!.size)
+            : false
+    }
+    public func isIphoneXShaped() -> Bool {
+        return self.isIphoneX() || self.isIphoneXr() || self.isIphoneXs() || self.isIphoneXsMax()
+    }
+    
+}

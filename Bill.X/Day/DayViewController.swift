@@ -55,7 +55,7 @@ class DayViewController: UIViewController{
     let moneyLabel = UILabel()
     var snapshot : UIView?
     let wasteView = DayWasteContainerView()
-    var addButton = AddBillEventButton()
+    var addButton = BillHandleButton.init(with: "Add now")
     lazy var billCollectionView : UICollectionView = {
         
         let layout = UICollectionViewLeftAlignedLayout()
@@ -307,6 +307,10 @@ extension DayViewController : UICollectionViewDataSource,UICollectionViewDelegat
         if let dayEventWrap = dayEventWrap {
             let eventWrap = dayEventWrap.eventWraps[indexPath.item]
             print("edit eventWrap:\(eventWrap)")
+            let edit = EditBillViewController.init(with: eventWrap)
+//            self.navigationController?.present(edit, animated: true, completion: {
+//            })
+            self.navigationController?.pushViewController(edit, animated: true)
         }
     }
 }
