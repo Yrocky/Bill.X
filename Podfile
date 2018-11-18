@@ -9,7 +9,7 @@ target 'Bill.X' do
 
   # Pods for Bill.X
   pod 'SnapKit', '~> 4.0.0'
-  
+  pod 'ScrollableGraphView'
   target 'Bill.XTests' do
     inherit! :search_paths
     # Pods for testing

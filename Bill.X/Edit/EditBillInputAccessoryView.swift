@@ -105,6 +105,10 @@ class EditBillInputAccessoryView: UIView {
         self.nextButton?.isEnabled = nextButtonValid
     }
     
+    public func updateSaveButtonStatus(valid : Bool) {
+        self.saveButton?.isEnabled = valid
+    }
+    
     @objc func onCancelAction() {
         if let delegate = self.delegate {
             delegate.inputAccessoryViewDidOnCancel()

@@ -1,16 +1,20 @@
 PODS:
-  - SnapKit (4.0.0)
+  - ScrollableGraphView (4.0.6)
+  - SnapKit (4.0.1)
 
 DEPENDENCIES:
+  - ScrollableGraphView
   - SnapKit (~> 4.0.0)
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
+    - ScrollableGraphView
     - SnapKit
 
 SPEC CHECKSUMS:
-  SnapKit: a42d492c16e80209130a3379f73596c3454b7694
+  ScrollableGraphView: 4af35d4ea9ecdec665d34a74da51da161ddff8ac
+  SnapKit: 0de968a9fec17499afa29683b05d0c775b6d1c29
 
-PODFILE CHECKSUM: 9bf1cdeac527cf22b9134a8f5b01e347f5bb4619
+PODFILE CHECKSUM: 525cdac4bbf00340e5d4bf53d9f76888ee7bb977
 
 COCOAPODS: 1.5.0

@@ -35,13 +35,16 @@ class BillHandleButton : UIButton {
 
 class HomeViewController: BillViewController,
 UICollectionViewDataSource,
-UICollectionViewDelegateFlowLayout {
+UICollectionViewDelegateFlowLayout,
+BillMonthPresentAnimatorProtocol{
     
     let eventKitSupport = BillEventKitSupport.support
     
     var addButton = BillHandleButton.init(with: "Add now")
     var monthEventWraps = [BillMonthEventWrap]()
     var year : Int = 2018
+    
+    var sourceView : UIView?
     
     lazy var monthView : UICollectionView = {
         
@@ -198,7 +201,9 @@ UICollectionViewDelegateFlowLayout {
     @objc func onAddItemAction() {
 
         let edit = EditBillViewController.init(with: nil ,date: Date())
-        self.navigationController?.pushViewController(edit, animated: true)
+        edit.transitioningDelegate  = self
+        edit.modalPresentationStyle = .custom
+        self.present(edit, animated: true, completion: nil)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -216,15 +221,38 @@ UICollectionViewDelegateFlowLayout {
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
+        self.sourceView = collectionView.cellForItem(at: indexPath)
+        
         let monthEventWrap = self.monthEventWraps[indexPath.item] as BillMonthEventWrap
 
         let month = MonthViewController.init(with: monthEventWrap.year,
                                              month: monthEventWrap.month)
-        navigationController?.pushViewController(month, animated: true)
+        month.transitioningDelegate  = self
+        month.modalPresentationStyle = .custom
+        self.present(month, animated: true, completion: nil)
+    }
+}
+
+extension HomeViewController : UIViewControllerTransitioningDelegate {
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        if presented.isKind(of: EditBillViewController.self) {
+            return BillEditPresentAnimator()
+        }
+        if presented.isKind(of: MonthViewController.self) {
+            let monthPresent = BillMonthPresentAnimator()
+            monthPresent.delegate = self
+            return monthPresent
+        }
+        return nil
     }
     
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-//
-//
-//    }
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        if dismissed.isKind(of: EditBillViewController.self) {
+            return BillEditDismissAnimator()
+        }
+        if dismissed.isKind(of: EditBillViewController.self) {
+            return BillMonthDismissAnimator()
+        }
+        return nil
+    }
 }

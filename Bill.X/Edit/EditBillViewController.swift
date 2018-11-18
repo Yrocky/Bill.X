@@ -44,7 +44,8 @@ class EditBillViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        
+        view.backgroundColor = .clear
         
         self.contentView = UIView()
         self.contentView?.backgroundColor = .white
@@ -140,6 +141,14 @@ class EditBillViewController: UIViewController {
                                                selector: #selector(self.onKeyboardHidden(_:)),
                                                name:UIResponder.keyboardWillHideNotification,
                                                object: nil)
+        self.showKeyboard()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+    }
+    
+    public func showKeyboard() {
         if let editView = self.editMoney {
             editView.becomeFirstResponder()
         }
@@ -158,8 +167,11 @@ extension EditBillViewController {
     
     @objc func onKeyboardShow(_ noti : Notification) {
         
+        let saveValid = self.editMoney!.text != nil && self.editUsage!.text != nil
+        self.billInputAccessoryView?.updateSaveButtonStatus(valid: saveValid)
+        
         if let userInfo = noti.userInfo {
-            self.keyboardHeight = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as! CGRect).height + 20 + 44
+            self.keyboardHeight = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as! CGRect).height + 30 + 54
             let duraction = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as! TimeInterval
             UIView.animate(withDuration: duraction) {
                 self.billInputAccessoryView?.isHidden = false
@@ -204,7 +216,8 @@ extension EditBillViewController : UITextViewDelegate,UITextFieldDelegate{
 extension EditBillViewController : EditBillInputAccessoryViewDelegate {
         
     func inputAccessoryViewDidOnCancel() {
-        self.navigationController?.popViewController(animated: true)
+        self.view.endEditing(true)
+        self.dismiss(animated: true, completion: nil)
     }
     
     func inputAccessoryViewDidOnSave() {
@@ -221,7 +234,8 @@ extension EditBillViewController : EditBillInputAccessoryViewDelegate {
             self.eventWrap!.notes = notes
             BillEventKitSupport.support.addBillEvent(self.eventWrap!) { (finish) in
                 if finish {
-                    self.navigationController?.popViewController(animated: true)
+                    self.view.endEditing(true)
+                    self.dismiss(animated: true, completion: nil)
                 }
             }
         }else{///modif
@@ -231,7 +245,8 @@ extension EditBillViewController : EditBillInputAccessoryViewDelegate {
             BillEventKitSupport.support.updateBillEvent(self.eventWrap!) { (finish) in
                 
                 if finish {
-                    self.navigationController?.popViewController(animated: true)
+                    self.view.endEditing(true)
+                    self.dismiss(animated: true, completion: nil)
                 }
             }
         }

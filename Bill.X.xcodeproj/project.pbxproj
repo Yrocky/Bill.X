@@ -15,6 +15,8 @@
 		D7963ED821987E6400B44397 /* BillCalendarSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7963ED721987E6400B44397 /* BillCalendarSupport.swift */; };
 		D7963EDC219C660900B44397 /* DayWasteContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7963EDB219C660900B44397 /* DayWasteContainerView.swift */; };
 		D7963EDE21A1493900B44397 /* BillViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7963EDD21A1493900B44397 /* BillViewController.swift */; };
+		D7963EE021A1B0D800B44397 /* BillEditAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7963EDF21A1B0D800B44397 /* BillEditAnimator.swift */; };
+		D7963EE221A1BC9E00B44397 /* BillMonthAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7963EE121A1BC9E00B44397 /* BillMonthAnimator.swift */; };
 		D7C32E942196D0C90047A858 /* MonthHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C32E932196D0C90047A858 /* MonthHeaderView.swift */; };
 		D7C32E962196E28E0047A858 /* DirectionGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C32E952196E28E0047A858 /* DirectionGestureRecognizer.swift */; };
 		D7C32E982196FC490047A858 /* EdgeInsetsLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C32E972196FC490047A858 /* EdgeInsetsLabel.swift */; };
@@ -72,6 +74,8 @@
 		D7963ED721987E6400B44397 /* BillCalendarSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillCalendarSupport.swift; sourceTree = "<group>"; };
 		D7963EDB219C660900B44397 /* DayWasteContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayWasteContainerView.swift; sourceTree = "<group>"; };
 		D7963EDD21A1493900B44397 /* BillViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillViewController.swift; sourceTree = "<group>"; };
+		D7963EDF21A1B0D800B44397 /* BillEditAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillEditAnimator.swift; sourceTree = "<group>"; };
+		D7963EE121A1BC9E00B44397 /* BillMonthAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillMonthAnimator.swift; sourceTree = "<group>"; };
 		D7C32E932196D0C90047A858 /* MonthHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthHeaderView.swift; sourceTree = "<group>"; };
 		D7C32E952196E28E0047A858 /* DirectionGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectionGestureRecognizer.swift; sourceTree = "<group>"; };
 		D7C32E972196FC490047A858 /* EdgeInsetsLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EdgeInsetsLabel.swift; sourceTree = "<group>"; };
@@ -159,6 +163,15 @@
 			path = EventKitSupport;
 			sourceTree = "<group>";
 		};
+		D7963EE321A1BCA700B44397 /* Animator */ = {
+			isa = PBXGroup;
+			children = (
+				D7963EDF21A1B0D800B44397 /* BillEditAnimator.swift */,
+				D7963EE121A1BC9E00B44397 /* BillMonthAnimator.swift */,
+			);
+			path = Animator;
+			sourceTree = "<group>";
+		};
 		F72BBA87219166560067EB09 = {
 			isa = PBXGroup;
 			children = (
@@ -190,6 +203,7 @@
 				D7C32E952196E28E0047A858 /* DirectionGestureRecognizer.swift */,
 				D7C32E972196FC490047A858 /* EdgeInsetsLabel.swift */,
 				D7963EDD21A1493900B44397 /* BillViewController.swift */,
+				D7963EE321A1BCA700B44397 /* Animator */,
 				D7963ED6219856B600B44397 /* EventKitSupport */,
 				F72BBAC9219167380067EB09 /* Home */,
 				F72BBAC6219166EB0067EB09 /* Month */,
@@ -475,10 +489,12 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Bill.X/Pods-Bill.X-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/ScrollableGraphView/ScrollableGraphView.framework",
 				"${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ScrollableGraphView.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SnapKit.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -507,7 +523,9 @@
 				D7C32E9A219701EA0047A858 /* AlignmentLeftLayout.swift in Sources */,
 				F72BBAC5219166E60067EB09 /* MonthContentView.swift in Sources */,
 				F72FD595219589A4001B5F5F /* RoundShadowEncodable.swift in Sources */,
+				D7963EE221A1BC9E00B44397 /* BillMonthAnimator.swift in Sources */,
 				D7C32E982196FC490047A858 /* EdgeInsetsLabel.swift in Sources */,
+				D7963EE021A1B0D800B44397 /* BillEditAnimator.swift in Sources */,
 				D7963ED5219846CD00B44397 /* BillEventKitSupport.swift in Sources */,
 				F72BBA94219166560067EB09 /* AppDelegate.swift in Sources */,
 				D7963EDC219C660900B44397 /* DayWasteContainerView.swift in Sources */,
@@ -695,10 +713,7 @@
 				DEVELOPMENT_TEAM = UQ773UQCTC;
 				INFOPLIST_FILE = Bill.X/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.shxingai.mmlive;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
@@ -716,10 +731,7 @@
 				DEVELOPMENT_TEAM = UQ773UQCTC;
 				INFOPLIST_FILE = Bill.X/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.shxingai.mmlive;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
@@ -735,11 +747,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = Bill.XTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ropcky.Bill-XTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
@@ -756,11 +764,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = Bill.XTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ropcky.Bill-XTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
@@ -776,11 +780,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = Bill.XUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ropcky.Bill-XUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
@@ -796,11 +796,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = Bill.XUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ropcky.Bill-XUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
