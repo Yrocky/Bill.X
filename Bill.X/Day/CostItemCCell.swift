@@ -10,43 +10,31 @@ import UIKit
 
 class CostItemCCell: UICollectionViewCell, BillRoundShadowViewEnable {
 
-    private let _contentView = UIView()
-    private let costLabel = EdgeInsetsLabel()
+    private let moneyView = BillCostMoneyView()
     private let usedLabel = UILabel()
-    
+    private let bgImageView = UIImageView()
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         
         self.contentView.backgroundColor = .clear
-        _contentView.backgroundColor = .white
-        addRoundShadowFor(_contentView, cornerRadius: 16.0)
         
-        self.contentView.addSubview(_contentView)
+        self.bgImageView.image = UIImage.init(named: "bill_day_item_bg_normal")
+        self.bgImageView.highlightedImage = UIImage.init(named: "bill_day_item_bg_hl")
+        self.contentView.addSubview(self.bgImageView)
         
-        self.costLabel.textColor = .white
-        self.costLabel.edgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
-        self.costLabel.layer.cornerRadius = 12.0
-        self.costLabel.text = "0"
-        self.costLabel.font = UIFont.billDINBold(14)
-        self.costLabel.backgroundColor = .billBlue
-        self.costLabel.layer.masksToBounds = true
-        self.costLabel.textAlignment = .center
-        _contentView.addSubview(self.costLabel)
+        contentView.addSubview(self.moneyView)
         
         self.usedLabel.textColor = .billBlack
         self.usedLabel.text = ""
         self.usedLabel.font = UIFont.billPingFang(14, weight: .light)
         self.usedLabel.textAlignment = .right
-        _contentView.addSubview(self.usedLabel)
+        contentView.addSubview(self.usedLabel)
         
-        _contentView.snp.makeConstraints { (make) in
-            make.left.equalTo(0)
-            make.top.equalTo(0)
-            make.right.equalToSuperview()
-            make.bottom.equalToSuperview()
+        self.bgImageView.snp.makeConstraints { (make) in
+            make.edges.equalToSuperview()
         }
-        
-        self.costLabel.snp.makeConstraints { (make) in
+        moneyView.snp.makeConstraints { (make) in
             make.right.equalTo(-4)
             make.centerY.equalToSuperview()
             make.bottom.equalTo(-4)
@@ -56,9 +44,9 @@ class CostItemCCell: UICollectionViewCell, BillRoundShadowViewEnable {
         }
         
         self.usedLabel.snp.makeConstraints { (make) in
-            make.centerY.equalTo(self.costLabel)
+            make.centerY.equalTo(self.moneyView)
             make.left.equalTo(10)
-            make.right.equalTo(self.costLabel.snp.left).offset(-10)
+            make.right.equalTo(self.moneyView.snp.left).offset(-10)
         }
     }
     
@@ -68,27 +56,13 @@ class CostItemCCell: UICollectionViewCell, BillRoundShadowViewEnable {
     
     public func update(with eventWrap : BillEventWrap) {
         
-        costLabel.text = "\(eventWrap.money!)".billMoneyFormatter
+        moneyView.costLabel.text = "\(eventWrap.money!)".billMoneyFormatter
         usedLabel.text = eventWrap.usage!
     }
     
     override var isHighlighted: Bool{
         didSet{
-            _contentView.backgroundColor = isHighlighted ? .billWhite : .white
+            bgImageView.isHighlighted = isHighlighted
         }
-    }
-    
-    
-    @objc func onLongPressAction() {
-        print("开始移动")
-    }
-}
-
-
-extension DayCCell : UIGestureRecognizerDelegate {
-    
-    override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        
-        return true
     }
 }

@@ -35,12 +35,14 @@ class BillHandleButton : UIButton {
 
 class HomeViewController: BillViewController,
 UICollectionViewDataSource,
-UICollectionViewDelegate {
+UICollectionViewDelegateFlowLayout {
     
     let eventKitSupport = BillEventKitSupport.support
     
     var addButton = BillHandleButton.init(with: "Add now")
-
+    var monthEventWraps = [BillMonthEventWrap]()
+    var year : Int = 2018
+    
     lazy var monthView : UICollectionView = {
         
         let minimumLineSpacing : CGFloat = 20.0
@@ -59,7 +61,7 @@ UICollectionViewDelegate {
                                            bottom: minimumLineSpacing,
                                            right: 16)
         let v = UICollectionView.init(frame: .zero, collectionViewLayout: layout)
-        v.backgroundColor = .orange
+        v.backgroundColor = .clear
         v.dataSource = self
         v.delegate = self
         v.isPagingEnabled = true
@@ -128,14 +130,19 @@ UICollectionViewDelegate {
     
     @objc override func onEventChange() {
     
-        
+        BillEventKitSupport.support.complementedBillEventForYear(year: self.year) { (yearEventWrap) in
+            
+            self.titleLabel.text = "\(yearEventWrap.year)"
+            self.monthEventWraps = yearEventWrap.monthEventWraps
+            self.monthView.reloadData()
+        }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.titleLabel.font = UIFont.billDINBold(60)
-        self.titleLabel.text = "2018"
+        self.titleLabel.text = "\(self.year)"
         self.titleLabel.textAlignment = .left
         self.titleLabel.textColor = .billBlue
         view.addSubview(titleLabel)
@@ -145,7 +152,6 @@ UICollectionViewDelegate {
         addButton.addTarget(self,
                             action: #selector(self.onAddItemAction),
                             for: .touchUpInside)
-
 
         titleLabel.snp.makeConstraints { (make) in
             make.right.equalToSuperview()
@@ -163,34 +169,62 @@ UICollectionViewDelegate {
             make.right.equalTo(-20)
             make.bottom.equalTo(bottomLayoutGuide.snp.top).offset(-40)
         }
+        
+        self.onEventChange()
+    }
+    
+    private func onLoadPreYearEventWraps() {
+        
+        year -= 1
+//        if month != 0 {
+//            print("加载前一个月，加载指示器显示 上一个月")
+//            self._loadEventWraps(at : month)
+//        }else{
+//            print("今年的已经查询完毕，加载指示器隐藏")
+//        }
+    }
+    
+    private func onLoadNextMonthEventWraps() {
+        
+        year += 1
+//        if month <= 12 {
+            print("加载下一个月，加载指示器显示 下一个月")
+//            self._loadEventWraps(at : month)
+//        }else{
+//            print("今年的已经查询完毕，加载指示器隐藏")
+//        }
     }
     
     @objc func onAddItemAction() {
-        
-        let month = MonthViewController.init(with: 2018, month: 11)
-        navigationController?.pushViewController(month, animated: true)
-        
-        ///TODO:弹出来添加event视图
+
+        let edit = EditBillViewController.init(with: nil ,date: Date())
+        self.navigationController?.pushViewController(edit, animated: true)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 12
+        return self.monthEventWraps.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MonthCCell", for: indexPath) as! MonthCCell
-        cell.updateMonthTotalBill((indexPath.row % 2 == 0 ? 123 : 0), month: "Seq")
+        let monthEventWrap = self.monthEventWraps[indexPath.item] as BillMonthEventWrap
+        cell.updateMonthTotalBill("\(monthEventWrap.homeTotalBill)".billMoneyFormatter,
+                                  month: String.monthString(monthEventWrap.month))
         return cell
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        let eventWrap = BillEventWrap.eventWrap(with: self.eventKitSupport,
-                                                money: 42,
-                                                usage: "看电影")
-        self.eventKitSupport.addBillEvent(eventWrap) { (success) in
-            
-        }
-    }
+        let monthEventWrap = self.monthEventWraps[indexPath.item] as BillMonthEventWrap
 
+        let month = MonthViewController.init(with: monthEventWrap.year,
+                                             month: monthEventWrap.month)
+        navigationController?.pushViewController(month, animated: true)
+    }
+    
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+//
+//
+//    }
 }

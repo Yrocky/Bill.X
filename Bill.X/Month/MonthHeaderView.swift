@@ -27,7 +27,7 @@ class MonthHeaderView: UIView {
         monthLabel?.textColor = .billBlue
         monthLabel?.textAlignment = .left
         monthLabel?.font = UIFont.billDINBold(48)
-        monthLabel?.text = "Seq"
+        monthLabel?.text = ""
         addSubview(monthLabel!)
         addSubview(self.totalLabel)
         

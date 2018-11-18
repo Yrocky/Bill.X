@@ -26,7 +26,7 @@ class DayViewController: BillViewController{
         var cellStatus = HandleCellStatus.none
         var frame = CGRect.zero
         var center = CGPoint.zero
-        var indexPath = IndexPath.init()
+        var indexPath : IndexPath?
         
         var struggleOffset : CGFloat {
             get {
@@ -44,7 +44,7 @@ class DayViewController: BillViewController{
             self.center = .zero
             self.cell = nil
             self.cellStatus = .none
-            self.indexPath = IndexPath.init()
+            self.indexPath = nil
             self.eventWrap = nil
         }
     }
@@ -59,7 +59,7 @@ class DayViewController: BillViewController{
     lazy var billCollectionView : UICollectionView = {
         
         let layout = UICollectionViewLeftAlignedLayout()
-        layout.sectionInset = UIEdgeInsets(top: 20, left: 10, bottom: 20, right: 10)
+        layout.sectionInset = UIEdgeInsets(top: 10, left: 0, bottom: 20, right: 0)
         layout.estimatedItemSize = CGSize.init(width: 50, height: 42)
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 10.0
@@ -93,7 +93,6 @@ class DayViewController: BillViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .white
         view.addSubview(self.timeLabel)
         view.addSubview(self.moneyLabel)
         view.addSubview(self.wasteView)
@@ -128,15 +127,15 @@ class DayViewController: BillViewController{
             make.top.equalTo(timeLabel.snp.bottom).offset(20)
         }
         wasteView.snp.makeConstraints { (make) in
-            make.right.equalToSuperview().offset(-16)
-            make.top.equalTo(timeLabel).offset(16)
-            make.bottom.equalTo(moneyLabel.snp.bottom).offset(-16)
-            make.width.equalToSuperview().multipliedBy(0.5)
+            make.left.right.equalTo(self.addButton)
+            make.bottom.equalTo(self.addButton.snp.top).offset(-20)
+            make.height.equalTo(100)
         }
         billCollectionView.snp.makeConstraints { (make) in
-            make.left.right.equalTo(moneyLabel)
+            make.left.equalToSuperview().offset(16)
+            make.right.equalToSuperview().offset(-16)
             make.top.equalTo(moneyLabel.snp.bottom).offset(20)
-            make.bottom.equalTo(self.addButton.snp.top).offset(-40)
+            make.bottom.equalTo(self.wasteView.snp.top)
         }
         addButton.snp.makeConstraints { (make) in
             make.left.equalTo(20)
@@ -144,6 +143,8 @@ class DayViewController: BillViewController{
             make.height.equalTo(50)
             make.bottom.equalTo(bottomLayoutGuide.snp.top).offset(-40)
         }
+        
+        self.showWasteView(false)
     }
     
     @objc override func onEventChange() {
@@ -155,6 +156,13 @@ class DayViewController: BillViewController{
         }
     }
     
+    private func showWasteView(_ show : Bool) {
+        
+        UIView.animate(withDuration: 0.25) {
+            self.wasteView.isHidden = !show
+        }
+    }
+    
     private func updateDayBillEvent() {
         
         self.moneyLabel.text = "￥\(String(describing: dayEventWrap!.totalBill))".billMoneyFormatter
@@ -163,8 +171,10 @@ class DayViewController: BillViewController{
     }
     
     @objc func onAddItemAction() {
-        
-        let edit = EditBillViewController.init(with: nil)
+        let date = Calendar.current.dateWith(year: self.dayEventWrap!.year,
+                                             month: self.dayEventWrap!.month,
+                                             day: self.dayEventWrap!.day)
+        let edit = EditBillViewController.init(with: nil,date: date)
         self.navigationController?.pushViewController(edit, animated: true)
     }
     
@@ -220,6 +230,7 @@ class DayViewController: BillViewController{
                     
                     handleWrap?.cellStatus = .struggle
                 } else {
+                    
                     if handleWrap?.cellStatus == .struggle {
                         
                         billCollectionView.performBatchUpdates({
@@ -228,9 +239,9 @@ class DayViewController: BillViewController{
                             self.dayEventWrap?.eventWraps.remove(at: indexPath!.item)
                             self.billCollectionView.deleteItems(at: [indexPath!])
                         }) { (_) in
+                            
                         }
                     }
-                    handleWrap?.cellStatus = .leave
                     
                     let minCenterX = 16 + self.handleWrap!.frame.width * 0.5
                     let maxCenterX = self.view.frame.width - 16 - self.handleWrap!.frame.width * 0.5
@@ -239,13 +250,26 @@ class DayViewController: BillViewController{
                     
                     centerX = min(max(minCenterX, centerX), maxCenterX)
                     centerY = min(max(minCenterY, centerY), maxCenterY)
+                    
+                    
+                    self.showWasteView(true)
+                    let wasteViewFrame = self.wasteView.convert(self.wasteView.bounds,
+                                                                to: self.view)
+                    let canRemove = wasteViewFrame.contains(CGPoint.init(x: centerX, y: centerY))
+                    self.wasteView.makeGarbage(highlight: canRemove)
+                    
+                    handleWrap?.cellStatus = canRemove ? .remove : .leave
                 }
                 
+
                 snapshotView.center = CGPoint.init(x: centerX,
                                                    y: centerY)
             }
         }
         else {
+            
+            /// 隐藏辣鸡视图
+            self.showWasteView(false)
             
             if self.handleWrap?.cellStatus == .struggle {
                 self.handleWrap?.cell?.isHidden = false
@@ -291,7 +315,25 @@ class DayViewController: BillViewController{
             }
             else if self.handleWrap?.cellStatus == .remove {
                 ///移除snapshot视图
-                
+                if let eventWrap = self.handleWrap?.eventWrap {
+                    BillEventKitSupport.support.removeBillEvent(eventWrap) { (finish) in
+                        
+                        if finish {
+                            
+                            let animator = UIViewPropertyAnimator.init(duration: 0.28, dampingRatio: 0.55) {
+                                self.snapshot?.transform = CGAffineTransform.init(scaleX: 0, y: 0)
+                                self.snapshot?.layer.shadowColor = UIColor.clear.cgColor
+                            }
+                            animator.startAnimation()
+                            animator.addCompletion { (position) in
+                                if position == .end {
+                                    self.snapshot?.removeFromSuperview()
+                                    self.snapshot = nil
+                                }
+                            }
+                        }
+                    }
+                }
             }
             
             self.handleWrap?.reset()
@@ -322,10 +364,11 @@ extension DayViewController : UICollectionViewDataSource,UICollectionViewDelegat
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
         if let dayEventWrap = dayEventWrap {
             let eventWrap = dayEventWrap.eventWraps[indexPath.item]
             print("edit eventWrap:\(eventWrap)")
-            let edit = EditBillViewController.init(with: eventWrap)
+            let edit = EditBillViewController.init(with: eventWrap ,date:eventWrap.date)
 //            self.navigationController?.present(edit, animated: true, completion: {
 //            })
             self.navigationController?.pushViewController(edit, animated: true)

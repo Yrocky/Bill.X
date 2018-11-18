@@ -39,7 +39,6 @@ class MonthViewController: BillViewController{
         self.contentView = MonthContentView.init(frame: .zero)
         self.contentView?.delegate = self
         
-        view.backgroundColor = .white
         view.addSubview(self.monthView!)
         view.addSubview(self.weekView!)
         view.addSubview(self.contentView!)
@@ -109,6 +108,7 @@ class MonthViewController: BillViewController{
             
             self.dayEventWraps = merge.merge
             
+            self.monthView?.monthLabel?.text = String.monthString(month)
             self.monthView!.totalLabel.text = "￥\(current.totalBill)".billMoneyFormatter
             self.contentView!.updateData(with: self.dayEventWraps,
                                         at: self.year,

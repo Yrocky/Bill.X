@@ -20,7 +20,6 @@ class MonthCCell: UICollectionViewCell,BillRoundShadowViewEnable {
         self.contentView.backgroundColor = UIColor.white
         addRoundShadowFor(self.contentView, cornerRadius: 10.0)
         
-        self.centerLabel.textColor = .red
         self.centerLabel.textAlignment = .center
         self.contentView.addSubview(self.centerLabel)
         
@@ -45,16 +44,16 @@ class MonthCCell: UICollectionViewCell,BillRoundShadowViewEnable {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public func updateMonthTotalBill(_ total : NSInteger, month : String) -> Void {
-        if total != 0 {
+    public func updateMonthTotalBill(_ total : String, month : String) -> Void {
+        if Double(total) != 0.0 {
             // 显示total，month移动到右下角
-            centerLabel.text = String(total)
-            
+            centerLabel.attributedText = NSAttributedString.fillStyle(string: total, .billBlue, 50)
+
             cornerLabel.isHidden = false
-            cornerLabel.attributedText = NSAttributedString.strokeStyle(string: month, .gray, 50)
+            cornerLabel.attributedText = NSAttributedString.strokeStyle(string: month, .billWhite, 50)
         } else {
             // 不显示total，month居中
-            centerLabel.attributedText = NSAttributedString.strokeStyle(string: month, .blue, 50)
+            centerLabel.attributedText = NSAttributedString.strokeStyle(string: month, .billBlue, 50)
             
             cornerLabel.text = nil
             cornerLabel.isHidden = true

@@ -11,8 +11,6 @@ import UIKit
 protocol EditBillInputAccessoryViewDelegate : class{
     
     func inputAccessoryViewDidOnCancel() -> Void
-    func inputAccessoryViewDidOnPre() -> Void
-    func inputAccessoryViewDidOnNext() -> Void
     func inputAccessoryViewDidOnSave() -> Void
 }
 
@@ -117,19 +115,11 @@ class EditBillInputAccessoryView: UIView {
         if let preView = self.preView {
             preView.becomeFirstResponder()
         }
-        
-        if let delegate = self.delegate {
-            delegate.inputAccessoryViewDidOnPre()
-        }
     }
     @objc func onNextAction() {
         
         if let nextView = self.nextView {
             nextView.becomeFirstResponder()
-        }
-        
-        if let delegate = self.delegate {
-            delegate.inputAccessoryViewDidOnNext()
         }
     }
     @objc func onSaveAction() {

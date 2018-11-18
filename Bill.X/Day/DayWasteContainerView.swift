@@ -25,8 +25,10 @@ class DayWasteContainerView: UIView {
         bordLineLayer.anchorPoint = .zero
         bordLineLayer.lineJoin = .round
         bordLineLayer.strokeColor = UIColor.clear.cgColor
-        bordLineLayer.lineDashPattern = [NSNumber.init(value: 60),NSNumber.init(value: 5)]
-        bordLineLayer.lineDashPhase = 1
+        bordLineLayer.lineDashPattern = [NSNumber.init(value: 6),
+                                         NSNumber.init(value: 5),
+                                         NSNumber.init(value: 5)]
+        bordLineLayer.lineDashPhase = 2
         layer.addSublayer(bordLineLayer)
         self.makeGarbage(highlight: false)
     }
@@ -45,14 +47,12 @@ class DayWasteContainerView: UIView {
     public func makeGarbage(highlight : Bool) {
         if highlight {
             bordLineLayer.borderColor = UIColor.billOrange.cgColor
-            backgroundColor = .billGray
             tipLabel.textColor = .billOrange
             tipLabel.text = "Release to remove"
         }else{
             bordLineLayer.borderColor = UIColor.billGray.cgColor
-            backgroundColor = .white
             tipLabel.textColor = .billGray
-            tipLabel.text = "Drop here remove"
+            tipLabel.text = "Drag here remove"
         }
     }
 }

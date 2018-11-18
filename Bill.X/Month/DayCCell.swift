@@ -25,27 +25,36 @@ class DayCCell: UICollectionViewCell ,BillRoundShadowViewEnable{
     var status : DayViewStatus{
         didSet{
             self.moneyLabel.isHidden = Double(self.money) == 0.0
+            var normalImg : UIImage?
+            var hilightImg : UIImage?
             switch status {
             case .empty:
-                self.contentView.backgroundColor = .white
+                normalImg = UIImage.init(named: "bill_day_empty_normal")
+                hilightImg = UIImage.init(named: "bill_day_empty_hl")
                 self.dayLabel.attributedText = NSAttributedString.fillStyle(string: self.day, .billGray, 14)
             case .invalid:
+                normalImg = UIImage.init(named: "bill_day_empty_normal")
+                hilightImg = UIImage.init(named: "bill_day_empty_hl")
                 self.moneyLabel.attributedText = NSAttributedString.strokeStyle(string: self.money, .billGray, 16)
-                self.contentView.backgroundColor = .white
                 self.dayLabel.attributedText = NSAttributedString.strokeStyle(string: self.day, .billGray, 14)
             case .hasValue:
+                normalImg = UIImage.init(named: "bill_day_has_value_normal")
+                hilightImg = UIImage.init(named: "bill_day_has_value_hl")
                 self.moneyLabel.attributedText = NSAttributedString.fillStyle(string: self.money, .white, 16)
-                self.contentView.backgroundColor = .billBlue
                 self.dayLabel.attributedText = NSAttributedString.fillStyle(string: self.day, .white, 14)
             case .today:
+                normalImg = UIImage.init(named: "bill_day_today_normal")
+                hilightImg = UIImage.init(named: "bill_day_today_hl")
                 self.moneyLabel.attributedText = NSAttributedString.fillStyle(string: self.money, .white, 16)
-                self.contentView.backgroundColor = .billOrange
                 self.dayLabel.attributedText = NSAttributedString.fillStyle(string: self.day, .white, 14)
             }
+            self.bgImageView.image = normalImg
+            self.bgImageView.highlightedImage = hilightImg
         }
     }
     private let moneyLabel = UILabel()
     private let dayLabel = UILabel()
+    private let bgImageView = UIImageView()
     
     override init(frame: CGRect) {
         self.status = .hasValue
@@ -54,8 +63,12 @@ class DayCCell: UICollectionViewCell ,BillRoundShadowViewEnable{
         
         self.backgroundColor = .clear
         self.backgroundView = nil
-        self.contentView.backgroundColor = UIColor.white
-        addRoundShadowFor(self.contentView)
+        self.contentView.backgroundColor = .clear
+
+        self.clipsToBounds = false
+        self.contentView.clipsToBounds = false
+        
+        contentView.addSubview(self.bgImageView)
         
         moneyLabel.textAlignment = .center
         moneyLabel.textColor = .white
@@ -68,6 +81,10 @@ class DayCCell: UICollectionViewCell ,BillRoundShadowViewEnable{
         dayLabel.font = UIFont.billDINBold(14)
         dayLabel.text = "18"
         contentView.addSubview(dayLabel)
+        
+        self.bgImageView.snp.makeConstraints { (make) in
+            make.edges.equalToSuperview()
+        }
         
         moneyLabel.snp.makeConstraints { (make) in
             make.top.equalToSuperview().offset(20)
@@ -112,9 +129,9 @@ class DayCCell: UICollectionViewCell ,BillRoundShadowViewEnable{
         }
     }
     
-    override var isHighlighted: Bool{
-        didSet{
-            if isHighlighted{
+    override var isSelected: Bool {
+        didSet {
+            if isSelected{
                 self.setHighlightBackground()
             }else{
                 self.resetBackground()
@@ -122,26 +139,10 @@ class DayCCell: UICollectionViewCell ,BillRoundShadowViewEnable{
         }
     }
     private func setHighlightBackground() {
-        switch self.status {
-        case .empty:
-            contentView.backgroundColor = .billWhiteHighlight
-        case .hasValue:
-            contentView.backgroundColor = .billBlueHighlight
-        case .today:
-            contentView.backgroundColor = .billOrangeHighlight
-        case .invalid: break
-        }
+        self.bgImageView.isHighlighted = true
     }
     private func resetBackground() {
-        switch self.status {
-        case .empty:
-            contentView.backgroundColor = .white
-        case .hasValue:
-            contentView.backgroundColor = .billBlue
-        case .today:
-            contentView.backgroundColor = .billOrange
-        case .invalid: break
-        }
+        self.bgImageView.isHighlighted = false
     }
     
 }

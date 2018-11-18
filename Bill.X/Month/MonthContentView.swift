@@ -40,7 +40,7 @@ class MonthContentView : UIView, UICollectionViewDataSource, UICollectionViewDel
         contentView.delegate = self
         contentView.dataSource = self
         contentView.register(DayCCell.self, forCellWithReuseIdentifier: "DayCCell")
-        contentView.backgroundColor = .white
+        contentView.backgroundColor = .clear
         addSubview(contentView)
         contentView.snp.makeConstraints { (make) in
             make.edges.equalTo(self)
@@ -90,6 +90,7 @@ class MonthContentView : UIView, UICollectionViewDataSource, UICollectionViewDel
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
         if let delegate = delegate {
             delegate.monentContentViewDidSelected!(at: indexPath.item)
         }

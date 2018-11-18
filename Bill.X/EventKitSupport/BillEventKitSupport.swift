@@ -16,6 +16,7 @@ class BillEventKitSupport: NSObject {
     
     ///<用户获取月份下的event回调
     typealias EventKitSupportFetchMergeResultBlock = (_ merge: BillMergeMonthEventWrap) -> Void
+    typealias EventKitSupportFetchYearResultBlock = (_ merge: BillYearEventWrap) -> Void
     
     ///<单例模式
     static let support = BillEventKitSupport()
@@ -245,7 +246,7 @@ extension BillEventKitSupport {
     
     private func asyncFetchBillEventAt(range : (start: Date,last : Date) , _ result : @escaping EventKitSupportFetchResultBlock) {
         
-//        DispatchQueue.global().async {
+        DispatchQueue.global().async {
         
             let predicate = self.eventStore.predicateForEvents(withStart: range.start, end: range.last, calendars: [self.calendar!])
             
@@ -255,7 +256,7 @@ extension BillEventKitSupport {
             DispatchQueue.main.async {
                 result(eventWraps)
             }
-//        }
+        }
     }
 }
 
@@ -311,6 +312,39 @@ extension BillEventKitSupport {
         }
         
         return monthEventWrap
+    }
+}
+
+extension BillEventKitSupport {
+    
+    func complementedBillEventForYear(year : Int, _ result : @escaping EventKitSupportFetchYearResultBlock) {
+        
+        self.fetchBillEvent(year: year) { (eventWraps) in
+            
+            var yearEventWrap = BillYearEventWrap()
+            
+            var monthEventWraps = [BillMonthEventWrap]()
+            for index in 1...12 {
+                
+                var monthEventWrap = BillMonthEventWrap()
+                monthEventWrap.year = year
+                monthEventWrap.month = index
+                
+                var sum : Double = 0.0
+                for eventWrap in eventWraps {
+                    if eventWrap.date.year == year &&
+                        eventWrap.date.month == index {
+                        sum += Double(eventWrap.money ?? 0)
+                    }
+                }
+                monthEventWrap.homeTotalBill = sum
+                monthEventWraps.append(monthEventWrap)
+            }
+            yearEventWrap.year = year
+            yearEventWrap.monthEventWraps = monthEventWraps
+            
+            result(yearEventWrap)
+        }
     }
 }
 

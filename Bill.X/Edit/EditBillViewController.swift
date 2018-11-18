@@ -8,11 +8,11 @@
 
 import UIKit
 
-protocol EditBillViewControllerDelegate : class{
-
-    func editViewControllerDidModif(_ eventWrap : BillEventWrap) -> Void
-    func editViewControllerDidAdd(_ eventWrap : BillEventWrap) -> Void
-}
+//protocol EditBillViewControllerDelegate : class{
+//
+//    func editViewControllerDidModif(_ eventWrap : BillEventWrap) -> Void
+//    func editViewControllerDidAdd(_ eventWrap : BillEventWrap) -> Void
+//}
 
 class EditBillViewController: UIViewController {
 
@@ -24,8 +24,10 @@ class EditBillViewController: UIViewController {
     private(set) var editDate : BillHandleButton?
     private(set) var billInputAccessoryView : EditBillInputAccessoryView?
     
+    private var date : Date?
+    
     public var canEditDate : Bool = false
-    public weak var delegate : EditBillViewControllerDelegate?
+//    public weak var delegate : EditBillViewControllerDelegate?
     
     var keyboardHeight : CGFloat = (UIDevice.current.isIphoneXShaped() ? (216+34) : 216)
     
@@ -34,8 +36,9 @@ class EditBillViewController: UIViewController {
         NotificationCenter.default.removeObserver(self)
     }
     
-    public init(with eventWrap : BillEventWrap?) {
+    public init(with eventWrap : BillEventWrap? , date : Date?) {
         self.eventWrap = eventWrap
+        self.date = date
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -64,7 +67,7 @@ class EditBillViewController: UIViewController {
         self.editUsage?.delegate = self
         self.contentView!.addSubview(self.editUsage!)
         
-        self.editDate = BillHandleButton.init(with: Date().ymd)
+        self.editDate = BillHandleButton.init(with: self.date!.ymd)
         self.editDate?.addTarget(self,
                                  action: #selector(self.onEditDateAction), for: .touchUpInside)
         self.editDate?.titleLabel?.font = UIFont.billDINBold(17)
@@ -137,10 +140,6 @@ class EditBillViewController: UIViewController {
                                                selector: #selector(self.onKeyboardHidden(_:)),
                                                name:UIResponder.keyboardWillHideNotification,
                                                object: nil)
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
         if let editView = self.editMoney {
             editView.becomeFirstResponder()
         }
@@ -203,15 +202,7 @@ extension EditBillViewController : UITextViewDelegate,UITextFieldDelegate{
 }
 
 extension EditBillViewController : EditBillInputAccessoryViewDelegate {
-    
-    func inputAccessoryViewDidOnPre() {
         
-    }
-    
-    func inputAccessoryViewDidOnNext() {
-        
-    }
-    
     func inputAccessoryViewDidOnCancel() {
         self.navigationController?.popViewController(animated: true)
     }
@@ -226,6 +217,7 @@ extension EditBillViewController : EditBillInputAccessoryViewDelegate {
             self.eventWrap = BillEventWrap.eventWrap(with: BillEventKitSupport.support,
                                                      money: Double(money) ?? 0.0,
                                                      usage: usage)
+            self.eventWrap!.date = self.date ?? Date()
             self.eventWrap!.notes = notes
             BillEventKitSupport.support.addBillEvent(self.eventWrap!) { (finish) in
                 if finish {

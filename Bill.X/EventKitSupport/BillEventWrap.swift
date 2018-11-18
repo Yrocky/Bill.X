@@ -116,6 +116,18 @@ struct BillDayEventWrap {
     }
 }
 
+struct BillMergeMonthEventWrap {
+    
+    var currentMonthEventWrap : BillMonthEventWrap
+    
+    var merge : [BillDayEventWrap]
+    
+    init(with currentMonthEventWrap : BillMonthEventWrap , merge : [BillDayEventWrap]) {
+        self.currentMonthEventWrap = currentMonthEventWrap
+        self.merge = merge
+    }
+}
+
 struct BillMonthEventWrap {
     
     var year : Int = 0
@@ -131,18 +143,8 @@ struct BillMonthEventWrap {
             return sum
         }
     }
-}
-
-struct BillMergeMonthEventWrap {
     
-    var currentMonthEventWrap : BillMonthEventWrap
-    
-    var merge : [BillDayEventWrap]
-    
-    init(with currentMonthEventWrap : BillMonthEventWrap , merge : [BillDayEventWrap]) {
-        self.currentMonthEventWrap = currentMonthEventWrap
-        self.merge = merge
-    }
+    var homeTotalBill : Double = 0.0
 }
 
 struct BillYearEventWrap {

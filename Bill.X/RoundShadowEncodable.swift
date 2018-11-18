@@ -121,7 +121,13 @@ extension String {
             return self
         }
     }
+    
+    public static func monthString(_ month : Int) -> String {
+        let monshs = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"]
+        return monshs[month - 1]
+    }
 }
+
 extension NSAttributedString{
     
     public class func strokeStyle(string : String, _ color : UIColor, _ fontSize : CGFloat) -> NSAttributedString{
@@ -130,7 +136,7 @@ extension NSAttributedString{
             [.backgroundColor:UIColor.clear,
              .font:UIFont.billDINBold(fontSize),
              .strokeColor:UIColor.gray,
-             .strokeWidth:1]
+             .strokeWidth:1/UIScreen.main.scale]
         return NSAttributedString.init(string: string,
                                        attributes: style)
     }
