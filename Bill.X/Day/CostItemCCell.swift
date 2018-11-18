@@ -47,7 +47,7 @@ class CostItemCCell: UICollectionViewCell, BillRoundShadowViewEnable {
         }
         
         self.costLabel.snp.makeConstraints { (make) in
-            make.right.equalTo(-3)
+            make.right.equalTo(-4)
             make.centerY.equalToSuperview()
             make.bottom.equalTo(-4)
             make.top.equalTo(4)
@@ -68,8 +68,8 @@ class CostItemCCell: UICollectionViewCell, BillRoundShadowViewEnable {
     
     public func update(with eventWrap : BillEventWrap) {
         
-        costLabel.text = "\(eventWrap.money)"
-        usedLabel.text = eventWrap.usage
+        costLabel.text = "\(eventWrap.money!)".billMoneyFormatter
+        usedLabel.text = eventWrap.usage!
     }
     
     override var isHighlighted: Bool{

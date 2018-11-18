@@ -8,8 +8,9 @@
 
 import UIKit
 import CoreGraphics
+import EventKit
 
-class DayViewController: UIViewController{
+class DayViewController: BillViewController{
 
     enum HandleCellStatus {
         case none
@@ -45,7 +46,6 @@ class DayViewController: UIViewController{
             self.cellStatus = .none
             self.indexPath = IndexPath.init()
             self.eventWrap = nil
-            
         }
     }
     
@@ -83,7 +83,7 @@ class DayViewController: UIViewController{
         self.dayEventWrap = dayEventWrap
         super.init(nibName: nil, bundle: nil)
         longPressGesture = UIPanGestureRecognizer.init(target: self,
-                                                       action: #selector(DayViewController.onLongPressAction(_:)))
+                                                       action: #selector(self.onLongPressAction(_:)))
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -110,15 +110,15 @@ class DayViewController: UIViewController{
         moneyLabel.font = UIFont.billPingFangSemibold(30)
         
         self.timeLabel.text = "\(String(describing: dayEventWrap!.month))-\(String(describing: dayEventWrap!.day))"
-        self.moneyLabel.text = "￥\(String(describing: dayEventWrap!.totalBill))"
+        self.moneyLabel.text = "￥\(String(describing: dayEventWrap!.totalBill))".billMoneyFormatter
         
         self.addButton.addTarget(self,
-                                 action: #selector(DayViewController.onAddItemAction),
+                                 action: #selector(self.onAddItemAction),
                                  for: .touchUpInside)
         
         timeLabel.snp.makeConstraints { (make) in
-            make.left.equalTo(16)
-            make.right.equalTo(-16)
+            make.left.equalTo(20)
+            make.right.equalTo(-20)
             make.top.equalTo(topLayoutGuide.snp.bottom).offset(20)
             make.height.equalTo(50)
         }
@@ -140,14 +140,32 @@ class DayViewController: UIViewController{
         }
         addButton.snp.makeConstraints { (make) in
             make.left.equalTo(20)
-            make.centerX.equalToSuperview()
+            make.right.equalTo(-20)
             make.height.equalTo(50)
             make.bottom.equalTo(bottomLayoutGuide.snp.top).offset(-40)
         }
     }
     
+    @objc override func onEventChange() {
+        
+        BillEventKitSupport.support.fetchBillEvent(year: self.dayEventWrap!.year, month: self.dayEventWrap!.month, day: self.dayEventWrap!.day) { (eventWraps) in
+            
+            self.dayEventWrap?.eventWraps = eventWraps
+            self.updateDayBillEvent()
+        }
+    }
+    
+    private func updateDayBillEvent() {
+        
+        self.moneyLabel.text = "￥\(String(describing: dayEventWrap!.totalBill))".billMoneyFormatter
+        
+        self.billCollectionView.reloadSections(IndexSet.init(integer: 0))
+    }
+    
     @objc func onAddItemAction() {
         
+        let edit = EditBillViewController.init(with: nil)
+        self.navigationController?.pushViewController(edit, animated: true)
     }
     
     @objc func onLongPressAction(_ gesture: UIPanGestureRecognizer) {

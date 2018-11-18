@@ -14,6 +14,7 @@
 		D7963ED5219846CD00B44397 /* BillEventKitSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7963ED4219846CD00B44397 /* BillEventKitSupport.swift */; };
 		D7963ED821987E6400B44397 /* BillCalendarSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7963ED721987E6400B44397 /* BillCalendarSupport.swift */; };
 		D7963EDC219C660900B44397 /* DayWasteContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7963EDB219C660900B44397 /* DayWasteContainerView.swift */; };
+		D7963EDE21A1493900B44397 /* BillViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7963EDD21A1493900B44397 /* BillViewController.swift */; };
 		D7C32E942196D0C90047A858 /* MonthHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C32E932196D0C90047A858 /* MonthHeaderView.swift */; };
 		D7C32E962196E28E0047A858 /* DirectionGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C32E952196E28E0047A858 /* DirectionGestureRecognizer.swift */; };
 		D7C32E982196FC490047A858 /* EdgeInsetsLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C32E972196FC490047A858 /* EdgeInsetsLabel.swift */; };
@@ -70,6 +71,7 @@
 		D7963ED4219846CD00B44397 /* BillEventKitSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillEventKitSupport.swift; sourceTree = "<group>"; };
 		D7963ED721987E6400B44397 /* BillCalendarSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillCalendarSupport.swift; sourceTree = "<group>"; };
 		D7963EDB219C660900B44397 /* DayWasteContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayWasteContainerView.swift; sourceTree = "<group>"; };
+		D7963EDD21A1493900B44397 /* BillViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillViewController.swift; sourceTree = "<group>"; };
 		D7C32E932196D0C90047A858 /* MonthHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthHeaderView.swift; sourceTree = "<group>"; };
 		D7C32E952196E28E0047A858 /* DirectionGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectionGestureRecognizer.swift; sourceTree = "<group>"; };
 		D7C32E972196FC490047A858 /* EdgeInsetsLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EdgeInsetsLabel.swift; sourceTree = "<group>"; };
@@ -187,6 +189,7 @@
 				F72FD594219589A4001B5F5F /* RoundShadowEncodable.swift */,
 				D7C32E952196E28E0047A858 /* DirectionGestureRecognizer.swift */,
 				D7C32E972196FC490047A858 /* EdgeInsetsLabel.swift */,
+				D7963EDD21A1493900B44397 /* BillViewController.swift */,
 				D7963ED6219856B600B44397 /* EventKitSupport */,
 				F72BBAC9219167380067EB09 /* Home */,
 				F72BBAC6219166EB0067EB09 /* Month */,
@@ -497,6 +500,7 @@
 				F788D2972191B118003694DF /* WeekHeaderView.swift in Sources */,
 				F72BBAC8219167100067EB09 /* HomeViewController.swift in Sources */,
 				F72FD591219587F9001B5F5F /* EditBillTextField.swift in Sources */,
+				D7963EDE21A1493900B44397 /* BillViewController.swift in Sources */,
 				D7C32E962196E28E0047A858 /* DirectionGestureRecognizer.swift in Sources */,
 				F788D2952191B065003694DF /* DayCCell.swift in Sources */,
 				F72FD5972195972D001B5F5F /* EditBillInputAccessoryView.swift in Sources */,

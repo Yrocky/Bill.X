@@ -8,12 +8,11 @@
 
 import UIKit
 
-class MonthViewController: UIViewController{
+class MonthViewController: BillViewController{
 
-    private let monthView = MonthHeaderView()
-    private let weekView = WeekHeaderView()
-    private var contentView = MonthContentView()
-    private let eventKitSupport = BillEventKitSupport.support
+    private var monthView : MonthHeaderView?
+    private var weekView : WeekHeaderView?
+    private var contentView : MonthContentView?
     
     var year : Int = 2018
     var month : Int = 11
@@ -34,36 +33,45 @@ class MonthViewController: UIViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        contentView.delegate = self
+        self.monthView = MonthHeaderView.init(frame: .zero)
+        self.weekView = WeekHeaderView.init(frame: .zero)
+        
+        self.contentView = MonthContentView.init(frame: .zero)
+        self.contentView?.delegate = self
         
         view.backgroundColor = .white
-        view.addSubview(monthView)
-        view.addSubview(weekView)
-        view.addSubview(contentView)
+        view.addSubview(self.monthView!)
+        view.addSubview(self.weekView!)
+        view.addSubview(self.contentView!)
         
         self.onLoadCurrentMonthEventWraps()
         
-        let directionGesture = DirectionGestureRecognizer.init(target: self, action: #selector(MonthViewController.onDirectionGestureAction))
+        let directionGesture = DirectionGestureRecognizer.init(target: self, action: #selector(self.onDirectionGestureAction))
         directionGesture.delegate = self
         view.addGestureRecognizer(directionGesture)
         
-        monthView.snp.makeConstraints { (make) in
+        monthView!.snp.makeConstraints { (make) in
             make.left.right.equalToSuperview()
             make.height.equalTo(76)
             make.top.equalTo(topLayoutGuide.snp.bottom)
         }
-        weekView.snp.makeConstraints { (make) in
+        weekView!.snp.makeConstraints { (make) in
             make.left.equalToSuperview().offset(7.0)
             make.right.equalToSuperview().offset(-7.0)
             make.height.equalTo(60)
-            make.top.equalTo(monthView.snp.bottom)
+            make.top.equalTo(monthView!.snp.bottom)
         }
-        contentView.snp.makeConstraints { (make) in
+        contentView!.snp.makeConstraints { (make) in
             make.left.right.equalTo(view)
-            make.top.equalTo(weekView.snp.bottom)
-            make.bottom.equalTo(bottomLayoutGuide.snp.top)
+            make.top.equalTo(weekView!.snp.bottom).offset(0)
+            make.bottom.equalTo(bottomLayoutGuide.snp.top).offset(-20)
         }
         // Do any additional setup after loading the view.
+    }
+    
+    @objc override func onEventChange() {
+        
+        self.onLoadCurrentMonthEventWraps()
     }
     
     private func onLoadCurrentMonthEventWraps() {
@@ -95,14 +103,14 @@ class MonthViewController: UIViewController{
     
     private func _loadEventWraps(at month : Int) {
         
-        eventKitSupport.complementedBillEventForMonth(year: self.year, month: month) { (merge) in
+        BillEventKitSupport.support.complementedBillEventForMonth(year: self.year, month: month) { (merge) in
             
             let current = merge.currentMonthEventWrap
             
             self.dayEventWraps = merge.merge
             
-            self.monthView.totalLabel.text = "￥\(current.totalBill)"
-            self.contentView.updateData(with: self.dayEventWraps,
+            self.monthView!.totalLabel.text = "￥\(current.totalBill)".billMoneyFormatter
+            self.contentView!.updateData(with: self.dayEventWraps,
                                         at: self.year,
                                         month: month)
         }
@@ -116,16 +124,16 @@ class MonthViewController: UIViewController{
             offset = offset > 0 ? pow(offset, 0.7) : -pow(-offset, 0.7);
 
             if (gesture.direction == .up) {
-                self.contentView.transform = CGAffineTransform.init(translationX: 0, y: offset)
+                self.contentView!.transform = CGAffineTransform.init(translationX: 0, y: offset)
             }
             if (gesture.direction == .down) {
-                self.contentView.transform = CGAffineTransform.init(translationX: 0, y: offset)
+                self.contentView!.transform = CGAffineTransform.init(translationX: 0, y: offset)
             }
             if (gesture.direction == .left) {
-                self.contentView.transform = CGAffineTransform.init(translationX: offset, y: 0)
+                self.contentView!.transform = CGAffineTransform.init(translationX: offset, y: 0)
             }
             if (gesture.direction == .right) {
-                self.contentView.transform = CGAffineTransform.init(translationX: offset, y: 0)
+                self.contentView!.transform = CGAffineTransform.init(translationX: offset, y: 0)
             }
         }else if(gesture.state == .ended ||
             gesture.state == .failed){
@@ -133,7 +141,7 @@ class MonthViewController: UIViewController{
             let timingParameters = UISpringTimingParameters.init(dampingRatio: 0.125, initialVelocity: CGVector.init(dx: 0.3, dy: 0.3))
             let animator = UIViewPropertyAnimator.init(duration: 0.25, timingParameters: timingParameters)
             animator.addAnimations {
-                self.contentView.transform = .identity
+                self.contentView!.transform = .identity
             }
             animator.startAnimation()
         }
@@ -147,17 +155,17 @@ extension MonthViewController : UIGestureRecognizerDelegate {
         let _view = gestureRecognizer.view
         let point : CGPoint = gestureRecognizer.location(in: _view)
 
-        if !self.contentView.frame.contains(point) {
+        if !self.contentView!.frame.contains(point) {
             return true
         }
         
-        let dayCells : [DayCCell] = contentView.contentView.visibleCells as! [DayCCell]
+        let dayCells : [DayCCell] = contentView!.contentView.visibleCells as! [DayCCell]
         
         let canNotGestureRects = dayCells.filter { (cell) -> Bool in
             return cell.status != .invalid
             }.map { (cell) -> CGRect in
                 return CGRect.init(x: cell.frame.minX,
-                                   y: cell.frame.minY + self.contentView.frame.minY,
+                                   y: cell.frame.minY + self.contentView!.frame.minY,
                                    width: cell.frame.width,
                                    height: cell.frame.height)
             }

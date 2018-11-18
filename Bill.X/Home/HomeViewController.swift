@@ -33,22 +33,14 @@ class BillHandleButton : UIButton {
     }
 }
 
-class HomeViewController: UIViewController, UICollectionViewDataSource,UICollectionViewDelegate {
+class HomeViewController: BillViewController,
+UICollectionViewDataSource,
+UICollectionViewDelegate {
     
     let eventKitSupport = BillEventKitSupport.support
     
     var addButton = BillHandleButton.init(with: "Add now")
 
-    let animatioinButton : UIButton = {
-       
-        let button = UIButton.init(type: .system)
-        button.setTitle("Animation", for: .normal)
-        button.addTarget(self,
-                         action: #selector(HomeViewController.animActioin),//Selector(("animActioin")),
-                         for: .touchUpInside)
-        return button
-    }()
-    
     lazy var monthView : UICollectionView = {
         
         let minimumLineSpacing : CGFloat = 20.0
@@ -132,49 +124,43 @@ class HomeViewController: UIViewController, UICollectionViewDataSource,UICollect
                 }
             }
         }
-        
+    }
+    
+    @objc override func onEventChange() {
+    
         
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        titleLabel.text = "seq"
-        
-//        titleLabel.attributedText = NSAttributedString.init(string: "Seq",
-//                                                            attributes: [.foregroundColor:UIColor.clear,
-//                                                                         .font:UIFont.systemFont(ofSize: 50),
-//                                                                         .strokeColor:UIColor.blue,
-//                                                                         .strokeWidth:1])
-        self.titleLabel.textColor = .orange
+        self.titleLabel.font = UIFont.billDINBold(60)
+        self.titleLabel.text = "2018"
+        self.titleLabel.textAlignment = .left
+        self.titleLabel.textColor = .billBlue
         view.addSubview(titleLabel)
         view.addSubview(self.monthView)
         view.addSubview(self.addButton)
-        view.addSubview(self.animatioinButton)
         
         addButton.addTarget(self,
-                            action: #selector(HomeViewController.onAddItemAction),
+                            action: #selector(self.onAddItemAction),
                             for: .touchUpInside)
 
 
+        titleLabel.snp.makeConstraints { (make) in
+            make.right.equalToSuperview()
+            make.left.equalTo(20)
+            make.top.equalTo(self.topLayoutGuide.snp.bottom).offset(20)
+        }
         self.monthView.snp.makeConstraints { (make) in
             make.left.right.equalToSuperview()
-            make.top.equalTo(topLayoutGuide.snp.bottom).offset(20)
+            make.top.equalTo(titleLabel.snp.bottom).offset(20)
             make.bottom.equalTo(addButton.snp.top).offset(-30)
-        }
-        titleLabel.snp.makeConstraints { (make) in
-            make.left.right.equalToSuperview()
-            make.top.equalTo(monthView.snp.bottom)
-        }
-        animatioinButton.snp.makeConstraints { (make) in
-            make.left.equalTo(titleLabel)
-            make.top.equalTo(titleLabel.snp.bottom)
-            make.size.equalTo(CGSize.init(width: 150, height: 100))
         }
         addButton.snp.makeConstraints { (make) in
             make.left.equalTo(20)
-            make.centerX.equalToSuperview()
             make.height.equalTo(50)
+            make.right.equalTo(-20)
             make.bottom.equalTo(bottomLayoutGuide.snp.top).offset(-40)
         }
     }
@@ -199,7 +185,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource,UICollect
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        let eventWrap = BillEventWrap.eventWrap(with: self.eventKitSupport.eventStore,
+        let eventWrap = BillEventWrap.eventWrap(with: self.eventKitSupport,
                                                 money: 42,
                                                 usage: "看电影")
         self.eventKitSupport.addBillEvent(eventWrap) { (success) in

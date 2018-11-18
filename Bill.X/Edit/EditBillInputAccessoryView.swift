@@ -42,7 +42,7 @@ class EditBillInputAccessoryView: UIView {
         self.cancelButton?.setTitle("Cancel", for: .normal)
         self.cancelButton?.setTitleColor(UIColor.billBlack, for: .normal)
         self.cancelButton?.addTarget(self,
-                                     action: #selector(EditBillInputAccessoryView.onCancelAction),
+                                     action: #selector(self.onCancelAction),
                                      for: .touchUpInside)
         addSubview(self.cancelButton!)
         
@@ -50,7 +50,7 @@ class EditBillInputAccessoryView: UIView {
         self.preButton?.setImage(UIImage.init(named: "bill_edit_input_accessory_pre_normal"), for: .normal)
         self.preButton?.setImage(UIImage.init(named: "bill_edit_input_accessory_pre_disable"), for: .disabled)
         self.preButton?.addTarget(self,
-                                     action: #selector(EditBillInputAccessoryView.onPreAction),
+                                     action: #selector(self.onPreAction),
                                      for: .touchUpInside)
         addSubview(self.preButton!)
         
@@ -58,7 +58,7 @@ class EditBillInputAccessoryView: UIView {
         self.nextButton?.setImage(UIImage.init(named: "bill_edit_input_accessory_next_normal"), for: .normal)
         self.nextButton?.setImage(UIImage.init(named: "bill_edit_input_accessory_next_disable"), for: .disabled)
         self.nextButton?.addTarget(self,
-                                  action: #selector(EditBillInputAccessoryView.onNextAction),
+                                  action: #selector(self.onNextAction),
                                   for: .touchUpInside)
         addSubview(self.nextButton!)
         
@@ -67,8 +67,8 @@ class EditBillInputAccessoryView: UIView {
         self.saveButton?.setTitle("Save", for: .normal)
         self.saveButton?.setTitleColor(UIColor.billOrange, for: .normal)
         self.saveButton?.addTarget(self,
-                                     action: #selector(EditBillInputAccessoryView.onSaveAction),
-                                     for: .touchUpInside)
+                                   action: #selector(self.onSaveAction),
+                                   for: .touchUpInside)
         addSubview(self.saveButton!)
         
         self.cancelButton?.snp.makeConstraints({ (make) in

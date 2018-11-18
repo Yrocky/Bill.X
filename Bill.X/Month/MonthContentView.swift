@@ -27,13 +27,15 @@ class MonthContentView : UIView, UICollectionViewDataSource, UICollectionViewDel
     override init(frame: CGRect) {
         
         let layout = UICollectionViewFlowLayout()
-        layout.sectionInset = UIEdgeInsets.init(top: 7, left: 7.0, bottom: 20, right: 7.0)
+        layout.sectionInset = UIEdgeInsets.init(top: 10, left: 7.0, bottom: 20, right: 7.0)
         layout.minimumLineSpacing = 7.0
         layout.minimumInteritemSpacing = 7.0
         
         self.contentView = UICollectionView.init(frame: .zero, collectionViewLayout: layout)
+        self.contentView.clipsToBounds = false
         super.init(frame: frame)
         
+        clipsToBounds = false
         backgroundColor = .clear
         contentView.delegate = self
         contentView.dataSource = self
@@ -76,8 +78,14 @@ class MonthContentView : UIView, UICollectionViewDataSource, UICollectionViewDel
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        let width = (collectionView.frame.width - 8 * 7.0) / 7.0
-        let height = (collectionView.frame.height - 6 * 7.0 - 20) / 6.0
+        let layout = collectionViewLayout as! UICollectionViewFlowLayout
+        let sectionInsetV = layout.sectionInset.top + layout.sectionInset.bottom
+        let sectionInsetH = layout.sectionInset.left + layout.sectionInset.right
+        let lineSpacing = layout.minimumLineSpacing
+        let interitemSpacing = layout.minimumInteritemSpacing
+        
+        let width = (collectionView.frame.width - sectionInsetH - 6 * interitemSpacing) / 7.0
+        let height = (collectionView.frame.height - sectionInsetV - 5 * lineSpacing) / 6.0
         return CGSize.init(width: width, height: height)
     }
     

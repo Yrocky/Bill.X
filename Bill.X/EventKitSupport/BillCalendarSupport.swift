@@ -35,6 +35,15 @@ extension Date {
             return "\(self.year)-\(self.month)-\(self.day)"
         }
     }
+    public var tomorrow : Date {
+        get {
+            var comps = DateComponents()
+            comps.year = year
+            comps.month = month
+            comps.day = day
+            return Calendar.current.nextDate(after: self, matching: comps, matchingPolicy: .nextTime) ?? self
+        }
+    }
 }
 
 extension Calendar{

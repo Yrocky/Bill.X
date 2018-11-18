@@ -24,7 +24,7 @@ class DayCCell: UICollectionViewCell ,BillRoundShadowViewEnable{
     
     var status : DayViewStatus{
         didSet{
-            self.moneyLabel.isHidden = Int(self.money) == 0
+            self.moneyLabel.isHidden = Double(self.money) == 0.0
             switch status {
             case .empty:
                 self.contentView.backgroundColor = .white
@@ -88,7 +88,7 @@ class DayCCell: UICollectionViewCell ,BillRoundShadowViewEnable{
     public func update(with dayEventWrap : BillDayEventWrap ,at year: Int , month : Int) {
         
         self.day = "\(dayEventWrap.day)"
-        self.money = "\(dayEventWrap.totalBill)"
+        self.money = "\(dayEventWrap.totalBill)".billMoneyFormatter
         
         let isToday = Calendar.current.isToday(compareWith: dayEventWrap.year,
                                                month: dayEventWrap.month,
@@ -101,7 +101,7 @@ class DayCCell: UICollectionViewCell ,BillRoundShadowViewEnable{
         }
         else if isCurrentMonth {
             
-            if dayEventWrap.totalBill == 0 {
+            if dayEventWrap.totalBill == 0.0 {
                 self.status = .empty
             }else{
                 self.status = .hasValue

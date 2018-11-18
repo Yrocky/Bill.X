@@ -13,15 +13,15 @@ class BillEventWrap: NSObject {
 
     private(set) var event : EKEvent
     
-    var money : Int = 0
-    var usage : String = ""
-    var notes : String = ""
+    var money : Double? = 0.0
+    var usage : String? = ""
+    var notes : String? = ""
     var date : Date = Date()
     
     ///创建一个新的event，使用wrap来表示
-    public static func eventWrap(with eventStore: EKEventStore ,
-                                 money : Int ,
-                                 usage : String) -> BillEventWrap{
+    public static func eventWrap(with eventStoreSupport: BillEventKitSupport ,
+                                 money : Double? ,
+                                 usage : String?) -> BillEventWrap{
         
         var comps = DateComponents()///<for debug
         comps.year = 2017
@@ -29,11 +29,13 @@ class BillEventWrap: NSObject {
         comps.day = 23
         let date = Date()//Calendar.current.date(from: comps)
         
-        let event = EKEvent.init(eventStore: eventStore)
-        event.title = "\(usage):\(money)"
+        let event = EKEvent.init(eventStore: eventStoreSupport.eventStore)
+        if let usage = usage , let money = money {
+            event.title = "\(usage):\(money)"
+            event.notes = "\(usage) 花费 \(money)元"
+        }
         event.startDate = date
         event.endDate = event.startDate
-        event.notes = "\(usage) 花费 \(money)元"
         let eventWrap = BillEventWrap.init(with: event)
         return eventWrap
     }
@@ -46,7 +48,7 @@ class BillEventWrap: NSObject {
         if event.title != nil{
             let infos = event.title.components(separatedBy: ":")
             if infos.count == 2 {
-                self.money = Int(infos.last!) ?? 0
+                self.money = Double(infos.last!) ?? 0.0
                 self.usage = infos.first!
             }
             self.notes = event.notes ?? ""
@@ -58,6 +60,20 @@ class BillEventWrap: NSObject {
         event.calendar = calendar
     }
     
+    public func updateEvent() {
+        
+        if let usage = self.usage , let money = self.money {
+            event.title = "\(usage):\(money)"
+            if let notes = self.notes {
+              event.notes = notes
+            } else {
+                event.notes = "\(usage) 花费 \(money)元"
+            }
+        }
+        event.startDate = date
+        event.endDate = event.startDate
+    }
+    
     override var debugDescription: String{
         get{
             return self.description
@@ -66,7 +82,7 @@ class BillEventWrap: NSObject {
     
     override var description: String{
         get{
-            return "\(date) \(money) :" + event.title
+            return "\(self.date) \(self.money!) :" + event.title
         }
     }
 }
@@ -79,11 +95,11 @@ struct BillDayEventWrap {
     
     var eventWraps : [BillEventWrap] = []
     
-    var totalBill : Int {
+    var totalBill : Double {
         get{
-            var sum = 0
+            var sum = 0.0
             for eventWrap in eventWraps {
-                sum += eventWrap.money
+                sum += eventWrap.money!
             }
             return sum
         }
@@ -106,9 +122,9 @@ struct BillMonthEventWrap {
     var month : Int = 0
     var dayEventWraps : [BillDayEventWrap] = []
     
-    var totalBill : Int {
+    var totalBill : Double {
         get{
-            var sum = 0
+            var sum = 0.0
             for dayEventWrap in dayEventWraps {
                 sum += dayEventWrap.totalBill
             }
@@ -135,9 +151,9 @@ struct BillYearEventWrap {
     
     var monthEventWraps : [BillMonthEventWrap] = []
     
-    var totalBill : Int {
+    var totalBill : Double {
         get{
-            var sum = 0
+            var sum = 0.0
             for monthEventWrap in monthEventWraps {
                 sum += monthEventWrap.totalBill
             }

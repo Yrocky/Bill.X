@@ -8,6 +8,12 @@
 
 import UIKit
 
+protocol EditBillViewControllerDelegate : class{
+
+    func editViewControllerDidModif(_ eventWrap : BillEventWrap) -> Void
+    func editViewControllerDidAdd(_ eventWrap : BillEventWrap) -> Void
+}
+
 class EditBillViewController: UIViewController {
 
     private(set) var eventWrap : BillEventWrap?
@@ -19,16 +25,17 @@ class EditBillViewController: UIViewController {
     private(set) var billInputAccessoryView : EditBillInputAccessoryView?
     
     public var canEditDate : Bool = false
+    public weak var delegate : EditBillViewControllerDelegate?
     
     var keyboardHeight : CGFloat = (UIDevice.current.isIphoneXShaped() ? (216+34) : 216)
     
     deinit {
+        print("EditBillViewController deinit")
         NotificationCenter.default.removeObserver(self)
     }
     
     public init(with eventWrap : BillEventWrap?) {
         self.eventWrap = eventWrap
-        self.canEditDate = eventWrap == nil
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -53,15 +60,14 @@ class EditBillViewController: UIViewController {
         
         self.editUsage = EditBillTextField.init(frame: .zero)
         self.editUsage?.placeholder = "Cost usage"
-        self.editUsage?.font = UIFont.billPingFang(16, weight: .light)
+        self.editUsage?.font = UIFont.billPingFang(16, weight: .medium)
         self.editUsage?.delegate = self
         self.contentView!.addSubview(self.editUsage!)
         
         self.editDate = BillHandleButton.init(with: Date().ymd)
         self.editDate?.addTarget(self,
-                                 action: #selector(EditBillViewController.onEditDateAction), for: .touchUpInside)
+                                 action: #selector(self.onEditDateAction), for: .touchUpInside)
         self.editDate?.titleLabel?.font = UIFont.billDINBold(17)
-        self.editDate?.isEnabled = self.canEditDate
         self.contentView!.addSubview(self.editDate!)
         
         self.editNotes = BillTextViewWrapView.init(frame: .zero)
@@ -73,10 +79,11 @@ class EditBillViewController: UIViewController {
 
         self.billInputAccessoryView = EditBillInputAccessoryView.init(frame: .zero)
         self.billInputAccessoryView?.isHidden = true
+        self.billInputAccessoryView?.delegate = self
         self.contentView!.addSubview(self.billInputAccessoryView!)
         
         if let eventWrap = self.eventWrap {
-            self.editMoney?.text = "\(eventWrap.money)"
+            self.editMoney?.text = "\(eventWrap.money!)".billMoneyFormatter
             self.editUsage?.text = eventWrap.usage
             self.editNotes?.textView?.text = eventWrap.notes
             self.editDate?.setTitle(eventWrap.date.ymd, for: .normal)
@@ -90,7 +97,7 @@ class EditBillViewController: UIViewController {
             make.height.equalTo(44)
             make.trailing.equalTo(self.contentView!.snp.centerX).offset(-5)
             make.top.equalToSuperview().offset(20)
-            make.bottom.equalTo(self.editDate!.snp.top).offset(-10)
+            make.bottom.equalTo(self.editNotes!.snp.top).offset(-10)
         })
         
         self.editUsage?.snp.makeConstraints({ (make) in
@@ -98,37 +105,36 @@ class EditBillViewController: UIViewController {
             make.height.top.equalTo(self.editMoney!)
             make.leading.equalTo(self.contentView!.snp.centerX).offset(5)
         })
-        
-        self.editDate?.snp.makeConstraints({ (make) in
-            make.right.equalToSuperview().offset(-16)
-            make.left.equalTo(self.editMoney!)
-            make.right.equalTo(self.editUsage!)
-            make.height.equalTo(self.editMoney!)
-            make.top.equalTo(self.editMoney!.snp.bottom).offset(10)
-        })
         self.editNotes?.snp.makeConstraints({ (make) in
             make.left.equalTo(self.editMoney!)
             make.right.equalTo(self.editDate!)
-            make.top.equalTo(self.editDate!.snp.bottom).offset(10)
+            make.top.equalTo(self.editMoney!.snp.bottom).offset(10)
             make.height.equalTo(60)
+            make.bottom.equalTo(self.editDate!.snp.top).offset(-10)
+        })
+        self.editDate?.snp.makeConstraints({ (make) in
+            make.left.equalTo(self.editMoney!)
+            make.right.equalTo(self.editUsage!)
+            make.height.equalTo(self.editMoney!)
+            make.top.equalTo(self.editNotes!.snp.bottom).offset(10)
             make.bottom.equalToSuperview().offset(-keyboardHeight)
         })
         self.billInputAccessoryView?.snp.makeConstraints({ (make) in
             make.left.right.equalToSuperview()
             make.height.equalTo(54)
-            make.top.equalTo(self.editNotes!.snp.bottom).offset(10)
+            make.top.equalTo(self.editDate!.snp.bottom).offset(10)
         })
 
         NotificationCenter.default.addObserver(self,
-                                               selector: #selector(EditBillViewController.onKeyboardShow(_:)),
+                                               selector: #selector(self.onKeyboardShow(_:)),
                                                name:UIResponder.keyboardWillShowNotification,
                                                object: nil)
         NotificationCenter.default.addObserver(self,
-                                               selector: #selector(EditBillViewController.onKeyboardShow(_:)),
+                                               selector: #selector(self.onKeyboardShow(_:)),
                                                name:UIResponder.keyboardWillChangeFrameNotification,
                                                object: nil)
         NotificationCenter.default.addObserver(self,
-                                               selector: #selector(EditBillViewController.onKeyboardHidden(_:)),
+                                               selector: #selector(self.onKeyboardHidden(_:)),
                                                name:UIResponder.keyboardWillHideNotification,
                                                object: nil)
     }
@@ -158,7 +164,7 @@ extension EditBillViewController {
             let duraction = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as! TimeInterval
             UIView.animate(withDuration: duraction) {
                 self.billInputAccessoryView?.isHidden = false
-                self.editNotes?.snp.updateConstraints({ (make) in
+                self.editDate?.snp.updateConstraints({ (make) in
                     make.bottom.equalToSuperview().offset(-self.keyboardHeight)
                 })
             }
@@ -193,5 +199,50 @@ extension EditBillViewController : UITextViewDelegate,UITextFieldDelegate{
                                                               nextButtonValid: false)
         self.billInputAccessoryView?.preView = self.editUsage
         self.billInputAccessoryView!.nextView = nil
+    }
+}
+
+extension EditBillViewController : EditBillInputAccessoryViewDelegate {
+    
+    func inputAccessoryViewDidOnPre() {
+        
+    }
+    
+    func inputAccessoryViewDidOnNext() {
+        
+    }
+    
+    func inputAccessoryViewDidOnCancel() {
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    func inputAccessoryViewDidOnSave() {
+        
+        let money = self.editMoney!.text ?? "0"
+        let usage = self.editUsage!.text ?? ""
+        let notes = self.editNotes!.textView!.text ?? ""
+        
+        if self.eventWrap == nil {///create
+            self.eventWrap = BillEventWrap.eventWrap(with: BillEventKitSupport.support,
+                                                     money: Double(money) ?? 0.0,
+                                                     usage: usage)
+            self.eventWrap!.notes = notes
+            BillEventKitSupport.support.addBillEvent(self.eventWrap!) { (finish) in
+                if finish {
+                    self.navigationController?.popViewController(animated: true)
+                }
+            }
+        }else{///modif
+            self.eventWrap!.money = Double(money) ?? 0.0
+            self.eventWrap!.usage = usage
+            self.eventWrap!.notes = notes
+            BillEventKitSupport.support.updateBillEvent(self.eventWrap!) { (finish) in
+                
+                if finish {
+                    self.navigationController?.popViewController(animated: true)
+                }
+            }
+        }
+        
     }
 }

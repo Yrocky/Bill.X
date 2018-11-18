@@ -10,11 +10,11 @@ import UIKit
 
 class MonthHeaderView: UIView {
 
-    let monthLabel = UILabel()
+    var monthLabel : UILabel?
     lazy var totalLabel : UILabel = {
         let l = UILabel()
         l.textAlignment = .right
-        l.text = "￥4,756"
+        l.text = "￥0"
         l.font = UIFont.billPingFangSemibold(30)
         l.textColor = .billBlack
         return l
@@ -23,19 +23,21 @@ class MonthHeaderView: UIView {
         super.init(frame: frame)
         backgroundColor = .clear
         
-        monthLabel.textColor = .billBlue
-        monthLabel.textAlignment = .left
-        monthLabel.font = UIFont.billDINBold(50)
-        monthLabel.text = "Seq"
-        addSubview(monthLabel)
+        self.monthLabel = UILabel.init(frame: .zero)
+        monthLabel?.textColor = .billBlue
+        monthLabel?.textAlignment = .left
+        monthLabel?.font = UIFont.billDINBold(48)
+        monthLabel?.text = "Seq"
+        addSubview(monthLabel!)
         addSubview(self.totalLabel)
         
-        monthLabel.snp.makeConstraints { (make) in
-            make.left.equalTo(12)
-            make.bottom.equalTo(-12)
+        monthLabel!.snp.makeConstraints { (make) in
+            make.left.equalTo(20)
+            make.top.equalTo(20)
         }
         totalLabel.snp.makeConstraints { (make) in
-            make.right.bottom.equalTo(-12)
+            make.right.equalTo(-20)
+            make.bottom.equalTo(monthLabel!)
         }
     }
     

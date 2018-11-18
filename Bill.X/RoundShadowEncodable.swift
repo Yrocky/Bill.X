@@ -32,8 +32,8 @@ extension BillRoundShadowViewEnable{
         
         view.layer.cornerRadius = CGFloat(cornerRadius)
         view.layer.shadowColor = UIColor.init(red: 111.0/255.0, green: 115.0/255.0, blue: 118.0/255.0, alpha: 1).cgColor
-        view.layer.shadowOffset = CGSize.init(width: 2, height: 0)
-        view.layer.shadowRadius = 3
+        view.layer.shadowOffset = CGSize.init(width: 2, height: 2)
+        view.layer.shadowRadius = 10
         view.layer.shadowOpacity = 0.2
     }
 }
@@ -111,6 +111,17 @@ extension UIFont{
     
 }
 
+extension String {
+    
+    public var billMoneyFormatter : String{
+        get {
+            if self.hasSuffix(".0") {
+                return self.components(separatedBy: ".").first!
+            }
+            return self
+        }
+    }
+}
 extension NSAttributedString{
     
     public class func strokeStyle(string : String, _ color : UIColor, _ fontSize : CGFloat) -> NSAttributedString{

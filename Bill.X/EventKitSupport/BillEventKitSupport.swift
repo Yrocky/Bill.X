@@ -124,6 +124,7 @@ extension BillEventKitSupport {
         }
         
         do {
+            eventWrap.updateEvent()
             eventWrap.calendar(self.calendar!)
             
             try self.eventStore.save(eventWrap.event, span: .thisEvent, commit:true)
@@ -186,7 +187,7 @@ extension BillEventKitSupport {
         }
         
         let start = Calendar.current.dateWith(year: year, month: month, day: day)
-        let last = Date()
+        let last = Date.init(timeInterval: 24*60*60, since: start)
         
         self.asyncFetchBillEventAt(range: (start,last)) { (eventWraps) in
             result(eventWraps)
@@ -231,6 +232,7 @@ extension BillEventKitSupport {
             return
         }
         
+        eventWrap.updateEvent()
         do {
             try self.eventStore.save(eventWrap.event, span: .thisEvent, commit: true)
             completion(true)
@@ -243,8 +245,8 @@ extension BillEventKitSupport {
     
     private func asyncFetchBillEventAt(range : (start: Date,last : Date) , _ result : @escaping EventKitSupportFetchResultBlock) {
         
-        DispatchQueue.global().async {
-            
+//        DispatchQueue.global().async {
+        
             let predicate = self.eventStore.predicateForEvents(withStart: range.start, end: range.last, calendars: [self.calendar!])
             
             let eventWraps = self.eventStore.events(matching: predicate).map({ (event) -> BillEventWrap in
@@ -253,7 +255,7 @@ extension BillEventKitSupport {
             DispatchQueue.main.async {
                 result(eventWraps)
             }
-        }
+//        }
     }
 }
 
