@@ -227,9 +227,10 @@ BillMonthPresentAnimatorProtocol{
 
         let month = MonthViewController.init(with: monthEventWrap.year,
                                              month: monthEventWrap.month)
-        month.transitioningDelegate  = self
-        month.modalPresentationStyle = .custom
-        self.present(month, animated: true, completion: nil)
+        self.navigationController?.pushViewController(month, animated: true)
+//        month.transitioningDelegate  = self
+//        month.modalPresentationStyle = .custom
+//        self.present(month, animated: true, completion: nil)
     }
 }
 

@@ -7,12 +7,15 @@
 //
 
 import UIKit
+import ScrollableGraphView
 
 class MonthViewController: BillViewController{
 
     private var monthView : MonthHeaderView?
     private var weekView : WeekHeaderView?
     private var contentView : MonthContentView?
+    private var graphView : ScrollableGraphView?
+    private var graphDatas : [Double]?
     
     var year : Int = 2018
     var month : Int = 11
@@ -43,11 +46,56 @@ class MonthViewController: BillViewController{
         view.addSubview(self.weekView!)
         view.addSubview(self.contentView!)
         
+        let frame = CGRect.init(x: 0, y: 100, width: view.frame.width, height: 200)
+        let graphView = ScrollableGraphView(frame: frame, dataSource: self)
+        graphView.backgroundFillColor = .white
+        graphView.rangeMin = 0
+        graphView.rangeMax = 90
+        graphView.dataPointSpacing = 40
+        graphView.shouldAdaptRange = true
+        graphView.shouldRangeAlwaysStartAtZero = true
+        
+        let linePlot = LinePlot(identifier: "bill")
+        linePlot.lineWidth = 2
+        linePlot.animationDuration = 1.25
+        linePlot.lineColor = .billBlue
+        linePlot.lineStyle = .smooth
+        linePlot.shouldFill = true
+        linePlot.fillType = .gradient
+        linePlot.fillGradientType = .radial
+        linePlot.fillGradientStartColor = .billBlue
+        linePlot.fillGradientEndColor = UIColor.billBlue.withAlphaComponent(0)
+        
+        linePlot.adaptAnimationType = ScrollableGraphViewAnimationType.elastic
+        graphView.addPlot(plot: linePlot)
+        
+        let dotPlot = DotPlot(identifier: "money")
+        dotPlot.dataPointType = .circle
+        dotPlot.animationDuration = 1.25
+        dotPlot.dataPointSize = 4
+        dotPlot.dataPointFillColor = .billBlueHighlight
+        dotPlot.adaptAnimationType = ScrollableGraphViewAnimationType.elastic
+        graphView.addPlot(plot: dotPlot)
+
+        let referenceLines = ReferenceLines()
+        referenceLines.referenceLineLabelFont = .billDINBold(12)
+        referenceLines.referenceLineLabelColor = .billOrange
+        referenceLines.dataPointLabelColor = .billBlack
+        referenceLines.dataPointLabelFont = .billPingFang(12, weight: .light)
+        referenceLines.positionType = .absolute
+        referenceLines.dataPointLabelsSparsity = 3
+        referenceLines.absolutePositions = [35, 55, 100]// 35工作日一天，55周末1天，100特殊情况一天
+        referenceLines.dataPointLabelBottomMargin = 10
+//        referenceLines.includeMinMax = false
+        graphView.addReferenceLines(referenceLines: referenceLines)
+        
+        view.addSubview(graphView)
+        
         self.onLoadCurrentMonthEventWraps()
         
         let directionGesture = DirectionGestureRecognizer.init(target: self, action: #selector(self.onDirectionGestureAction))
         directionGesture.delegate = self
-        view.addGestureRecognizer(directionGesture)
+//        view.addGestureRecognizer(directionGesture)
         
         monthView!.snp.makeConstraints { (make) in
             make.left.right.equalToSuperview()
@@ -107,12 +155,16 @@ class MonthViewController: BillViewController{
             let current = merge.currentMonthEventWrap
             
             self.dayEventWraps = merge.merge
+            self.graphDatas = merge.currentMonthEventWrap.dayEventWraps.map({ (eventWrap) -> Double in
+                return eventWrap.totalBill
+            })
             
             self.monthView?.monthLabel?.text = String.monthString(month)
             self.monthView!.totalLabel.text = "￥\(current.totalBill)".billMoneyFormatter
             self.contentView!.updateData(with: self.dayEventWraps,
                                         at: self.year,
                                         month: month)
+            self.graphView?.reload()
         }
     }
     
@@ -190,5 +242,27 @@ extension MonthViewController : MonthContentViewDelegate{
         
         let day = DayViewController.init(with: self.dayEventWraps[index])
         navigationController?.pushViewController(day, animated: true)
+    }
+}
+
+extension MonthViewController : ScrollableGraphViewDataSource {
+
+    func value(forPlot plot: Plot, atIndex pointIndex: Int) -> Double {
+        if plot.identifier == "bill" || plot.identifier == "money" {
+            if let graphDatas = self.graphDatas {
+                if pointIndex < graphDatas.count {
+                    return graphDatas[pointIndex]
+                }
+            }
+        }
+        return 0
+    }
+    
+    func label(atIndex pointIndex: Int) -> String {
+        return "\(pointIndex + 1)"
+    }
+    func numberOfPoints() -> Int {
+        let date = Calendar.current.dateWith(year: self.year, month: self.month, day: 1)
+        return Calendar.current.totalDaysOfMonth(for: date)
     }
 }
