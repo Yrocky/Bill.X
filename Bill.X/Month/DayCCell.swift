@@ -87,7 +87,8 @@ class DayCCell: UICollectionViewCell ,BillRoundShadowViewEnable{
         }
         
         moneyLabel.snp.makeConstraints { (make) in
-            make.top.equalToSuperview().offset(20)
+            let offset = UIDevice.current.isIphoneXShaped() ? 20 : 15
+            make.top.equalTo(contentView.snp.top).offset(offset)
             make.left.equalTo(1)
             make.right.equalTo(-1)
         }

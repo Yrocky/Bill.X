@@ -11,11 +11,34 @@ import ScrollableGraphView
 
 class MonthViewController: BillViewController{
 
+    struct MonthDisplayStatus {
+    
+        enum DisplayViewType {
+            case none
+            case graphView
+            case dismissView
+            case preView
+            case nextView
+        }
+        var displayView : DisplayViewType = .none
+        
+        var canChangeDisplay : Bool = false
+        
+        mutating func reset() {
+            displayView = .none
+            canChangeDisplay = false
+        }
+    }
+    
     private var monthView : MonthHeaderView?
     private var weekView : WeekHeaderView?
     private var contentView : MonthContentView?
     private var graphView : ScrollableGraphView?
+    private var monthMaskView : MonthMaskView?
+    
     private var graphDatas : [Double]?
+    
+    private var displayStatus = MonthDisplayStatus()
     
     var year : Int = 2018
     var month : Int = 11
@@ -42,18 +65,26 @@ class MonthViewController: BillViewController{
         self.contentView = MonthContentView.init(frame: .zero)
         self.contentView?.delegate = self
         
+        self.monthMaskView = MonthMaskView.init(frame: .zero)
+        self.monthMaskView?.alpha = 0.0
+        self.monthMaskView?.tapAction = {
+            self.resetView()
+        }
+        
         view.addSubview(self.monthView!)
         view.addSubview(self.weekView!)
         view.addSubview(self.contentView!)
+        view.addSubview(self.monthMaskView!)
         
-        let frame = CGRect.init(x: 0, y: 100, width: view.frame.width, height: 200)
-        let graphView = ScrollableGraphView(frame: frame, dataSource: self)
-        graphView.backgroundFillColor = .white
-        graphView.rangeMin = 0
-        graphView.rangeMax = 90
-        graphView.dataPointSpacing = 40
-        graphView.shouldAdaptRange = true
-        graphView.shouldRangeAlwaysStartAtZero = true
+        graphView = ScrollableGraphView(frame: .zero, dataSource: self)
+        graphView?.backgroundFillColor = .billWhite
+        graphView?.showsHorizontalScrollIndicator = false
+        graphView?.rangeMin = 0
+        graphView?.rangeMax = 90
+        graphView?.dataPointSpacing = 40
+        graphView?.shouldAdaptRange = true
+        graphView?.alpha = 0.0
+        graphView?.shouldRangeAlwaysStartAtZero = true
         
         let linePlot = LinePlot(identifier: "bill")
         linePlot.lineWidth = 2
@@ -67,7 +98,7 @@ class MonthViewController: BillViewController{
         linePlot.fillGradientEndColor = UIColor.billBlue.withAlphaComponent(0)
         
         linePlot.adaptAnimationType = ScrollableGraphViewAnimationType.elastic
-        graphView.addPlot(plot: linePlot)
+        graphView?.addPlot(plot: linePlot)
         
         let dotPlot = DotPlot(identifier: "money")
         dotPlot.dataPointType = .circle
@@ -75,27 +106,34 @@ class MonthViewController: BillViewController{
         dotPlot.dataPointSize = 4
         dotPlot.dataPointFillColor = .billBlueHighlight
         dotPlot.adaptAnimationType = ScrollableGraphViewAnimationType.elastic
-        graphView.addPlot(plot: dotPlot)
+        graphView?.addPlot(plot: dotPlot)
 
         let referenceLines = ReferenceLines()
         referenceLines.referenceLineLabelFont = .billDINBold(12)
         referenceLines.referenceLineLabelColor = .billOrange
+        referenceLines.referenceLineColor = .billGray
         referenceLines.dataPointLabelColor = .billBlack
         referenceLines.dataPointLabelFont = .billPingFang(12, weight: .light)
         referenceLines.positionType = .absolute
         referenceLines.dataPointLabelsSparsity = 3
         referenceLines.absolutePositions = [35, 55, 100]// 35工作日一天，55周末1天，100特殊情况一天
         referenceLines.dataPointLabelBottomMargin = 10
-//        referenceLines.includeMinMax = false
-        graphView.addReferenceLines(referenceLines: referenceLines)
-        
-        view.addSubview(graphView)
+        referenceLines.referenceLinePosition = ScrollableGraphViewReferenceLinePosition.both
+        graphView?.addReferenceLines(referenceLines: referenceLines)
+        view.addSubview(graphView!)
         
         self.onLoadCurrentMonthEventWraps()
         
         let directionGesture = DirectionGestureRecognizer.init(target: self, action: #selector(self.onDirectionGestureAction))
         directionGesture.delegate = self
-//        view.addGestureRecognizer(directionGesture)
+        view.addGestureRecognizer(directionGesture)
+        
+        graphView!.snp.makeConstraints { (make) in
+            make.left.right.equalToSuperview()
+            make.height.equalTo(250)
+            make.bottom.equalTo(self.monthView!.snp.top)
+                .offset((UIDevice.current.isIphoneXShaped() ? -44.0 : -20.0))
+        }
         
         monthView!.snp.makeConstraints { (make) in
             make.left.right.equalToSuperview()
@@ -111,7 +149,11 @@ class MonthViewController: BillViewController{
         contentView!.snp.makeConstraints { (make) in
             make.left.right.equalTo(view)
             make.top.equalTo(weekView!.snp.bottom).offset(0)
-            make.bottom.equalTo(bottomLayoutGuide.snp.top).offset(-20)
+            make.bottom.equalTo(bottomLayoutGuide.snp.top).offset(-20).priority(.low)
+        }
+        monthMaskView!.snp.makeConstraints { (make) in
+            make.left.right.bottom.equalToSuperview()
+            make.top.equalTo(monthView!.snp.bottom)
         }
         // Do any additional setup after loading the view.
     }
@@ -172,31 +214,101 @@ class MonthViewController: BillViewController{
         
         if (gesture.state == .changed) {
             
-            var offset = gesture.offset;
-            offset = offset > 0 ? pow(offset, 0.7) : -pow(-offset, 0.7);
-
+            let offset = gesture.offset;
             if (gesture.direction == .up) {
-                self.contentView!.transform = CGAffineTransform.init(translationX: 0, y: offset)
+                
+                self.upToDisplayDismissView(with: Double(offset))
             }
             if (gesture.direction == .down) {
-                self.contentView!.transform = CGAffineTransform.init(translationX: 0, y: offset)
+                
+                self.downToDisplayCharts(with: Double(offset))
             }
             if (gesture.direction == .left) {
-                self.contentView!.transform = CGAffineTransform.init(translationX: offset, y: 0)
+//                self.contentView!.transform = CGAffineTransform.init(translationX: offset, y: 0)
             }
             if (gesture.direction == .right) {
-                self.contentView!.transform = CGAffineTransform.init(translationX: offset, y: 0)
+//                self.contentView!.transform = CGAffineTransform.init(translationX: offset, y: 0)
             }
         }else if(gesture.state == .ended ||
             gesture.state == .failed){
             
-            let timingParameters = UISpringTimingParameters.init(dampingRatio: 0.125, initialVelocity: CGVector.init(dx: 0.3, dy: 0.3))
-            let animator = UIViewPropertyAnimator.init(duration: 0.25, timingParameters: timingParameters)
-            animator.addAnimations {
-                self.contentView!.transform = .identity
+            if self.displayStatus.canChangeDisplay {
+                if self.displayStatus.displayView == .graphView {
+                    self.displayGraphView()
+                }
+                if self.displayStatus.displayView == .dismissView {
+                    print("pop")
+                    self.navigationController?.popViewController(animated: true)
+                }
+            } else {
+                self.resetView()
             }
-            animator.startAnimation()
         }
+    }
+    private func toDisplayGraphViewOffset() -> Double{
+        return Double(self.graphView!.frame.height + (UIDevice.current.isIphoneXShaped() ? 44.0 : 20.0))
+    }
+    
+    private func upToDisplayDismissView(with offset : Double) {
+        
+        self.displayStatus.displayView = .dismissView
+        self.displayStatus.canChangeDisplay = abs(offset) >= 80
+        self.modifView(with: offset)
+    }
+    private func downToDisplayCharts(with offset : Double) {
+        
+        self.displayStatus.displayView = .graphView
+        self.displayStatus.canChangeDisplay = offset >= self.toDisplayGraphViewOffset()
+        self.graphView?.alpha = CGFloat(abs(offset) / self.toDisplayGraphViewOffset())
+        self.monthMaskView?.alpha = self.graphView!.alpha
+        self.monthMaskView?.isUserInteractionEnabled = self.displayStatus.canChangeDisplay
+        self.modifView(with: offset)
+    }
+    
+    private func displayGraphView() {
+        
+        var timingParameters = UISpringTimingParameters.init(dampingRatio: 0.025,
+                                                             initialVelocity: CGVector.init(dx: 0.1, dy: 0.3))
+        timingParameters = UISpringTimingParameters.init(mass: 2,
+                                                         stiffness: 320,
+                                                         damping: 24,
+                                                         initialVelocity: CGVector.init(dx: 0.3, dy: 0.3))
+        let animator = UIViewPropertyAnimator.init(duration: 0.55, timingParameters: timingParameters)
+        animator.addAnimations {
+            self.modifView(with: self.toDisplayGraphViewOffset())
+        }
+        animator.startAnimation()
+    }
+    
+    private func resetView() {
+        
+        var timingParameters = UISpringTimingParameters.init(dampingRatio: 0.025,
+                                                             initialVelocity: CGVector.init(dx: 0.1, dy: 0.3))
+        timingParameters = UISpringTimingParameters.init(mass: 2,
+                                      stiffness: 320,
+                                      damping: 24,
+                                      initialVelocity: CGVector.init(dx: 0.3, dy: 0.3))
+        let animator = UIViewPropertyAnimator.init(duration: 0.55, timingParameters: timingParameters)
+        animator.addAnimations {
+            self.modifView(with: 0.0)
+            self.monthMaskView?.alpha = 0.0
+        }
+        animator.addCompletion { (_) in
+            self.monthMaskView?.isUserInteractionEnabled = false
+            self.displayStatus.reset()
+        }
+        animator.startAnimation()
+    }
+    
+    private func modifView(with offset : Double) {
+        self.monthView?.snp.updateConstraints({ (make) in
+            make.top.equalTo(self.topLayoutGuide.snp.bottom).offset(offset)
+        })
+        self.contentView?.snp.makeConstraints({ (make) in
+            // fix:高度问题
+            make.bottom.equalTo(self.bottomLayoutGuide.snp.top).offset(-20+offset)//.priority(.high)
+        })
+        self.view.layoutIfNeeded()
     }
 }
 
@@ -204,6 +316,9 @@ extension MonthViewController : UIGestureRecognizerDelegate {
 
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         
+        if self.displayStatus.displayView == .graphView {
+            return false
+        }
         let _view = gestureRecognizer.view
         let point : CGPoint = gestureRecognizer.location(in: _view)
 

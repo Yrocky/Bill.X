@@ -171,7 +171,7 @@ extension EditBillViewController {
         self.billInputAccessoryView?.updateSaveButtonStatus(valid: saveValid)
         
         if let userInfo = noti.userInfo {
-            self.keyboardHeight = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as! CGRect).height + 30 + 54
+            self.keyboardHeight = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as! CGRect).height + 10 + 54
             let duraction = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as! TimeInterval
             UIView.animate(withDuration: duraction) {
                 self.billInputAccessoryView?.isHidden = false
