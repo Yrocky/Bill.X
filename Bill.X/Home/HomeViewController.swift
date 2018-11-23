@@ -159,7 +159,7 @@ BillMonthPresentAnimatorProtocol{
         titleLabel.snp.makeConstraints { (make) in
             make.right.equalToSuperview()
             make.left.equalTo(20)
-            make.top.equalTo(self.topLayoutGuide.snp.bottom).offset(20)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(20)
         }
         self.monthView.snp.makeConstraints { (make) in
             make.left.right.equalToSuperview()
@@ -170,7 +170,7 @@ BillMonthPresentAnimatorProtocol{
             make.left.equalTo(20)
             make.height.equalTo(50)
             make.right.equalTo(-20)
-            make.bottom.equalTo(bottomLayoutGuide.snp.top).offset(-40)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-40)
         }
         
         self.onEventChange()

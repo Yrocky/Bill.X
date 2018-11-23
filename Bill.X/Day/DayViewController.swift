@@ -175,7 +175,10 @@ class DayViewController: BillViewController{
                                              month: self.dayEventWrap!.month,
                                              day: self.dayEventWrap!.day)
         let edit = EditBillViewController.init(with: nil,date: date)
-        self.navigationController?.pushViewController(edit, animated: true)
+//        self.navigationController?.pushViewController(edit, animated: true)
+        edit.transitioningDelegate  = self
+        edit.modalPresentationStyle = .custom
+        self.present(edit, animated: true, completion: nil)
     }
     
     @objc func onLongPressAction(_ gesture: UIPanGestureRecognizer) {
@@ -369,10 +372,26 @@ extension DayViewController : UICollectionViewDataSource,UICollectionViewDelegat
             let eventWrap = dayEventWrap.eventWraps[indexPath.item]
             print("edit eventWrap:\(eventWrap)")
             let edit = EditBillViewController.init(with: eventWrap ,date:eventWrap.date)
-//            self.navigationController?.present(edit, animated: true, completion: {
-//            })
-            self.navigationController?.pushViewController(edit, animated: true)
+            edit.transitioningDelegate  = self
+            edit.modalPresentationStyle = .custom
+            self.present(edit, animated: true, completion: nil)
+//            self.navigationController?.pushViewController(edit, animated: true)
         }
     }
 }
 
+extension DayViewController : UIViewControllerTransitioningDelegate {
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        if presented.isKind(of: EditBillViewController.self) {
+            return BillEditPresentAnimator()
+        }
+        return nil
+    }
+    
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        if dismissed.isKind(of: EditBillViewController.self) {
+            return BillEditDismissAnimator()
+        }
+        return nil
+    }
+}

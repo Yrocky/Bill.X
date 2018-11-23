@@ -195,6 +195,7 @@ public enum FontWeight : String{
     case bold = "Bold"
     case medium = "Medium"
     case semibold = "Semibold"
+    case regular = "Regular"
 }
 
 extension UIFont{
@@ -326,4 +327,10 @@ extension UIDevice {
         return self.isIphoneX() || self.isIphoneXr() || self.isIphoneXs() || self.isIphoneXsMax()
     }
     
+    public func statusBarHeight() -> CGFloat {
+        if self.isIphoneXShaped() {
+            return 44.0
+        }
+        return 20.0
+    }
 }

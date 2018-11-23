@@ -36,6 +36,10 @@ class MonthViewController: BillViewController{
     private var graphView : ScrollableGraphView?
     private var monthMaskView : MonthMaskView?
     
+    private var bottomIndicatorView : StickIndicatorView?
+    private var leftIndicatorView : StickIndicatorView?
+    private var rightIndicatorView : StickIndicatorView?
+    
     private var graphDatas : [Double]?
     
     private var displayStatus = MonthDisplayStatus()
@@ -59,6 +63,16 @@ class MonthViewController: BillViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        self.bottomIndicatorView = StickIndicatorView.init(with: .bottom)
+        bottomIndicatorView?.config(with: "上拉返回首页")
+        bottomIndicatorView?.configFull(with: "松手返回")
+//        self.leftIndicatorView = StickIndicatorView.init(with: .left)
+//        self.rightIndicatorView = StickIndicatorView.init(with: .right)
+        
+        view.addSubview(bottomIndicatorView!)
+//        view.addSubview(leftIndicatorView!)
+//        view.addSubview(rightIndicatorView!)
+        
         self.monthView = MonthHeaderView.init(frame: .zero)
         self.weekView = WeekHeaderView.init(frame: .zero)
         
@@ -132,13 +146,13 @@ class MonthViewController: BillViewController{
             make.left.right.equalToSuperview()
             make.height.equalTo(250)
             make.bottom.equalTo(self.monthView!.snp.top)
-                .offset((UIDevice.current.isIphoneXShaped() ? -44.0 : -20.0))
+//                .offset(-UIDevice.current.statusBarHeight())
         }
         
         monthView!.snp.makeConstraints { (make) in
             make.left.right.equalToSuperview()
             make.height.equalTo(76)
-            make.top.equalTo(topLayoutGuide.snp.bottom)
+            make.top.equalTo(view.safeAreaLayoutGuide)
         }
         weekView!.snp.makeConstraints { (make) in
             make.left.equalToSuperview().offset(7.0)
@@ -149,12 +163,22 @@ class MonthViewController: BillViewController{
         contentView!.snp.makeConstraints { (make) in
             make.left.right.equalTo(view)
             make.top.equalTo(weekView!.snp.bottom).offset(0)
-            make.bottom.equalTo(bottomLayoutGuide.snp.top).offset(-20).priority(.low)
+            var height = UIScreen.main.height
+            height = height - 76 - 60
+            height = height - view.safeAreaInsets.top - view.safeAreaInsets.bottom
+            height = height - 20
+//            make.height.equalTo(height)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-20)
         }
         monthMaskView!.snp.makeConstraints { (make) in
             make.left.right.bottom.equalToSuperview()
             make.top.equalTo(monthView!.snp.bottom)
         }
+        bottomIndicatorView?.snp.makeConstraints({ (make) in
+            make.left.right.equalToSuperview()
+            make.height.equalTo(60)
+            make.top.equalTo(contentView!.snp.bottom)
+        })
         // Do any additional setup after loading the view.
     }
     
@@ -216,7 +240,7 @@ class MonthViewController: BillViewController{
             
             let offset = gesture.offset;
             if (gesture.direction == .up) {
-                
+                bottomIndicatorView?.update(with: abs(offset)/80.0)
                 self.upToDisplayDismissView(with: Double(offset))
             }
             if (gesture.direction == .down) {
@@ -238,7 +262,7 @@ class MonthViewController: BillViewController{
                 }
                 if self.displayStatus.displayView == .dismissView {
                     print("pop")
-                    self.navigationController?.popViewController(animated: true)
+//                    self.navigationController?.popViewController(animated: true)
                 }
             } else {
                 self.resetView()
@@ -246,7 +270,7 @@ class MonthViewController: BillViewController{
         }
     }
     private func toDisplayGraphViewOffset() -> Double{
-        return Double(self.graphView!.frame.height + (UIDevice.current.isIphoneXShaped() ? 44.0 : 20.0))
+        return Double(self.graphView!.frame.height + 1 * (UIDevice.current.statusBarHeight()))
     }
     
     private func upToDisplayDismissView(with offset : Double) {
@@ -255,6 +279,7 @@ class MonthViewController: BillViewController{
         self.displayStatus.canChangeDisplay = abs(offset) >= 80
         self.modifView(with: offset)
     }
+    
     private func downToDisplayCharts(with offset : Double) {
         
         self.displayStatus.displayView = .graphView
@@ -292,6 +317,7 @@ class MonthViewController: BillViewController{
         animator.addAnimations {
             self.modifView(with: 0.0)
             self.monthMaskView?.alpha = 0.0
+            self.graphView?.alpha = 0.0
         }
         animator.addCompletion { (_) in
             self.monthMaskView?.isUserInteractionEnabled = false
@@ -301,12 +327,11 @@ class MonthViewController: BillViewController{
     }
     
     private func modifView(with offset : Double) {
+        
+        print("offset:\(offset)")
+        
         self.monthView?.snp.updateConstraints({ (make) in
-            make.top.equalTo(self.topLayoutGuide.snp.bottom).offset(offset)
-        })
-        self.contentView?.snp.makeConstraints({ (make) in
-            // fix:高度问题
-            make.bottom.equalTo(self.bottomLayoutGuide.snp.top).offset(-20+offset)//.priority(.high)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(offset)
         })
         self.view.layoutIfNeeded()
     }
@@ -319,6 +344,7 @@ extension MonthViewController : UIGestureRecognizerDelegate {
         if self.displayStatus.displayView == .graphView {
             return false
         }
+//        return true
         let _view = gestureRecognizer.view
         let point : CGPoint = gestureRecognizer.location(in: _view)
 

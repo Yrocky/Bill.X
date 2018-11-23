@@ -11,7 +11,7 @@ import UIKit
 class BillEditPresentAnimator: NSObject ,UIViewControllerAnimatedTransitioning{
     
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-        return 0.25
+        return 0.75
     }
     
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
@@ -35,7 +35,7 @@ class BillEditPresentAnimator: NSObject ,UIViewControllerAnimatedTransitioning{
         
         let duration = self.transitionDuration(using: transitionContext)
         
-        let animator = UIViewPropertyAnimator.init(duration: duration, curve: .easeOut) {
+        let animator = UIViewPropertyAnimator.init(duration: duration, dampingRatio: 0.68) {
             toView?.frame.origin.y = containerView.frame.minY
             effectView.isHidden = false
         }
@@ -51,13 +51,12 @@ class BillEditPresentAnimator: NSObject ,UIViewControllerAnimatedTransitioning{
 class BillEditDismissAnimator: NSObject ,UIViewControllerAnimatedTransitioning{
     
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-        return 0.25
+        return 0.55
     }
     
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         let containerView = transitionContext.containerView
         let fromView = transitionContext.view(forKey: UITransitionContextViewKey.from)
-        
         
         let duration = self.transitionDuration(using: transitionContext)
         
