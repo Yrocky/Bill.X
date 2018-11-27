@@ -175,7 +175,6 @@ class DayViewController: BillViewController{
                                              month: self.dayEventWrap!.month,
                                              day: self.dayEventWrap!.day)
         let edit = EditBillViewController.init(with: nil,date: date)
-//        self.navigationController?.pushViewController(edit, animated: true)
         edit.transitioningDelegate  = self
         edit.modalPresentationStyle = .custom
         self.present(edit, animated: true, completion: nil)

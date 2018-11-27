@@ -19,6 +19,7 @@
 		D7963EE221A1BC9E00B44397 /* BillMonthAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7963EE121A1BC9E00B44397 /* BillMonthAnimator.swift */; };
 		D7963EE521A462EF00B44397 /* MonthMaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7963EE421A462EF00B44397 /* MonthMaskView.swift */; };
 		D7963EE721A6F4A500B44397 /* StickIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7963EE621A6F4A500B44397 /* StickIndicatorView.swift */; };
+		D7963EE921AC403100B44397 /* BillDayAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7963EE821AC403100B44397 /* BillDayAnimator.swift */; };
 		D7C32E942196D0C90047A858 /* MonthHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C32E932196D0C90047A858 /* MonthHeaderView.swift */; };
 		D7C32E962196E28E0047A858 /* DirectionGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C32E952196E28E0047A858 /* DirectionGestureRecognizer.swift */; };
 		D7C32E982196FC490047A858 /* EdgeInsetsLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C32E972196FC490047A858 /* EdgeInsetsLabel.swift */; };
@@ -80,6 +81,7 @@
 		D7963EE121A1BC9E00B44397 /* BillMonthAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillMonthAnimator.swift; sourceTree = "<group>"; };
 		D7963EE421A462EF00B44397 /* MonthMaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthMaskView.swift; sourceTree = "<group>"; };
 		D7963EE621A6F4A500B44397 /* StickIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickIndicatorView.swift; sourceTree = "<group>"; };
+		D7963EE821AC403100B44397 /* BillDayAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillDayAnimator.swift; sourceTree = "<group>"; };
 		D7C32E932196D0C90047A858 /* MonthHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthHeaderView.swift; sourceTree = "<group>"; };
 		D7C32E952196E28E0047A858 /* DirectionGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectionGestureRecognizer.swift; sourceTree = "<group>"; };
 		D7C32E972196FC490047A858 /* EdgeInsetsLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EdgeInsetsLabel.swift; sourceTree = "<group>"; };
@@ -172,6 +174,7 @@
 			children = (
 				D7963EDF21A1B0D800B44397 /* BillEditAnimator.swift */,
 				D7963EE121A1BC9E00B44397 /* BillMonthAnimator.swift */,
+				D7963EE821AC403100B44397 /* BillDayAnimator.swift */,
 			);
 			path = Animator;
 			sourceTree = "<group>";
@@ -537,6 +540,7 @@
 				D7963EDC219C660900B44397 /* DayWasteContainerView.swift in Sources */,
 				F72FD58921958747001B5F5F /* DayViewController.swift in Sources */,
 				F72BBAC3219166A10067EB09 /* MonthViewController.swift in Sources */,
+				D7963EE921AC403100B44397 /* BillDayAnimator.swift in Sources */,
 				D7963ED821987E6400B44397 /* BillCalendarSupport.swift in Sources */,
 				D7963EE521A462EF00B44397 /* MonthMaskView.swift in Sources */,
 				D7C32E942196D0C90047A858 /* MonthHeaderView.swift in Sources */,
