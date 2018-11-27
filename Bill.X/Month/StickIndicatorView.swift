@@ -139,12 +139,12 @@ class StickIndicatorView: UIView {
             directionView.snp.makeConstraints { (make) in
                 make.size.equalTo(CGSize.init(width: 30, height: 7))
                 make.centerX.equalToSuperview()
-                make.bottom.equalToSuperview().offset(-margin)
+                make.top.equalTo(indicatorInfoLabel.snp.bottom).offset(margin)
             }
             indicatorInfoLabel.snp.makeConstraints { (make) in
                 make.height.greaterThanOrEqualTo(20)
                 make.centerX.equalTo(directionView)
-                make.bottom.equalTo(directionView.snp.top).offset(-margin)
+                make.top.equalToSuperview().offset(margin)
             }
         }
         else if direction == .left {

@@ -34,7 +34,7 @@ class MonthViewController: BillViewController{
     private var snapshotView : UIImageView?
     private var monthMaskView : MonthMaskView?
     private var bottomIndicatorView : StickIndicatorView?
-    private var graphView : ScrollableGraphView?
+    private var graphView : GraphView?
 
     private var monthView : MonthHeaderView?
     private var weekView : WeekHeaderView?
@@ -65,10 +65,14 @@ class MonthViewController: BillViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        view.backgroundColor = .white
+        
         self.containerView = UIView.init()
+        containerView?.backgroundColor = .billWhite
         view.addSubview(self.containerView!)
         
-        self.addGraphView()
+        self.graphView = GraphView.init(with: self as ScrollableGraphViewDataSource)
+        view.addSubview(self.graphView!)
         
         self.snapshotView = UIImageView.init()
         snapshotView?.contentMode = .scaleAspectFit
@@ -82,7 +86,7 @@ class MonthViewController: BillViewController{
         }
         view.addSubview(self.monthMaskView!)
         
-        self.bottomIndicatorView = StickIndicatorView.init(with: .bottom)
+        self.bottomIndicatorView = StickIndicatorView.init(with: .top)
         bottomIndicatorView?.config(with: "上拉返回首页")
         bottomIndicatorView?.configFull(with: "松手返回")
         view.addSubview(bottomIndicatorView!)
@@ -168,55 +172,6 @@ class MonthViewController: BillViewController{
             make.centerY.equalTo(leftIndicatorView!)
         })
         // Do any additional setup after loading the view.
-    }
-    
-    private func addGraphView() {
-        
-        graphView = ScrollableGraphView(frame: .zero, dataSource: self)
-        graphView?.backgroundFillColor = .billWhite
-        graphView?.showsHorizontalScrollIndicator = false
-        graphView?.rangeMin = 0
-        graphView?.rangeMax = 90
-        graphView?.dataPointSpacing = 40
-        graphView?.shouldAdaptRange = true
-        graphView?.alpha = 0.0
-        graphView?.shouldRangeAlwaysStartAtZero = true
-        
-        let linePlot = LinePlot(identifier: "bill")
-        linePlot.lineWidth = 2
-        linePlot.animationDuration = 1.25
-        linePlot.lineColor = .billBlue
-        linePlot.lineStyle = .smooth
-        linePlot.shouldFill = true
-        linePlot.fillType = .gradient
-        linePlot.fillGradientType = .radial
-        linePlot.fillGradientStartColor = .billBlue
-        linePlot.fillGradientEndColor = UIColor.billBlue.withAlphaComponent(0)
-        
-        linePlot.adaptAnimationType = ScrollableGraphViewAnimationType.elastic
-        graphView?.addPlot(plot: linePlot)
-        
-        let dotPlot = DotPlot(identifier: "money")
-        dotPlot.dataPointType = .circle
-        dotPlot.animationDuration = 1.25
-        dotPlot.dataPointSize = 4
-        dotPlot.dataPointFillColor = .billBlueHighlight
-        dotPlot.adaptAnimationType = ScrollableGraphViewAnimationType.elastic
-        graphView?.addPlot(plot: dotPlot)
-        
-        let referenceLines = ReferenceLines()
-        referenceLines.referenceLineLabelFont = .billDINBold(12)
-        referenceLines.referenceLineLabelColor = .billOrange
-        referenceLines.referenceLineColor = .billGray
-        referenceLines.dataPointLabelColor = .billBlack
-        referenceLines.dataPointLabelFont = .billPingFang(12, weight: .light)
-        referenceLines.positionType = .absolute
-        referenceLines.dataPointLabelsSparsity = 3
-        referenceLines.absolutePositions = [35, 55, 100]// 35工作日一天，55周末1天，100特殊情况一天
-        referenceLines.dataPointLabelBottomMargin = 10
-        referenceLines.referenceLinePosition = ScrollableGraphViewReferenceLinePosition.both
-        graphView?.addReferenceLines(referenceLines: referenceLines)
-        view.addSubview(graphView!)
     }
     
     @objc override func onEventChange() {
