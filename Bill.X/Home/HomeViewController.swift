@@ -51,7 +51,7 @@ BillMonthPresentAnimatorProtocol{
         let minimumLineSpacing : CGFloat = 20.0
         let minimumInteritemSpacing : CGFloat = 20.0
 
-        let layout = LXFChatEmotionCollectionLayout.init()//.init(with: 2, column: 2)
+        let layout = MonthPageFlowlayout.init(with: 2, column: 2)
         layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = minimumLineSpacing
         layout.minimumInteritemSpacing = minimumInteritemSpacing
@@ -63,6 +63,7 @@ BillMonthPresentAnimatorProtocol{
         v.isPagingEnabled = true
         v.showsHorizontalScrollIndicator = false
         v.showsVerticalScrollIndicator = false
+        v.clipsToBounds = false
         v.register(MonthCCell.self, forCellWithReuseIdentifier: "MonthCCell")
         return v
     }()
@@ -208,13 +209,10 @@ BillMonthPresentAnimatorProtocol{
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MonthCCell", for: indexPath) as! MonthCCell
-<<<<<<< HEAD
+
         let monthEventWrap = self.monthEventWraps[indexPath.item] as BillMonthEventWrap
         cell.updateMonthTotalBill("\(monthEventWrap.homeTotalBill)".billMoneyFormatter,
                                   month: String.monthString(monthEventWrap.month))
-=======
-        cell.updateMonthTotalBill((indexPath.row % 2 == 0 ? 123 : 0), month: "\(indexPath.item + 1)")
->>>>>>> 35cce1969780f20d2ca33851bf093f29f9340146
         return cell
     }
 

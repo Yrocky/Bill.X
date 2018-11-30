@@ -220,7 +220,7 @@ class MonthViewController: BillViewController , BillDayPresentAnimatorProtocol{
             })
             
             self.monthView?.monthLabel?.text = String.monthString(month)
-            self.monthView!.totalLabel.text = "￥\(current.totalBill)".billMoneyFormatter
+            self.monthView?.setupMoney("\(current.totalBill)".billMoneyFormatter)
             self.contentView!.updateData(with: self.dayEventWraps,
                                         at: self.year,
                                         month: month)

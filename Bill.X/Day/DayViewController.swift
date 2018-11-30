@@ -109,7 +109,18 @@ class DayViewController: BillViewController{
         moneyLabel.font = UIFont.billDINBold(30)
         
         self.timeLabel.text = "\(String(describing: dayEventWrap!.month))-\(String(describing: dayEventWrap!.day))"
-        self.moneyLabel.text = "￥\(String(describing: dayEventWrap!.totalBill))".billMoneyFormatter
+        let money = "\(String(describing: dayEventWrap!.totalBill))".billMoneyFormatter
+        
+        let symbolStyle : [NSAttributedString.Key : Any] =
+            [.foregroundColor:self.moneyLabel.textColor,
+             .font:UIFont.billDINBold(20)]
+        let moneyStyle : [NSAttributedString.Key : Any] =
+            [.foregroundColor:self.moneyLabel.textColor,
+             .font:UIFont.billDINBold(30)]
+        
+        let att = NSMutableAttributedString.init(string: "￥", attributes: symbolStyle)
+        att.append(NSAttributedString.init(string: money, attributes: moneyStyle))
+        moneyLabel.attributedText = att
         
         self.addButton.addTarget(self,
                                  action: #selector(self.onAddItemAction),
@@ -189,7 +200,18 @@ class DayViewController: BillViewController{
     
     private func updateDayBillEvent() {
         
-        self.moneyLabel.text = "￥\(String(describing: dayEventWrap!.totalBill))".billMoneyFormatter
+        let money = "\(String(describing: dayEventWrap!.totalBill))".billMoneyFormatter
+        
+        let symbolStyle : [NSAttributedString.Key : Any] =
+            [.foregroundColor:self.moneyLabel.textColor,
+             .font:UIFont.billDINBold(20)]
+        let moneyStyle : [NSAttributedString.Key : Any] =
+            [.foregroundColor:self.moneyLabel.textColor,
+             .font:UIFont.billDINBold(30)]
+        
+        let att = NSMutableAttributedString.init(string: "￥", attributes: symbolStyle)
+        att.append(NSAttributedString.init(string: money, attributes: moneyStyle))
+        moneyLabel.attributedText = att
         
         self.billCollectionView.reloadSections(IndexSet.init(integer: 0))
     }

@@ -15,7 +15,7 @@ class MonthHeaderView: UIView {
         let l = UILabel()
         l.textAlignment = .right
         l.text = "￥0"
-        l.font = UIFont.billPingFangSemibold(30)
+        l.font = UIFont.billDINBold(30)
         l.textColor = .billBlack
         return l
     }()
@@ -39,6 +39,20 @@ class MonthHeaderView: UIView {
             make.right.equalTo(-20)
             make.bottom.equalTo(monthLabel!)
         }
+    }
+    
+    func setupMoney(_ money : String) {
+        
+        let symbolStyle : [NSAttributedString.Key : Any] =
+            [.foregroundColor:totalLabel.textColor,
+             .font:UIFont.billDINBold(20)]
+        let moneyStyle : [NSAttributedString.Key : Any] =
+            [.foregroundColor:totalLabel.textColor,
+             .font:UIFont.billDINBold(30)]
+        
+        let att = NSMutableAttributedString.init(string: "￥", attributes: symbolStyle)
+        att.append(NSAttributedString.init(string: money, attributes: moneyStyle))
+        totalLabel.attributedText = att
     }
     
     required init?(coder aDecoder: NSCoder) {

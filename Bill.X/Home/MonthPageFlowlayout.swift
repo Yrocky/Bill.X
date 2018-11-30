@@ -9,105 +9,6 @@
 import UIKit
 
 class MonthPageFlowlayout: UICollectionViewFlowLayout {
-
-    public var column : Int
-    public var row : Int
-    
-    public var horizontallyMargin = 10.0
-    public var verticalMargin = 10.0
-    
-    public init(with row : Int = 1 , column : Int = 1) {
-        
-        self.row = row
-        self.column = column
-        super.init()
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    private var allAttributes = [UICollectionViewLayoutAttributes]()
-    
-    override func prepare() {
-        super.prepare()
-        
-        allAttributes.removeAll()
-        
-        let numberOfRows = collectionView?.numberOfItems(inSection: 0)
-        for index in 0..<numberOfRows! {
-            
-            let indexPath = IndexPath.init(row: index, section: 0)
-            let attributes = layoutAttributesForItem(at: indexPath)
-            if let attributes = attributes {
-                allAttributes.append(attributes)
-            }
-        }
-    }
-    
-    override var collectionViewContentSize: CGSize{
-        get {
-            if let collectionView = collectionView{
-                
-                let cellWidth = (Double(collectionView.frame.width) - Double(column) * horizontallyMargin) / Double(column)
-                let numberOfRows = collectionView.numberOfItems(inSection: 0)
-                
-                let numberOfPageRows = row * column
-                //    // 余数（用于确定最后一页展示的item个数）
-                let remainder = numberOfRows % numberOfPageRows
-                var pageNumber = numberOfRows / numberOfPageRows
-
-                if numberOfRows <= numberOfPageRows {
-                    pageNumber = 1
-                } else {
-                    if remainder != 0 {
-                        pageNumber += 1
-                    }
-                }
-                
-                var width = 0.0
-                if pageNumber > 1 && remainder != 0 && remainder < self.column {
-                    width = Double((pageNumber - 1) * self.column)
-                    width *= (cellWidth + horizontallyMargin)
-                    width += Double(remainder) * cellWidth
-                    width += Double(remainder - 1) * horizontallyMargin
-                    
-                } else {
-                    width = Double(pageNumber * self.column) * (cellWidth + horizontallyMargin) - horizontallyMargin
-                }
-                return CGSize.init(width: width, height: Double(collectionView.frame.height))
-            }
-            
-            return .zero
-        }
-    }
-    
-    override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
-     
-        let itemWidth = (Double(collectionView!.frame.width) - Double(Double(self.column) * self.horizontallyMargin)) / Double(self.column)
-        let itemHeight = (Double(collectionView!.frame.width) - Double(Double(self.row) * self.verticalMargin * Double(self.row - 1))) / Double(self.row)
-        
-        let item = indexPath.item
-        
-        let pageNumber = item / row * column
-        let x = item % column + pageNumber * column
-        let y = item / column - pageNumber * row
-        
-        let itemX = (itemWidth + self.horizontallyMargin) * Double(x)
-        let itemY = (itemHeight + self.verticalMargin) * Double(y)
-        let attributes = super.layoutAttributesForItem(at: indexPath)
-        attributes?.frame = CGRect.init(x: itemX, y: itemY, width: itemWidth, height: itemHeight)
-        return attributes
-    }
-    
-    override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
-        return allAttributes
-    }
-}
-
-let kEmotionCellNumberOfOneRow = 2
-let kEmotionCellRow = 2
-
-class LXFChatEmotionCollectionLayout: UICollectionViewFlowLayout {
     // 保存所有item
     fileprivate var attributesArr: [UICollectionViewLayoutAttributes] = []
     
@@ -128,10 +29,7 @@ class LXFChatEmotionCollectionLayout: UICollectionViewFlowLayout {
     // MARK:- 重新布局
     override func prepare() {
         super.prepare()
-        
-        minimumLineSpacing = 10
-        minimumInteritemSpacing = 10
-        
+
         let collectionViewWidth = collectionView!.frame.width
         let collectionViewHeight = collectionView!.frame.height
         

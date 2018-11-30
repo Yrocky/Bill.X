@@ -118,8 +118,20 @@ class DayCCell: UICollectionViewCell ,BillRoundShadowViewEnable{
     public func currentDayInfo() -> String {
         return  self.month + "-" + self.day
     }
-    public func currentMoneyInfo() -> String {
-        return  "￥" + self.money
+    
+    public func currentMoneyInfo() -> NSAttributedString {
+        
+        let symbolStyle : [NSAttributedString.Key : Any] =
+            [.foregroundColor:UIColor.billBlack,
+             .font:UIFont.billDINBold(20)]
+        let moneyStyle : [NSAttributedString.Key : Any] =
+            [.foregroundColor:UIColor.billBlack,
+             .font:UIFont.billDINBold(30)]
+        
+        let att = NSMutableAttributedString.init(string: "￥", attributes: symbolStyle)
+        att.append(NSAttributedString.init(string: self.money, attributes: moneyStyle))
+        
+        return att
     }
     
     public func showContent() {

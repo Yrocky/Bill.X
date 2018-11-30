@@ -547,11 +547,8 @@
 				D7963ED821987E6400B44397 /* BillCalendarSupport.swift in Sources */,
 				D7963EE521A462EF00B44397 /* MonthMaskView.swift in Sources */,
 				D7C32E942196D0C90047A858 /* MonthHeaderView.swift in Sources */,
-<<<<<<< HEAD
 				D7963EE721A6F4A500B44397 /* StickIndicatorView.swift in Sources */,
-=======
 				F7F347B321AF8BA900E69FE6 /* MonthPageFlowlayout.swift in Sources */,
->>>>>>> 35cce1969780f20d2ca33851bf093f29f9340146
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

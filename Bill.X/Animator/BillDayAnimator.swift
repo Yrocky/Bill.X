@@ -10,7 +10,7 @@ import UIKit
 
 protocol BillDayPresentAnimatorProtocol : class{
     
-    weak var sourceView : DayCCell? { get set }
+    var sourceView : DayCCell? { get set }
 }
 
 class BillDayPresentAnimator: NSObject ,UIViewControllerAnimatedTransitioning{
@@ -53,11 +53,10 @@ class BillDayPresentAnimator: NSObject ,UIViewControllerAnimatedTransitioning{
             snapshotView?.addSubview(timeLabel)
             
             let moneyLabel = UILabel()
-            moneyLabel.text = cell.currentMoneyInfo()
+            moneyLabel.attributedText = cell.currentMoneyInfo()
             moneyLabel.alpha = 0
             moneyLabel.tag = 100010002
             moneyLabel.frame = snapshotView?.bounds ?? .zero
-            moneyLabel.font = .billDINBold(30)
             moneyLabel.textColor = .billBlack
             snapshotView?.addSubview(moneyLabel)
         }

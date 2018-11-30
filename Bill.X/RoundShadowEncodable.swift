@@ -33,7 +33,7 @@ extension BillRoundShadowViewEnable{
         view.layer.cornerRadius = CGFloat(cornerRadius)
         view.layer.shadowColor = UIColor.init(red: 111.0/255.0, green: 115.0/255.0, blue: 118.0/255.0, alpha: 1).cgColor
         view.layer.shadowOffset = CGSize.init(width: 2, height: 2)
-        view.layer.shadowRadius = 10
+        view.layer.shadowRadius = 5
         view.layer.shadowOpacity = 0.2
     }
 }
@@ -246,7 +246,7 @@ extension NSAttributedString{
         let style : [NSAttributedString.Key : Any] =
             [.backgroundColor:UIColor.clear,
              .font:UIFont.billDINBold(fontSize),
-             .strokeColor:UIColor.gray,
+             .strokeColor:color,
              .strokeWidth:1/UIScreen.main.scale]
         return NSAttributedString.init(string: string,
                                        attributes: style)

@@ -17,6 +17,8 @@ class MonthCCell: UICollectionViewCell,BillRoundShadowViewEnable {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
+        self.clipsToBounds = false
+        self.contentView.clipsToBounds = false
         self.contentView.backgroundColor = UIColor.white
         addRoundShadowFor(self.contentView, cornerRadius: 10.0)
         
@@ -36,7 +38,7 @@ class MonthCCell: UICollectionViewCell,BillRoundShadowViewEnable {
         
         self.cornerLabel.snp.makeConstraints { (make) in
             make.bottom.equalTo(self.snp.bottom).offset(-0)
-            make.right.equalTo(self.snp.right).offset(-0)
+            make.right.equalTo(self.snp.right).offset(-4)
         }
     }
     
@@ -50,10 +52,10 @@ class MonthCCell: UICollectionViewCell,BillRoundShadowViewEnable {
             centerLabel.attributedText = NSAttributedString.fillStyle(string: total, .billBlue, 50)
 
             cornerLabel.isHidden = false
-            cornerLabel.attributedText = NSAttributedString.strokeStyle(string: month, .billWhite, 50)
+            cornerLabel.attributedText = NSAttributedString.strokeStyle(string: month, .billGray, 50)
         } else {
             // 不显示total，month居中
-            centerLabel.attributedText = NSAttributedString.strokeStyle(string: month, .billBlue, 50)
+            centerLabel.attributedText = NSAttributedString.fillStyle(string: month, .billBlue, 50)
             
             cornerLabel.text = nil
             cornerLabel.isHidden = true
