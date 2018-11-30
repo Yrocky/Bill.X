@@ -43,6 +43,7 @@
 		F72FD5972195972D001B5F5F /* EditBillInputAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72FD5962195972D001B5F5F /* EditBillInputAccessoryView.swift */; };
 		F788D2952191B065003694DF /* DayCCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F788D2942191B065003694DF /* DayCCell.swift */; };
 		F788D2972191B118003694DF /* WeekHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F788D2962191B118003694DF /* WeekHeaderView.swift */; };
+		F7F347B321AF8BA900E69FE6 /* MonthPageFlowlayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F347B221AF8BA900E69FE6 /* MonthPageFlowlayout.swift */; };
 		FCB760C4BF8E151121B4B787 /* Pods_Bill_XTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7AA354E348160147EED103E4 /* Pods_Bill_XTests.framework */; };
 /* End PBXBuildFile section */
 
@@ -112,6 +113,7 @@
 		F72FD5962195972D001B5F5F /* EditBillInputAccessoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditBillInputAccessoryView.swift; sourceTree = "<group>"; };
 		F788D2942191B065003694DF /* DayCCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayCCell.swift; sourceTree = "<group>"; };
 		F788D2962191B118003694DF /* WeekHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekHeaderView.swift; sourceTree = "<group>"; };
+		F7F347B221AF8BA900E69FE6 /* MonthPageFlowlayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthPageFlowlayout.swift; sourceTree = "<group>"; };
 		F83B5C0C29DBFC63E386E0EA /* Pods-Bill.XUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bill.XUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Bill.XUITests/Pods-Bill.XUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		FDB7DFFB1D66687B697162CA /* Pods-Bill.X.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bill.X.release.xcconfig"; path = "Pods/Target Support Files/Pods-Bill.X/Pods-Bill.X.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -261,6 +263,7 @@
 			children = (
 				F72BBAC7219167100067EB09 /* HomeViewController.swift */,
 				F72FD59221958904001B5F5F /* MonthCCell.swift */,
+				F7F347B221AF8BA900E69FE6 /* MonthPageFlowlayout.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -544,7 +547,11 @@
 				D7963ED821987E6400B44397 /* BillCalendarSupport.swift in Sources */,
 				D7963EE521A462EF00B44397 /* MonthMaskView.swift in Sources */,
 				D7C32E942196D0C90047A858 /* MonthHeaderView.swift in Sources */,
+<<<<<<< HEAD
 				D7963EE721A6F4A500B44397 /* StickIndicatorView.swift in Sources */,
+=======
+				F7F347B321AF8BA900E69FE6 /* MonthPageFlowlayout.swift in Sources */,
+>>>>>>> 35cce1969780f20d2ca33851bf093f29f9340146
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

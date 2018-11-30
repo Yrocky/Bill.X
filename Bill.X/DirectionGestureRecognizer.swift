@@ -20,6 +20,7 @@ enum GestureDirection {
 class DirectionGestureRecognizer: UIGestureRecognizer {
 
     var hysteresisOffset : CGFloat = 2 ///<滞后的距离，默认为2
+    
     private(set) var direction : GestureDirection = .unknow
     private(set) var offset : CGFloat = 0.0///<在当前方向上移动的距离
 

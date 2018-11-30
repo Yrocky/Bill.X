@@ -21,6 +21,7 @@ class DayCCell: UICollectionViewCell ,BillRoundShadowViewEnable{
     
     private(set) var money = ""
     private(set) var day = ""
+    private(set) var month = ""
     
     var status : DayViewStatus{
         didSet{
@@ -103,8 +104,31 @@ class DayCCell: UICollectionViewCell ,BillRoundShadowViewEnable{
         fatalError("init(coder:) has not been implemented")
     }
     
+    public func hideContent() {
+        self.contentView.isHidden = true
+    }
+    public func currentBgColor() -> UIColor {
+        switch self.status {
+        case .invalid: return .billGray
+        case .empty : return .billWhite
+        case .hasValue : return .billBlue
+        case .today : return .billOrange
+        }
+    }
+    public func currentDayInfo() -> String {
+        return  self.month + "-" + self.day
+    }
+    public func currentMoneyInfo() -> String {
+        return  "￥" + self.money
+    }
+    
+    public func showContent() {
+        self.contentView.isHidden = false
+    }
+    
     public func update(with dayEventWrap : BillDayEventWrap ,at year: Int , month : Int) {
         
+        self.month = "\(dayEventWrap.month)"
         self.day = "\(dayEventWrap.day)"
         self.money = "\(dayEventWrap.totalBill)".billMoneyFormatter
         

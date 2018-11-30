@@ -106,7 +106,7 @@ class DayViewController: BillViewController{
         
         moneyLabel.textColor = .billBlack
         moneyLabel.textAlignment = .left
-        moneyLabel.font = UIFont.billPingFangSemibold(30)
+        moneyLabel.font = UIFont.billDINBold(30)
         
         self.timeLabel.text = "\(String(describing: dayEventWrap!.month))-\(String(describing: dayEventWrap!.day))"
         self.moneyLabel.text = "￥\(String(describing: dayEventWrap!.totalBill))".billMoneyFormatter
@@ -117,8 +117,8 @@ class DayViewController: BillViewController{
         
         timeLabel.snp.makeConstraints { (make) in
             make.left.equalTo(20)
-            make.right.equalTo(-20)
-            make.top.equalTo(topLayoutGuide.snp.bottom).offset(20)
+            make.width.equalTo(300)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(20 + UIDevice.current.statusBarHeight())
             make.height.equalTo(50)
         }
         moneyLabel.snp.makeConstraints { (make) in
@@ -126,25 +126,49 @@ class DayViewController: BillViewController{
             make.height.equalTo(40)
             make.top.equalTo(timeLabel.snp.bottom).offset(20)
         }
-        wasteView.snp.makeConstraints { (make) in
-            make.left.right.equalTo(self.addButton)
-            make.bottom.equalTo(self.addButton.snp.top).offset(-20)
-            make.height.equalTo(100)
-        }
         billCollectionView.snp.makeConstraints { (make) in
             make.left.equalToSuperview().offset(16)
             make.right.equalToSuperview().offset(-16)
             make.top.equalTo(moneyLabel.snp.bottom).offset(20)
             make.bottom.equalTo(self.wasteView.snp.top)
         }
+        wasteView.snp.makeConstraints { (make) in
+            make.left.right.equalTo(self.addButton)
+            make.bottom.equalTo(self.addButton.snp.top).offset(-20)
+            make.height.equalTo(100)
+        }
         addButton.snp.makeConstraints { (make) in
             make.left.equalTo(20)
             make.right.equalTo(-20)
             make.height.equalTo(50)
-            make.bottom.equalTo(bottomLayoutGuide.snp.top).offset(-40)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-40)
         }
         
         self.showWasteView(false)
+        
+        self.timeLabel.alpha = 0
+        self.moneyLabel.alpha = 0
+        addButton.transform = CGAffineTransform.init(translationX: 0, y: 100)
+        addButton.alpha = 0
+        self.billCollectionView.alpha = 0
+    }
+    
+    public func desLabelRect() -> (CGRect ,CGRect) {
+        return (self.timeLabel.frame,self.moneyLabel.frame)
+    }
+    
+    public func show() {
+        self.timeLabel.alpha = 1
+        self.moneyLabel.alpha = 1
+        self.billCollectionView.alpha = 1
+        self.billCollectionView.reloadData()
+        let animator = UIViewPropertyAnimator.init(duration: 0.4, curve: .easeOut) {
+            
+            self.addButton.transform = .identity
+            self.addButton.alpha = 1
+        }
+        animator.startAnimation()
+        
     }
     
     @objc override func onEventChange() {
@@ -363,6 +387,24 @@ extension DayViewController : UICollectionViewDataSource,UICollectionViewDelegat
             return cell
         }
         return UICollectionViewCell()
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        
+        let transform = CGAffineTransform.init(translationX: 0, y: 10)
+//        transform.concatenating(CGAffineTransform.ini)
+        cell.transform = transform;
+        cell.alpha = 0.4
+        let timingParameters = UISpringTimingParameters.init(mass: 2,
+                                                         stiffness: 480,
+                                                         damping: 25,
+                                                         initialVelocity: CGVector.init(dx: 0.3, dy: 0.3))
+        let animator = UIViewPropertyAnimator.init(duration: 0.4, timingParameters: timingParameters)
+        animator.addAnimations({
+            cell.alpha = 1
+            cell.transform = .identity
+        }, delayFactor: (CGFloat(indexPath.row) * 0.05))
+        animator.startAnimation()
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

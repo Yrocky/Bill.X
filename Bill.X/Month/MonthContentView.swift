@@ -11,7 +11,7 @@ import UIKit
 @objc
 public protocol MonthContentViewDelegate : class{///<现在的协议需要声明是class-only的
     
-    @objc optional func monentContentViewDidSelected(at index : Int) -> Void
+    @objc optional func monentContentViewDidSelected(at index : Int ,cell : UIView) -> Void
 }
 
 class MonthContentView : UIView, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -95,7 +95,7 @@ class MonthContentView : UIView, UICollectionViewDataSource, UICollectionViewDel
         let cell = collectionView.cellForItem(at: indexPath) as! DayCCell
         if cell.status != .invalid {
             if let delegate = delegate {
-                delegate.monentContentViewDidSelected!(at: indexPath.item)
+                delegate.monentContentViewDidSelected!(at: indexPath.item ,cell: cell)
             }
         }
     }

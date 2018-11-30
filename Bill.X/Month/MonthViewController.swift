@@ -9,7 +9,7 @@
 import UIKit
 import ScrollableGraphView
 
-class MonthViewController: BillViewController{
+class MonthViewController: BillViewController , BillDayPresentAnimatorProtocol{
 
     struct MonthDisplayStatus {
     
@@ -45,6 +45,8 @@ class MonthViewController: BillViewController{
     private var graphDatas : [Double]?
     
     private var displayStatus = MonthDisplayStatus()
+    
+    var sourceView : DayCCell?
     
     var year : Int = 2018
     var month : Int = 11
@@ -284,9 +286,9 @@ class MonthViewController: BillViewController{
         
         var timingParameters = UISpringTimingParameters.init(dampingRatio: 0.025,
                                                              initialVelocity: CGVector.init(dx: 0.1, dy: 0.3))
-        timingParameters = UISpringTimingParameters.init(mass: 2,
+        timingParameters = UISpringTimingParameters.init(mass: 3,
                                                          stiffness: 320,
-                                                         damping: 24,
+                                                         damping: 32,
                                                          initialVelocity: CGVector.init(dx: 0.3, dy: 0.3))
         return UIViewPropertyAnimator.init(duration: 0.55, timingParameters: timingParameters)
     }
@@ -387,11 +389,11 @@ extension MonthViewController {
     
     private func upToDisplayDismissView(with offset : Double) {
         
-        self.bottomIndicatorView?.update(with: CGFloat(abs(offset)/80.0))
+        self.bottomIndicatorView?.update(with: CGFloat(abs(offset)/120.0))
         self.bottomIndicatorView?.isHidden = false
         
         self.displayStatus.displayView = .dismissView
-        self.displayStatus.canChangeDisplay = abs(offset) >= 80
+        self.displayStatus.canChangeDisplay = abs(offset) >= 120
         
         self.modifSnapshotViewVertical(with: offset)
     }
@@ -490,7 +492,9 @@ extension MonthViewController : UIGestureRecognizerDelegate {
 
 extension MonthViewController : MonthContentViewDelegate{
     
-    func monentContentViewDidSelected(at index: Int) {
+    func monentContentViewDidSelected(at index: Int, cell: UIView) {
+        
+        self.sourceView = cell as? DayCCell
         
         let day = DayViewController.init(with: self.dayEventWraps[index])
         day.transitioningDelegate  = self
@@ -524,7 +528,9 @@ extension MonthViewController : ScrollableGraphViewDataSource {
 extension MonthViewController : UIViewControllerTransitioningDelegate {
     func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         if presented.isKind(of: DayViewController.self) {
-            return BillDayPresentAnimator()
+            let present = BillDayPresentAnimator()
+            present.delegate = self
+            return present
         }
         return nil
     }
@@ -536,3 +542,4 @@ extension MonthViewController : UIViewControllerTransitioningDelegate {
         return nil
     }
 }
+
