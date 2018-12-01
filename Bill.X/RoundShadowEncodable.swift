@@ -237,6 +237,18 @@ extension String {
         let monshs = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"]
         return monshs[month - 1]
     }
+    
+    //将原始的url编码为合法的url
+    public func urlEncoded() -> String {
+        let encodeUrlString = self.addingPercentEncoding(withAllowedCharacters:
+            .urlQueryAllowed)
+        return encodeUrlString ?? ""
+    }
+    
+    //将编码后的url转换回原始的url
+    public func urlDecoded() -> String {
+        return self.removingPercentEncoding ?? ""
+    }
 }
 
 extension NSAttributedString{

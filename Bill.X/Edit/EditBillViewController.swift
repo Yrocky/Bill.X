@@ -25,6 +25,9 @@ class EditBillViewController: UIViewController {
     private(set) var billInputAccessoryView : EditBillInputAccessoryView?
     
     private var date : Date?
+    private var money : String = ""
+    private var usage : String = ""
+    private var note : String = ""
     
     public var canEditDate : Bool = false
 //    public weak var delegate : EditBillViewControllerDelegate?
@@ -57,6 +60,7 @@ class EditBillViewController: UIViewController {
         
         self.editMoney = EditBillTextField.init(frame: .zero)
         self.editMoney?.placeholder = "Cost amount"
+        self.editMoney?.text = self.money
         self.editMoney?.keyboardType = .numbersAndPunctuation
         self.editMoney?.font = UIFont.billDINBold(18)
         self.editMoney?.delegate = self
@@ -64,6 +68,7 @@ class EditBillViewController: UIViewController {
         
         self.editUsage = EditBillTextField.init(frame: .zero)
         self.editUsage?.placeholder = "Cost usage"
+        self.editUsage?.text = usage
         self.editUsage?.font = UIFont.billPingFang(16, weight: .medium)
         self.editUsage?.delegate = self
         self.contentView!.addSubview(self.editUsage!)
@@ -76,6 +81,7 @@ class EditBillViewController: UIViewController {
         
         self.editNotes = BillTextViewWrapView.init(frame: .zero)
         self.editNotes?.textView?.placeholder = "Cost notes"
+        self.editNotes?.textView?.text = note
         self.editNotes?.textView?.placeholderColor = self.editMoney?.value(forKeyPath: "_placeholderLabel.textColor") as! UIColor
         self.editNotes?.textView?.delegate = self
         self.editNotes?.textView?.font = UIFont.billPingFang(16, weight: .light)
@@ -153,7 +159,15 @@ class EditBillViewController: UIViewController {
             editView.becomeFirstResponder()
         }
     }
-    
+    public func setup(for money : Double ,usage : String? , note : String?) {
+        self.money = "\(money)"
+        if let usage = usage {
+            self.usage = usage
+        }
+        if let note = note {
+            self.note = note
+        }
+    }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -225,6 +239,10 @@ extension EditBillViewController : EditBillInputAccessoryViewDelegate {
         let money = self.editMoney!.text ?? "0"
         let usage = self.editUsage!.text ?? ""
         let notes = self.editNotes!.textView!.text ?? ""
+        
+        if money == "0" && usage.count == 0 {
+            return
+        }
         
         if self.eventWrap == nil {///create
             self.eventWrap = BillEventWrap.eventWrap(with: BillEventKitSupport.support,

@@ -231,26 +231,27 @@ BillMonthPresentAnimatorProtocol{
     }
 }
 
-extension HomeViewController : UIViewControllerTransitioningDelegate {
-    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        if presented.isKind(of: EditBillViewController.self) {
-            return BillEditPresentAnimator()
-        }
-        if presented.isKind(of: MonthViewController.self) {
+extension HomeViewController {
+    override func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        
+        let animator = super.animationController(forPresented: presented, presenting: presenting, source: source)
+        
+        if animator == nil && presented.isKind(of: MonthViewController.self) {
+            
             let monthPresent = BillMonthPresentAnimator()
             monthPresent.delegate = self
             return monthPresent
         }
-        return nil
+        return animator
     }
     
-    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        if dismissed.isKind(of: EditBillViewController.self) {
-            return BillEditDismissAnimator()
-        }
-        if dismissed.isKind(of: EditBillViewController.self) {
+    override func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        
+        let animator = super.animationController(forDismissed: dismissed)
+        
+        if animator == nil && dismissed.isKind(of: EditBillViewController.self) {
             return BillMonthDismissAnimator()
         }
-        return nil
+        return animator
     }
 }

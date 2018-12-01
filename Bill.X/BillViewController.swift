@@ -31,3 +31,22 @@ class BillViewController: UIViewController {
 //        }
     }
 }
+
+extension BillViewController : UIViewControllerTransitioningDelegate {
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        
+        if presented.isKind(of: EditBillViewController.self) {
+            return BillEditPresentAnimator()
+        }
+        return nil;
+    }
+    
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        
+        if dismissed.isKind(of: EditBillViewController.self) {
+            return BillEditDismissAnimator()
+        }
+        return nil
+    }
+}
+

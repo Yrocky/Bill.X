@@ -44,6 +44,79 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
-
+    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+        
+        if let scheme = url.scheme,let query = url.query {
+            if scheme == "billx"{
+                let params = query.components(separatedBy: "&")
+                let money = Double(params.first!.components(separatedBy: "=").last ?? "0.0")!
+                var usage = ""
+                var note = ""
+                var date = ""
+                var year = Date().year
+                var month = Date().month
+                var day = Date().day
+                
+                if params.count == 4 {
+                    usage = params[1].components(separatedBy: "=").last?.urlDecoded() ?? ""
+                    note = params[2].components(separatedBy: "=").last?.urlDecoded() ?? ""
+                    date = params[3]
+                }
+                else if params.count == 2 {
+                    date = params[1]
+                }
+                if date != "" {
+                    let dateS = date.components(separatedBy: "-")
+                    if dateS.count == 3 {
+                        year = Int(dateS.first!) ?? Date().year
+                        month = Int(dateS[1]) ?? Date().month
+                        day = Int(dateS[2]) ?? Date().day
+                    }
+                }
+                
+                let vc = self.currentViewController()
+                if !vc.isKind(of: EditBillViewController.self) {
+                    let editDate = Calendar.current.dateWith(year: year, month: month, day: day)
+                    
+                    let edit = EditBillViewController.init(with: nil ,date: editDate)
+                    edit.transitioningDelegate  = vc as? UIViewControllerTransitioningDelegate
+                    edit.modalPresentationStyle = .custom
+                    edit.setup(for: money, usage: usage, note: note)
+                    vc.present(edit, animated: true, completion: nil)
+                }
+            }
+        }
+        return true
+    }
+    
 }
 
+
+extension AppDelegate {
+    
+    fileprivate func currentViewController() -> UIViewController {
+        
+        let root = self.window!.rootViewController!
+        return self.getCurrentViewController(from: root)
+    }
+    
+    func getCurrentViewController(from vc : UIViewController) -> UIViewController {
+    
+        var rootVC = vc
+        var result : UIViewController
+        
+        if let presendVC = rootVC.presentedViewController {
+            rootVC = self.getCurrentViewController(from: presendVC)
+        }
+        if rootVC.isKind(of: UITabBarController.self) {
+            let tabbarVC = rootVC as! UITabBarController
+            result = self.getCurrentViewController(from: tabbarVC.selectedViewController!)
+        } else if rootVC.isKind(of: UINavigationController.self) {
+            let naviVC = rootVC as! UINavigationController
+            result = self.getCurrentViewController(from: naviVC.visibleViewController!)
+        } else {
+            result = rootVC
+        }
+        return result
+    }
+}

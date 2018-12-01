@@ -525,21 +525,26 @@ extension MonthViewController : ScrollableGraphViewDataSource {
     }
 }
 
-extension MonthViewController : UIViewControllerTransitioningDelegate {
-    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        if presented.isKind(of: DayViewController.self) {
+extension MonthViewController  {
+    override func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        
+        let animator = super.animationController(forPresented: presented, presenting: presenting, source: source)
+        
+        if animator == nil && presented.isKind(of: DayViewController.self) {
             let present = BillDayPresentAnimator()
             present.delegate = self
             return present
         }
-        return nil
+        return animator
     }
     
-    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        if dismissed.isKind(of: DayViewController.self) {
+    override func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        let animator = super.animationController(forDismissed: dismissed)
+        
+        if animator == nil && dismissed.isKind(of: DayViewController.self) {
             return BillDayDismissAnimator()
         }
-        return nil
+        return animator
     }
 }
 
