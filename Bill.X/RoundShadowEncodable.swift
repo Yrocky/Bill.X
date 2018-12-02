@@ -28,6 +28,10 @@ extension BillRoundShadowViewEnable{
         self.addRoundShadowFor(view, cornerRadius: 4.0)
     }
     
+    func addRoundShadowFor(_ cornerRadius : CGFloat) -> Void {
+        self.addRoundShadowFor(self as! UIView, cornerRadius: cornerRadius)
+    }
+    
     func addRoundShadowFor(_ view : UIView ,cornerRadius : CGFloat) -> Void{
         
         view.layer.cornerRadius = CGFloat(cornerRadius)
@@ -49,6 +53,10 @@ extension UIColor{
     
     public class var billBlue: UIColor {
         return self.colorWith(66,136,230)
+    }
+    
+    public class var billDesBlue: UIColor {
+        return self.colorWith(103,158,230)
     }
     
     public class var billOrange: UIColor {

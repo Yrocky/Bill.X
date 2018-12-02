@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreLocation
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -15,10 +16,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         
-//        print(Calendar.current.startAndLastDay(of: 2018))
-//        print(Calendar.current.startAndLastDay(of: 2018 ,and : 11))
-//        print(Calendar.current.startOfWeek(for: Date()))
+        let eventKitAccess = BillEventKitSupport.support.accessAuthed
         
+        let locationStatus = CLLocationManager.authorizationStatus()
+        let locationAccess = locationStatus == .authorizedAlways ||
+            locationStatus == .authorizedWhenInUse
+        
+        if !(eventKitAccess && locationAccess) {
+            let rootViewController = AccessViewController()
+            self.window?.rootViewController = rootViewController
+            self.window?.makeKeyAndVisible()
+        }
         return true
     }
 

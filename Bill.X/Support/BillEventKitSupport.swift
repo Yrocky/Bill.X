@@ -22,7 +22,8 @@ class BillEventKitSupport: NSObject {
     static let support = BillEventKitSupport()
     
     private(set) var eventStore : EKEventStore
-    private(set) var accessGrand : Bool = false
+    public var accessAuthed : Bool = false
+    public var accessDenied : Bool = false///<明确拒绝了授权
     private(set) var calendar : EKCalendar?
     
     override func copy() -> Any {
@@ -36,27 +37,35 @@ class BillEventKitSupport: NSObject {
     override init() {
         self.eventStore = EKEventStore()
         super.init()
-        self.checkEventStoreAccessForCanendar { (accessGrand) in
-            if accessGrand && self.calendar == nil {
-                self.calendar = self.createCalendarIfNeeded()
-            }
+        self.accessAuthed = EKEventStore.authorizationStatus(for: .event) == .authorized
+        if self.accessAuthed {
+            self.initCalendarIfNeeded()
         }
     }
     
-    func checkEventStoreAccessForCanendar(_ completion : @escaping EventKitSupportCompletionBlock) {
+    public func checkEventStoreAccessForCanendar(_ completion : @escaping EventKitSupportCompletionBlock) {
         let status = EKEventStore.authorizationStatus(for: .event)
         switch status {
         case .authorized:///已经授权
-            self.accessGrand = true
+            self.accessAuthed = true
+            self.initCalendarIfNeeded()
             completion(true)
         case .notDetermined:///没有授权过
             self.requestCalendarEventAccess(completion)
         case .denied,.restricted:///拒绝授权
+            self.accessDenied = true
             self.requestCalendarEventAccess(completion)
         }
     }
     
-    private func createCalendarIfNeeded() -> EKCalendar {
+    private func initCalendarIfNeeded() {
+    
+        if self.calendar == nil {
+            self.calendar = self.createCalendar()
+        }
+    }
+    
+    private func createCalendar() -> EKCalendar {
         
         var source : EKSource?
         var calendar : EKCalendar?
@@ -103,11 +112,15 @@ class BillEventKitSupport: NSObject {
     
     private func requestCalendarEventAccess(_ completion : @escaping EventKitSupportCompletionBlock) {
         
-        self.eventStore.requestAccess(to: .event) { (granted, error) in
+        self.eventStore.requestAccess(to: .event) { (authed, error) in
             
+            self.accessAuthed = authed
+            self.accessDenied = !authed
+            if self.accessAuthed {
+                self.initCalendarIfNeeded()
+            }
             DispatchQueue.main.async {
-                self.accessGrand = granted
-                completion(granted)
+                completion(authed)
             }
         }
     }
@@ -119,7 +132,7 @@ extension BillEventKitSupport {
     ///<添加一个event
     public func addBillEvent(_ eventWrap : BillEventWrap , _ completion : EventKitSupportCompletionBlock) {
         
-        guard accessGrand else {
+        guard accessAuthed else {
             completion(false)
             return
         }
@@ -140,7 +153,7 @@ extension BillEventKitSupport {
     ///<查询所有的event
     public func fetchBillEventAll(_ result : @escaping EventKitSupportFetchResultBlock) {
         
-        guard accessGrand else {
+        guard accessAuthed else {
             return
         }
         
@@ -155,7 +168,7 @@ extension BillEventKitSupport {
     ///<查询 2017 年的event
     public func fetchBillEvent(year : Int , _ result : @escaping EventKitSupportFetchResultBlock) {
         
-        guard accessGrand else {
+        guard accessAuthed else {
             return
         }
         
@@ -169,7 +182,7 @@ extension BillEventKitSupport {
     ///<查询 2017-10 月的event
     public func fetchBillEvent(year : Int ,month : Int , _ result : @escaping EventKitSupportFetchResultBlock) {
         
-        guard accessGrand else {
+        guard accessAuthed else {
             return
         }
         
@@ -183,7 +196,7 @@ extension BillEventKitSupport {
     ///<查询 2017-10-8 日的event
     public func fetchBillEvent(year : Int ,month : Int ,day : Int , _ result : @escaping EventKitSupportFetchResultBlock) {
         
-        guard accessGrand else {
+        guard accessAuthed else {
             return
         }
         
@@ -198,7 +211,7 @@ extension BillEventKitSupport {
     ///<查询 指定日期之间 的event
     public func fetchBillEvent(from start : Date , to last : Date , _ result : @escaping EventKitSupportFetchResultBlock) {
         
-        guard accessGrand else {
+        guard accessAuthed else {
             return
         }
         
@@ -210,7 +223,7 @@ extension BillEventKitSupport {
     ///<删除一个event
     public func removeBillEvent(_ eventWrap : BillEventWrap , _ completion : EventKitSupportCompletionBlock) {
         
-        guard accessGrand else {
+        guard accessAuthed else {
             completion(false)
             return
         }
@@ -228,7 +241,7 @@ extension BillEventKitSupport {
     ///<更新一个event
     public func updateBillEvent(_ eventWrap : BillEventWrap , _ completion : EventKitSupportCompletionBlock) {
         
-        guard accessGrand else {
+        guard accessAuthed else {
             completion(false)
             return
         }

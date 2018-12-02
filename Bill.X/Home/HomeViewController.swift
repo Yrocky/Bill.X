@@ -9,30 +9,6 @@
 import UIKit
 import EventKit
 
-class BillHandleButton : UIButton {
-    
-    public convenience init(with title : String) {
-        self.init(frame: .zero)
-        self.setTitle(title, for: .normal)
-    }
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
-        self.setBackgroundImageWith(.billOrange, for: .normal)
-        self.setBackgroundImageWith(.billOrangeHighlight, for: .highlighted)
-        self.setBackgroundImageWith(.billOrangeHighlight, for: .disabled)
-        self.layer.masksToBounds = true
-        self.titleLabel?.font = UIFont.billPingFangMedium(19)
-        self.setTitleColor(.white, for: .normal)
-        self.addRoundShadowFor(self, cornerRadius: 10)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
-
 class HomeViewController: BillViewController,
 UICollectionViewDataSource,
 UICollectionViewDelegateFlowLayout,
@@ -71,7 +47,7 @@ BillMonthPresentAnimatorProtocol{
     let titleLabel = UILabel()
     
     override func viewWillAppear(_ animated: Bool) {
-        if !eventKitSupport.accessGrand {
+        if !eventKitSupport.accessAuthed {
             eventKitSupport.checkEventStoreAccessForCanendar { (accessGrand) in
                 if !accessGrand{
                     print("没有授权读取日历")

@@ -22,7 +22,11 @@ class EditBillViewController: UIViewController {
     private(set) var editUsage : EditBillTextField?
     private(set) var editNotes : BillTextViewWrapView?
     private(set) var editDate : BillHandleButton?
+    private(set) var editLocation : BillHandleButton?
     private(set) var billInputAccessoryView : EditBillInputAccessoryView?
+    
+    private var dateView : UIDatePicker?
+    private var locationView : UIView?
     
     private var date : Date?
     private var money : String = ""
@@ -30,7 +34,6 @@ class EditBillViewController: UIViewController {
     private var note : String = ""
     
     public var canEditDate : Bool = false
-//    public weak var delegate : EditBillViewControllerDelegate?
     
     var keyboardHeight : CGFloat = (UIDevice.current.isIphoneXShaped() ? (216+34) : 216)
     
@@ -49,12 +52,16 @@ class EditBillViewController: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = .clear
+        view.addGestureRecognizer(UITapGestureRecognizer.init(target: self,
+                                                              action: #selector(self.onDismissAction)))
         
         self.contentView = UIView()
         self.contentView?.backgroundColor = .white
         self.contentView?.layer.cornerRadius = 10
         if #available(iOS 11.0, *) {
-            self.contentView?.layer.maskedCorners = [.layerMinXMinYCorner , .layerMaxXMinYCorner]
+            if UIDevice.current.isIphoneXShaped() {
+                self.contentView?.layer.maskedCorners = [.layerMinXMinYCorner , .layerMaxXMinYCorner]
+            }
         }
         view.addSubview(self.contentView!)
         
@@ -73,11 +80,21 @@ class EditBillViewController: UIViewController {
         self.editUsage?.delegate = self
         self.contentView!.addSubview(self.editUsage!)
         
-        self.editDate = BillHandleButton.init(with: self.date!.ymd)
+        self.editDate = BillHandleButton.init(with: self.date!.ymd,
+                                              type: .white)
         self.editDate?.addTarget(self,
-                                 action: #selector(self.onEditDateAction), for: .touchUpInside)
-        self.editDate?.titleLabel?.font = UIFont.billDINBold(17)
+                                 action: #selector(self.onEditDateAction(_:)),
+                                 for: .touchUpInside)
+        self.editDate?.setup(fontSize:17)
         self.contentView!.addSubview(self.editDate!)
+        
+        self.editLocation = BillHandleButton.init(with: "上海-闵行",
+                                              type: .white)
+        self.editLocation?.addTarget(self,
+                                     action: #selector(self.onEditLocationAction(_:)),
+                                     for: .touchUpInside)
+        self.editLocation?.setup(fontSize:15)
+        self.contentView!.addSubview(self.editLocation!)
         
         self.editNotes = BillTextViewWrapView.init(frame: .zero)
         self.editNotes?.textView?.placeholder = "Cost notes"
@@ -87,6 +104,16 @@ class EditBillViewController: UIViewController {
         self.editNotes?.textView?.font = UIFont.billPingFang(16, weight: .light)
         self.contentView!.addSubview(self.editNotes!)
 
+        self.dateView = UIDatePicker.init()
+        self.dateView?.datePickerMode = .date
+        self.dateView?.isHidden = true
+        self.dateView?.addTarget(self,
+                                 action: #selector(self.onDateChangeAction(_:)),
+                                 for: .valueChanged)
+        self.dateView?.setDate(Date(), animated: true)
+        self.dateView?.maximumDate = Date()
+        self.contentView!.addSubview(self.dateView!)
+        
         self.billInputAccessoryView = EditBillInputAccessoryView.init(frame: .zero)
         self.billInputAccessoryView?.isHidden = true
         self.billInputAccessoryView?.delegate = self
@@ -105,7 +132,7 @@ class EditBillViewController: UIViewController {
         self.editMoney?.snp.makeConstraints({ (make) in
             make.left.equalToSuperview().offset(16)
             make.height.equalTo(44)
-            make.trailing.equalTo(self.contentView!.snp.centerX).offset(-5)
+            make.right.equalTo(self.contentView!.snp.centerX).offset(-5)
             make.top.equalToSuperview().offset(20)
             make.bottom.equalTo(self.editNotes!.snp.top).offset(-10)
         })
@@ -113,21 +140,33 @@ class EditBillViewController: UIViewController {
         self.editUsage?.snp.makeConstraints({ (make) in
             make.right.equalToSuperview().offset(-16)
             make.height.top.equalTo(self.editMoney!)
-            make.leading.equalTo(self.contentView!.snp.centerX).offset(5)
+            make.left.equalTo(self.contentView!.snp.centerX).offset(5)
         })
         self.editNotes?.snp.makeConstraints({ (make) in
             make.left.equalTo(self.editMoney!)
-            make.right.equalTo(self.editDate!)
+            make.right.equalTo(self.editUsage!)
             make.top.equalTo(self.editMoney!.snp.bottom).offset(10)
             make.height.equalTo(60)
             make.bottom.equalTo(self.editDate!.snp.top).offset(-10)
         })
         self.editDate?.snp.makeConstraints({ (make) in
             make.left.equalTo(self.editMoney!)
-            make.right.equalTo(self.editUsage!)
+            make.right.equalTo(self.editMoney!)
             make.height.equalTo(self.editMoney!)
             make.top.equalTo(self.editNotes!.snp.bottom).offset(10)
             make.bottom.equalToSuperview().offset(-keyboardHeight)
+        })
+        self.editLocation?.snp.makeConstraints({ (make) in
+            make.left.equalTo(self.editUsage!)
+            make.right.equalTo(self.editUsage!)
+            make.height.equalTo(self.editDate!)
+            make.top.bottom.equalTo(self.editDate!)
+        })
+        self.dateView?.snp.makeConstraints({ (make) in
+            make.left.equalTo(self.editMoney!)
+            make.right.equalTo(self.editUsage!)
+            make.top.equalTo(self.editDate!.snp.bottom).offset(20)
+            make.bottom.equalTo(self.contentView!.safeAreaLayoutGuide)
         })
         self.billInputAccessoryView?.snp.makeConstraints({ (make) in
             make.left.right.equalToSuperview()
@@ -140,7 +179,7 @@ class EditBillViewController: UIViewController {
                                                name:UIResponder.keyboardWillShowNotification,
                                                object: nil)
         NotificationCenter.default.addObserver(self,
-                                               selector: #selector(self.onKeyboardShow(_:)),
+                                               selector: #selector(self.onKeyboardChangeFrame(_:)),
                                                name:UIResponder.keyboardWillChangeFrameNotification,
                                                object: nil)
         NotificationCenter.default.addObserver(self,
@@ -172,8 +211,30 @@ class EditBillViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    @objc func onEditDateAction() {
+    @objc func onDismissAction() {
         self.view.endEditing(true)
+        self.dismiss(animated: true, completion: nil)
+    }
+    @objc func onEditDateAction(_ button:UIButton) {
+        
+        button.isEnabled = !button.isEnabled
+        self.editLocation?.isEnabled = true
+        self.view.endEditing(true)
+        self.dateView?.isHidden = false
+        self.locationView?.isHidden = true
+    }
+    @objc func onEditLocationAction(_ button:UIButton) {
+        
+        button.isEnabled = !button.isEnabled
+        self.editDate?.isEnabled = true
+        self.view.endEditing(true)
+        self.dateView?.isHidden = true
+        self.locationView?.isHidden = false
+    }
+    @objc func onDateChangeAction(_ datePicker : UIDatePicker) {
+        print(datePicker.date)
+        self.editDate?.setup(title: "\(datePicker.date.year)-\(datePicker.date.month)-\(datePicker.date.day)")
+        self.date = datePicker.date
     }
 }
 
@@ -181,6 +242,12 @@ extension EditBillViewController {
     
     @objc func onKeyboardShow(_ noti : Notification) {
         
+        self.editDate?.isEnabled = true
+        self.editLocation?.isEnabled = true
+        self.onKeyboardChangeFrame(noti)
+    }
+    
+    @objc func onKeyboardChangeFrame(_ noti : Notification) {
         let saveValid = self.editMoney!.text != nil && self.editUsage!.text != nil
         self.billInputAccessoryView?.updateSaveButtonStatus(valid: saveValid)
         
@@ -263,8 +330,7 @@ extension EditBillViewController : EditBillInputAccessoryViewDelegate {
             BillEventKitSupport.support.updateBillEvent(self.eventWrap!) { (finish) in
                 
                 if finish {
-                    self.view.endEditing(true)
-                    self.dismiss(animated: true, completion: nil)
+                    self.onDismissAction()
                 }
             }
         }
