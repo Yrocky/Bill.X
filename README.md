@@ -2,7 +2,7 @@
 
 
 
-![](/Users/youngrocky/Documents/github/Bill.X/Resource/bill.x.png)
+![](Resource/bill.x.png)
 
 
 
