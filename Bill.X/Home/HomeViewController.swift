@@ -42,14 +42,14 @@ BillMonthPresentAnimatorProtocol{
     
     var addButton = BillHandleButton.init(with: "Add now")
     var monthEventWraps = [BillMonthEventWrap]()
-    var year : Int = 2018
+    var year : Int = Date().year
     
     var sourceView : UIView?
     
     lazy var monthView : UICollectionView = {
         
-        let minimumLineSpacing : CGFloat = 20.0
-        let minimumInteritemSpacing : CGFloat = 20.0
+        let minimumLineSpacing : CGFloat = UIDevice.current.isIphoneXShaped() ? 20.0 : 10.0
+        let minimumInteritemSpacing : CGFloat = UIDevice.current.isIphoneXShaped() ? 20.0 : 10.0
 
         let layout = MonthPageFlowlayout.init(with: 2, column: 2)
         layout.scrollDirection = .horizontal
@@ -70,53 +70,6 @@ BillMonthPresentAnimatorProtocol{
     
     let titleLabel = UILabel()
     
-    @objc func animActioin() {
-
-//        let month = MonthViewController()
-//        let month = DayViewController()
-//        navigationController?.pushViewController(month, animated: true)
-        
-        
-        self.eventKitSupport.fetchBillEventAll { (eventWraps) in
-            print("++++all++++============")
-            eventWraps.forEach({ (eventWrap) in
-                print(eventWrap.event.title)
-            })
-        }
-        self.eventKitSupport.fetchBillEvent(year: 2017, { (eventWraps) in
-            print("+++++2017+++============--------")
-            eventWraps.forEach({ (eventWrap) in
-                print(eventWrap.event.title)
-            })
-            self.eventKitSupport.arrangeBillEventForYear(eventWraps).forEach({ (monthEventWraps) in
-                print(monthEventWraps)
-            })
-        })
-        self.eventKitSupport.fetchBillEvent(year: 2018, month: 11) { (eventWraps) in
-            print("++&&2018-11&&&==")
-            eventWraps.forEach({ (eventWrap) in
-                print(eventWrap.event.title)
-            })
-//            self.eventKitSupport.arrangeBillEventForMonth(eventWraps, year: 2018 , month : 11)
-//                .forEach({ (dayEventWraps) in
-//                    print(dayEventWraps)
-//                })
-        }
-        self.eventKitSupport.fetchBillEvent(year: 2018, month: 10) { (eventWraps) in
-            print("++++2018-10==")
-            eventWraps.forEach({ (eventWrap) in
-                print(eventWrap.event.title)
-            })
-        }
-        self.eventKitSupport.fetchBillEvent(year: 2018, month: 11, day: 12, { (eventWraps) in
-            
-            print("+++++2018-11-12+++=====--")
-            eventWraps.forEach({ (eventWrap) in
-                print(eventWrap.event.title)
-            })
-        })
-    }
-
     override func viewWillAppear(_ animated: Bool) {
         if !eventKitSupport.accessGrand {
             eventKitSupport.checkEventStoreAccessForCanendar { (accessGrand) in
@@ -134,6 +87,10 @@ BillMonthPresentAnimatorProtocol{
             self.titleLabel.text = "\(yearEventWrap.year)"
             self.monthEventWraps = yearEventWrap.monthEventWraps
             self.monthView.reloadData()
+            
+            let indexpath = IndexPath.init(row: Date().month - 1, section: 0)
+            self.monthView.scrollToItem(at: indexpath,
+                                        at: .centeredHorizontally, animated: true)
         }
     }
     
